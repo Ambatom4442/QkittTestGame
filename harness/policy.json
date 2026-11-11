@@ -52,7 +52,7 @@
   "limits": {
     "wip_per_agent": 1,
     "max_files_changed": 120,
-    "max_lines_changed": 4000
+    "max_lines_changed": 8000
   },
   "branches": {
     "feature_pattern": "feature/*",
