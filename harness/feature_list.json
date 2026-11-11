@@ -1,0 +1,301 @@
+{
+  "schema_version": 1,
+  "wip_limit_per_agent": 1,
+  "states": [
+    "not_started",
+    "active",
+    "blocked",
+    "passing"
+  ],
+  "features": [
+    {
+      "id": "F-001",
+      "title": "Server serves built client and health endpoint",
+      "behavior": "A player can load the built client and get a 200 response from /api/health served by Fastify.",
+      "verification": [
+        "npm run test:api -- health",
+        "npm run test:e2e -- health-page"
+      ],
+      "layers_required": [
+        "runtime",
+        "system"
+      ],
+      "depends_on": [],
+      "priority": 1,
+      "state": "not_started",
+      "owner": null,
+      "source": "NFR-01",
+      "blocked_reason": null,
+      "evidence": null
+    },
+    {
+      "id": "F-002",
+      "title": "SQLite connection with WAL and numbered migrations",
+      "behavior": "A player session starts with SQLite connected, WAL enabled, and numbered migrations applied in order.",
+      "verification": [
+        "npm run test:unit -- db.wal",
+        "npm run test:api -- migrations"
+      ],
+      "layers_required": [
+        "runtime",
+        "system"
+      ],
+      "depends_on": [
+        "F-001"
+      ],
+      "priority": 2,
+      "state": "not_started",
+      "owner": null,
+      "source": "NFR-02,NFR-41",
+      "blocked_reason": null,
+      "evidence": null
+    },
+    {
+      "id": "F-003",
+      "title": "Profiles API",
+      "behavior": "A player can create and list local profiles through the API.",
+      "verification": [
+        "npm run test:api -- profiles"
+      ],
+      "layers_required": [
+        "runtime",
+        "system"
+      ],
+      "depends_on": [
+        "F-002"
+      ],
+      "priority": 3,
+      "state": "not_started",
+      "owner": null,
+      "source": "FR-01",
+      "blocked_reason": null,
+      "evidence": null
+    },
+    {
+      "id": "F-004",
+      "title": "Games and save slots API with autosave position",
+      "behavior": "A player can start or continue a game slot and autosave position for resume.",
+      "verification": [
+        "npm run test:api -- games",
+        "npm run test:api -- save-slots",
+        "npm run test:api -- autosave"
+      ],
+      "layers_required": [
+        "runtime",
+        "system"
+      ],
+      "depends_on": [
+        "F-003"
+      ],
+      "priority": 4,
+      "state": "not_started",
+      "owner": null,
+      "source": "FR-02,FR-03,FR-04",
+      "blocked_reason": null,
+      "evidence": null
+    },
+    {
+      "id": "F-005",
+      "title": "Client boots Three.js scene with test mode hook",
+      "behavior": "A player can load a Three.js scene and test mode exposes window.__qgame for deterministic checks.",
+      "verification": [
+        "npm run test:unit -- client.boot",
+        "npm run test:e2e -- test-mode-hook"
+      ],
+      "layers_required": [
+        "runtime",
+        "system"
+      ],
+      "depends_on": [
+        "F-001"
+      ],
+      "priority": 5,
+      "state": "not_started",
+      "owner": null,
+      "source": "NFR-62",
+      "blocked_reason": null,
+      "evidence": null
+    },
+    {
+      "id": "F-006",
+      "title": "First-person movement with collision and click-to-move",
+      "behavior": "A player can move with first-person controls, collision, and click-to-move.",
+      "verification": [
+        "npm run test:unit -- movement",
+        "npm run test:e2e -- movement-controls"
+      ],
+      "layers_required": [
+        "runtime",
+        "system"
+      ],
+      "depends_on": [
+        "F-005"
+      ],
+      "priority": 6,
+      "state": "not_started",
+      "owner": null,
+      "source": "FR-10,FR-11",
+      "blocked_reason": null,
+      "evidence": null
+    },
+    {
+      "id": "F-007",
+      "title": "Save and resume position end to end",
+      "behavior": "A player can reload and resume at the saved scene and position.",
+      "verification": [
+        "npm run test:e2e -- save-resume-position"
+      ],
+      "layers_required": [
+        "runtime",
+        "system"
+      ],
+      "depends_on": [
+        "F-004",
+        "F-006"
+      ],
+      "priority": 7,
+      "state": "not_started",
+      "owner": null,
+      "source": "FR-02,FR-03,FR-04",
+      "blocked_reason": null,
+      "evidence": null
+    },
+    {
+      "id": "F-008",
+      "title": "Case content schemas and validator with fair-play skeleton",
+      "behavior": "A contributor can run schema validation and a fair-play checker skeleton for case content.",
+      "verification": [
+        "npm run content:validate",
+        "npm run test:unit -- fair-play"
+      ],
+      "layers_required": [
+        "static",
+        "runtime"
+      ],
+      "depends_on": [
+        "F-001"
+      ],
+      "priority": 8,
+      "state": "not_started",
+      "owner": null,
+      "source": "FR-60,FR-61",
+      "blocked_reason": null,
+      "evidence": null
+    },
+    {
+      "id": "F-009",
+      "title": "Julia room scene L-06 loads with interactables",
+      "behavior": "A player can load L-06 and see interactable objects in chapter order.",
+      "verification": [
+        "npm run test:e2e -- julia-room-load"
+      ],
+      "layers_required": [
+        "runtime",
+        "system"
+      ],
+      "depends_on": [
+        "F-005",
+        "F-008"
+      ],
+      "priority": 9,
+      "state": "not_started",
+      "owner": null,
+      "source": "FR-12,FR-14",
+      "blocked_reason": null,
+      "evidence": null
+    },
+    {
+      "id": "F-010",
+      "title": "Events API grants clues E-07 to E-12 on interact",
+      "behavior": "A player interaction in L-06 grants clues E-07 through E-12 via events API.",
+      "verification": [
+        "npm run test:api -- events-clues",
+        "npm run test:e2e -- clues-e07-e12"
+      ],
+      "layers_required": [
+        "runtime",
+        "system"
+      ],
+      "depends_on": [
+        "F-008",
+        "F-009"
+      ],
+      "priority": 10,
+      "state": "not_started",
+      "owner": null,
+      "source": "FR-13",
+      "blocked_reason": null,
+      "evidence": null
+    },
+    {
+      "id": "F-011",
+      "title": "Casebook UI lists collected clues",
+      "behavior": "A player can open the casebook and view collected clues exactly once.",
+      "verification": [
+        "npm run test:e2e -- casebook-clues"
+      ],
+      "layers_required": [
+        "runtime",
+        "system"
+      ],
+      "depends_on": [
+        "F-010"
+      ],
+      "priority": 11,
+      "state": "not_started",
+      "owner": null,
+      "source": "FR-20",
+      "blocked_reason": null,
+      "evidence": null
+    },
+    {
+      "id": "F-012",
+      "title": "Deduction board server-side validation for D-03 and D-06",
+      "behavior": "A player can submit D-03 and D-06 links, and wrong links return hints only without leaking answers.",
+      "verification": [
+        "npm run test:api -- deductions",
+        "npm run test:e2e -- deduction-d03-d06",
+        "npm run test:api -- no-answer-leak"
+      ],
+      "layers_required": [
+        "runtime",
+        "system"
+      ],
+      "depends_on": [
+        "F-010",
+        "F-011"
+      ],
+      "priority": 12,
+      "state": "not_started",
+      "owner": null,
+      "source": "FR-30,FR-31,NFR-52",
+      "blocked_reason": null,
+      "evidence": null
+    },
+    {
+      "id": "F-013",
+      "title": "Bundle leak check for server-only ids and answers",
+      "behavior": "A release build fails if server-only IDs or answer strings appear in client output.",
+      "verification": [
+        "npm run check:bundle-leak -- F-013"
+      ],
+      "layers_required": [
+        "static",
+        "system"
+      ],
+      "depends_on": [
+        "F-012"
+      ],
+      "priority": 13,
+      "state": "not_started",
+      "owner": null,
+      "source": "NFR-52",
+      "blocked_reason": null,
+      "evidence": null
+    }
+  ],
+  "_notes": [
+    "Only harness/checks/verify_feature.py sets state=passing and writes evidence.",
+    "One feature should be completable and verifiable in one session."
+  ]
+}
