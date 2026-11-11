@@ -1,0 +1,44 @@
+name: harness-check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: harness-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  harness-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Setup
+        run: npm run setup
+
+      - name: Kit and harness integrity
+        run: python q_heat_kit/scripts/qhc_check.py --harness .
+
+      - name: Policy
+        env:
+          BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+        run: python harness/checks/policy_check.py --base origin/${{ github.base_ref || 'main' }}
+
+      - name: Full check
+        run: npm run check

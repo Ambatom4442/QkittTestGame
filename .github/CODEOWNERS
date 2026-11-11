@@ -1,0 +1,18 @@
+# CODEOWNERS for Q-Game harness and product files
+
+*                               @Ambatom4442
+
+/AGENTS.md                      @Ambatom4442
+**/AGENTS.md                    @Ambatom4442
+/CLAUDE.md                      @Ambatom4442
+/ARCHITECTURE.md                @Ambatom4442
+/harness/policy.json            @Ambatom4442
+/harness/sensors.json           @Ambatom4442
+/harness/checks/                @Ambatom4442
+/harness/hooks/                 @Ambatom4442
+/harness/manifest.json          @Ambatom4442
+/.claude/                       @Ambatom4442
+/.github/                       @Ambatom4442
+/q_heat_kit/                    @Ambatom4442
+/docs/decisions/                @Ambatom4442
+/docs/SECURITY.md               @Ambatom4442
