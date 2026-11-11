@@ -16,7 +16,10 @@
         "reason": "Kit is read-only in product repositories",
         "owner": "@Ambatom4442",
         "since": "2026-11-11",
-        "decision": "ADR-0002"
+        "decision": "ADR-0002",
+        "allowed_branches": [
+          "harness/kit-*"
+        ]
       }
     ],
     "opened_paths": [],

@@ -43,6 +43,10 @@ def size_exempt(path):
     return False
 
 
+def branch_matches(patterns, branch):
+    return any(fnmatch.fnmatch(branch, p) for p in patterns)
+
+
 def changed_files(base):
     files = set(filter(None, git("diff", "--name-only", f"{base}...HEAD").splitlines()))
     files |= set(filter(None, git("diff", "--name-only", "HEAD").splitlines()))
@@ -67,7 +71,7 @@ def main():
         or git("rev-parse", "--abbrev-ref", "HEAD")
     )
     harness_branch = fnmatch.fnmatch(branch, policy.get("branches", {}).get("harness_pattern", "harness/*"))
-    limit_exempt = any(fnmatch.fnmatch(branch, p) for p in policy.get("limits_exempt_branches", []))
+    limit_exempt = branch_matches(policy.get("limits_exempt_branches", []), branch)
     opened = [o["path"] for o in scope.get("opened_paths", []) if "{{" not in o.get("path", "")]
 
     for f in files:
@@ -75,10 +79,13 @@ def main():
             pat = fz.get("path", "")
             if "{{" in pat or not fnmatch.fnmatch(f, pat) or match(f, opened):
                 continue
+            allowed_branches = fz.get("allowed_branches", [])
+            if allowed_branches and branch_matches(allowed_branches, branch):
+                continue
             err(
                 f"{f} changed; it is frozen ({fz.get('reason', 'no reason given')}).",
                 f"Frozen by {fz.get('decision', 'policy')}; owner {fz.get('owner', 'unknown')}.",
-                "Revert the change, or ask a human to open the path through Q-HEAT change with a decision record."
+                "Revert the change, or use an allowed branch for this frozen path if configured in harness/policy.json."
             )
         if match(f, scope.get("harness_paths", [])) and not harness_branch:
             err(
