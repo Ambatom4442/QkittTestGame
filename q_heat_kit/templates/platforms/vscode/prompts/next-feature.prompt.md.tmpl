@@ -1,0 +1,15 @@
+---
+description: "Pick up and complete the next feature using the harness session routine"
+agent: agent
+---
+
+Follow the session routine in [AGENTS.md](../../AGENTS.md).
+
+1. Clock-in: read `harness/progress.md` and the feature list; run `make check-fast`; fix a broken baseline first.
+2. Pick your `active` feature, or the highest-priority unclaimed feature whose dependencies are `passing`.
+3. Claim it on a `feature/<id>-<slug>` branch with a `[claim]` commit.
+4. Implement in small commits; verify with `python harness/checks/verify_feature.py <id>`.
+5. Ask the reviewer agent for a verdict; address findings.
+6. Clock-out: update progress, leave a clean state, push, open the PR. Never merge.
+
+Ask me before touching frozen paths, adding dependencies, or anything irreversible.

@@ -1,0 +1,60 @@
+# ARCHITECTURE.md — {{PROJECT_NAME}}
+
+<!-- Top-level system map. Keep concise (≤150 lines); link deeper docs. Owner: {{OWNER}} -->
+
+## System shape
+
+- Product: {{PRODUCT}}
+- Primary workflow: {{MAIN_WORKFLOW}}
+- Runtime surfaces: {{web / api / worker / cli / desktop}}
+- Related repositories: {{REPO — role — dependency direction}}
+- Behaviour source of truth: `docs/product-specs/`
+
+## Domain map
+
+| Domain | Purpose | Entry points | Spec | Owner |
+|---|---|---|---|---|
+| `{{domain-a}}` | {{what it owns}} | {{modules / routes / commands}} | {{spec path}} | {{team}} |
+| `{{domain-b}}` | | | | |
+
+## Layer model
+
+Dependencies point one way only (left may not import right):
+
+`Types → Config → Repo → Service → Runtime → UI`
+
+<!-- Adapt names to the stack, e.g. Domain → Application → Infrastructure → API. -->
+
+## Hard dependency rules (enforced by checks)
+
+| Rule | Check id |
+|---|---|
+| Lower layers never import higher layers | `{{check-id}}` |
+| UI calls services, never repositories or external clients | `{{check-id}}` |
+| Data access only through repositories/adapters | `{{check-id}}` |
+| Shared utilities contain no domain logic | `{{check-id}}` |
+| New external dependency requires a decision record | `policy` |
+
+## Cross-cutting interfaces
+
+| Concern | Approved boundary | Notes |
+|---|---|---|
+| Logging / tracing | `{{path}}` | Structured only |
+| Auth | `{{path}}` | {{token/session rules}} |
+| External APIs | `{{path}}` | {{retry / rate limits}} |
+| Feature flags | `{{path}}` | {{ownership}} |
+| Configuration | `{{path}}` | Env vars; `.env.example` |
+
+## Data
+
+- Stores: {{databases, caches, queues}}
+- Schema source: {{migrations path}}; generated docs in `docs/generated/` if any.
+
+## Hot spots
+
+- {{Area that is hardest to change safely and why}}
+- {{Area with weak boundaries or fragile tests}}
+
+## Decisions
+
+Key decisions: `docs/decisions/` — {{ADR-0001 stack choice}}, {{ADR-0002 …}}.

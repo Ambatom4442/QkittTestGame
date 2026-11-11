@@ -1,0 +1,51 @@
+# Graph: {{name}}
+
+File as `docs/harness/graphs/{{name}}.md`. The implementation must match this
+document one-to-one.
+
+## Why a graph (score ≥ 3 of 5)
+- [ ] Independent work units · [ ] Branch/rollback paths · [ ] State worth saving
+- [ ] Every node verifiable · [ ] Coordination benefit > cost
+
+## Diagram
+
+```mermaid
+flowchart LR
+  R[research] --> I[implement]
+  I --> V[verify - fresh context]
+  V -- pass --> H[human approval]
+  V -- fail --> I
+  V -- missing info --> R
+  H -- approved --> M[merge - deterministic]
+```
+
+## Shared state
+| Field | Written by | Read by |
+|---|---|---|
+| requirements | research | implement, verify |
+| code_ref | implement | verify, merge |
+| review | verify | router |
+| attempts | router (sum) | router |
+
+## Nodes
+| Node | Type (agent/code/human) | Inputs | Outputs | Tools | Inner loop / limit |
+|---|---|---|---|---|---|
+| research | agent | task | requirements | read, search | until enough info, ≤ N |
+| implement | agent | requirements, last error | code_ref | edit, run checks | ≤ 3 attempts |
+| verify | agent (fresh context) | code_ref, spec | review pass/fail | read, run checks | 1 |
+| approval | human | diff, evidence | approved | — | waits |
+| merge | code | approved code_ref | done | git | 1 |
+
+## Routing rules
+| From | Condition | To |
+|---|---|---|
+| verify | review == pass | approval |
+| verify | review == fail and attempts < 3 | implement |
+| verify | missing information | research |
+| verify | attempts ≥ 3 | escalate |
+
+## Checkpoints and resume
+State saved after every node; run id = {{thread/run id}}; pause before `merge`.
+
+## Loop relationships (systems of loops)
+Feeds: · Owns targets: · Can veto: · Frozen metrics:

@@ -1,0 +1,27 @@
+---
+name: next-feature
+description: Pick up and complete the next feature from the harness feature list using the repository's session routine. Use when asked to "pick the next feature", "continue work", or "work on F-<id>".
+---
+
+# Next feature
+
+Follow the session routine in `AGENTS.md`. This skill is the short form.
+
+1. Clock-in: `pwd`; read `harness/progress.md`; read the feature list;
+   `git log --oneline -5`; run `make check-fast`. If it fails, fix the baseline first.
+2. Choose: your `active` feature, else the highest-priority `not_started`
+   feature whose `depends_on` are all `passing` and that nobody has claimed
+   (check `git fetch` and open branches).
+3. Claim: create `feature/<id>-<slug>`, set `state: active` and `owner`,
+   commit `WIP: <id> <title> [claim]`, push.
+4. Read the feature's `source` spec and any doc the `AGENTS.md` routing table
+   says applies.
+5. Implement in small commits. Run `make check-fast` often.
+6. Verify: `python harness/checks/verify_feature.py <id>`. Fix causes, not tests,
+   until it passes.
+7. Ask the `reviewer` subagent for a verdict; address findings.
+8. Clock-out: update `harness/progress.md`; clean state; commit; push; open
+   or update the PR. Do not merge.
+
+Stop and ask a human if the work needs a frozen path, a new dependency, a
+schema or public API change, or anything irreversible.

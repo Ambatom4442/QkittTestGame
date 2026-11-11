@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "scope": {
+    "allowed_paths": ["src/**", "tests/**", "docs/product-specs/**", "docs/exec-plans/**", "docs/decisions/**", "harness/progress.md", "harness/sessions/**", "harness/feature_list.json", "harness/features/**"],
+    "frozen_paths": [
+      {"path": "{{e.g. src/billing/ledger/**}}", "reason": "{{audited logic}}", "owner": "{{@owner}}", "since": "{{YYYY-MM-DD}}", "decision": "{{ADR-0007}}"}
+    ],
+    "opened_paths": [
+      {"path": "{{path previously frozen}}", "decision": "{{ADR-id}}", "opened": "{{YYYY-MM-DD}}", "close_when": "{{condition}}"}
+    ],
+    "harness_paths": ["AGENTS.md", "CLAUDE.md", "**/AGENTS.md", "ARCHITECTURE.md", "harness/policy.json", "harness/sensors.json", "harness/checks/**", "harness/hooks/**", "harness/manifest.json", "harness/CHANGELOG.md", ".claude/**", ".github/agents/**", ".github/instructions/**", ".github/prompts/**", ".github/workflows/**", ".github/CODEOWNERS", "init.sh", "Makefile"]
+  },
+  "approvals": {
+    "required_for": [
+      "new_dependency",
+      "schema_migration",
+      "public_api_change",
+      "auth_or_permissions_code",
+      "deleting_or_skipping_tests",
+      "ci_or_harness_change",
+      "frozen_path_change",
+      "production_access",
+      "external_messages"
+    ]
+  },
+  "limits": {
+    "wip_per_agent": 1,
+    "max_files_changed": 25,
+    "max_lines_changed": 800
+  },
+  "branches": {
+    "feature_pattern": "feature/{{issue-id}}-*",
+    "harness_pattern": "harness/*",
+    "protected": ["main", "{{integration-branch}}"],
+    "agents_may_merge": false
+  },
+  "escalation": [
+    {"decision": "scope_or_requirement", "who": "{{product owner}}", "channel": "{{ticket comment}}"},
+    {"decision": "architecture_or_frozen_path", "who": "{{architect}}", "channel": "{{PR review request}}"},
+    {"decision": "security", "who": "{{security contact}}", "channel": "{{chat channel}}"},
+    {"decision": "blocked_loop", "who": "{{on-call dev}}", "channel": "{{chat channel}}"}
+  ]
+}

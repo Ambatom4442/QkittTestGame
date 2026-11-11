@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "tiers": {
+    "fast": "make check-fast",
+    "changed": "make check-changed",
+    "full": "make check"
+  },
+  "sensors": [
+    {
+      "id": "lint",
+      "command": "{{e.g. npm run lint}}",
+      "kind": "computational",
+      "category": "static",
+      "layer": "static",
+      "tier": "fast",
+      "paths": ["src/**"],
+      "blocking": true,
+      "timeout_s": 120,
+      "owner": "{{team}}",
+      "introduced_by": "init"
+    },
+    {
+      "id": "unit-tests",
+      "command": "{{e.g. npm test}}",
+      "kind": "computational",
+      "category": "runtime",
+      "layer": "runtime",
+      "tier": "fast",
+      "paths": ["src/**", "tests/**"],
+      "blocking": true,
+      "timeout_s": 300,
+      "owner": "{{team}}",
+      "introduced_by": "init"
+    },
+    {
+      "id": "no-ui-to-repo-imports",
+      "command": "bash harness/checks/no-ui-to-repo.sh",
+      "kind": "computational",
+      "category": "structural",
+      "layer": "static",
+      "tier": "fast",
+      "paths": ["src/ui/**"],
+      "blocking": true,
+      "timeout_s": 30,
+      "owner": "{{team}}",
+      "introduced_by": "ADR-0002"
+    },
+    {
+      "id": "policy",
+      "command": "python harness/checks/policy_check.py --base origin/{{DEFAULT_BRANCH}}",
+      "kind": "computational",
+      "category": "policy",
+      "layer": "static",
+      "tier": "fast",
+      "paths": ["**"],
+      "blocking": true,
+      "timeout_s": 30,
+      "owner": "harness",
+      "introduced_by": "init"
+    },
+    {
+      "id": "golden-journey-login",
+      "command": "{{e.g. npx playwright test journeys/login.spec.ts}}",
+      "kind": "computational",
+      "category": "runtime",
+      "layer": "system",
+      "tier": "full",
+      "paths": ["src/**"],
+      "blocking": true,
+      "timeout_s": 600,
+      "owner": "{{team}}",
+      "introduced_by": "docs/RELIABILITY.md"
+    },
+    {
+      "id": "review-rubric",
+      "command": "{{reviewer agent invocation or 'manual'}}",
+      "kind": "inferential",
+      "category": "review",
+      "layer": "system",
+      "tier": "full",
+      "paths": ["src/**"],
+      "blocking": false,
+      "timeout_s": 900,
+      "owner": "{{team}}",
+      "introduced_by": "init"
+    }
+  ]
+}

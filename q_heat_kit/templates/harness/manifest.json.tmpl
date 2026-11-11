@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "kit_version": "{{KIT_VERSION}}",
+  "project": "{{PROJECT_NAME}}",
+  "tier": "{{minimal|standard|advanced}}",
+  "tier_reasons": ["{{e.g. team of 4, CI exists, work spans days}}"],
+  "created": "{{YYYY-MM-DD}}",
+  "updated": "{{YYYY-MM-DD}}",
+  "harness_owners": ["{{@github-handle-or-team}}"],
+  "platforms": ["claude-code", "vscode-copilot"],
+  "state_layout": "{{single-file|per-feature}}",
+  "paths": {
+    "feature_list": "harness/feature_list.json",
+    "progress": "harness/progress.md",
+    "sensors": "harness/sensors.json",
+    "policy": "harness/policy.json"
+  },
+  "files": [
+    {"path": "AGENTS.md", "purpose": "Entry map for all agents", "template": "root/AGENTS.md.tmpl", "owner": "harness"},
+    {"path": "CLAUDE.md", "purpose": "Claude Code bridge to AGENTS.md", "template": "root/CLAUDE.md.tmpl", "owner": "harness"},
+    {"path": "harness/feature_list.json", "purpose": "What to build, verification, state", "template": "harness/feature_list.json.tmpl", "owner": "shared"}
+  ],
+  "external_components": [
+    {"kind": "mcp-server", "name": "{{e.g. playwright}}", "version": "{{pinned}}", "approved_by": "{{name}}", "decision": "{{ADR-id}}"}
+  ],
+  "baseline": {
+    "time_to_first_passing_test_min": null,
+    "check_fast_seconds": null,
+    "check_full_seconds": null,
+    "baseline_failures": null
+  }
+}

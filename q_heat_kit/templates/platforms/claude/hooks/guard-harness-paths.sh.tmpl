@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# guard-harness-paths.sh — Claude Code PreToolUse hook (target: harness/hooks/guard-harness-paths.sh).
+# Mode separation by branch: harness files may be edited only on harness/* branches
+# (where Q-HEAT works). Developer agents on feature branches are blocked.
+# Exit 0 = allow; exit 2 = block (stderr shown to Claude). CI policy_check is the hard gate.
+set -uo pipefail
+cd "${CLAUDE_PROJECT_DIR:-.}" || exit 0
+
+path="$(python3 -c 'import json,sys
+d=json.load(sys.stdin).get("tool_input",{})
+print(d.get("file_path") or d.get("notebook_path") or "")' 2>/dev/null)" || exit 0
+[ -z "$path" ] && exit 0
+rel="${path#"$PWD"/}"
+
+branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo unknown)"
+case "$branch" in harness/*) exit 0 ;; esac
+
+case "$rel" in
+  AGENTS.md|*/AGENTS.md|CLAUDE.md|ARCHITECTURE.md|init.sh|Makefile|\
+  harness/policy.json|harness/sensors.json|harness/manifest.json|harness/CHANGELOG.md|\
+  harness/checks/*|harness/hooks/*|.claude/*|.github/workflows/*|.github/agents/*|\
+  .github/instructions/*|.github/prompts/*|.github/CODEOWNERS|q_heat_kit/*)
+    {
+      echo "WHAT: $rel is a harness file; branch '$branch' is not a harness branch."
+      echo "WHY:  Harness rules change only through Q-HEAT on harness/* branches, reviewed by the harness owners."
+      echo "FIX:  Do not edit it. Note the needed change in harness/progress.md and the PR description,"
+      echo "      and ask a human to run 'Q-HEAT change'."
+    } >&2
+    exit 2 ;;
+esac
+exit 0

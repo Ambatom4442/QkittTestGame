@@ -1,0 +1,39 @@
+# Harness init plan — {{PROJECT_NAME}}
+
+Status: {{draft | approved by NAME on DATE}}
+
+## Tier
+{{minimal | standard | advanced}} — because {{reasons from intake}}.
+
+## Files to create or change
+| Path | Purpose | Template | Justified by (intake item) |
+|---|---|---|---|
+| `AGENTS.md` | Entry map | root/AGENTS.md.tmpl | all |
+
+## Sensors to wire
+| Id | Command | Tier | Blocking | Proven on bad example? |
+|---|---|---|---|---|
+
+## Platforms
+{{Claude Code / VS Code / Codex / …}} — files: {{list}}
+
+## Deliberately left out (and when to add)
+- {{component}} — add if {{observed failure}}
+
+## Open questions
+- {{question}} — default: {{default}}
+
+## Acceptance (fill at the end)
+- [ ] Setup from scratch — evidence:
+- [ ] Start — evidence:
+- [ ] Checks run; ≥1 test passes; baseline recorded — evidence:
+- [ ] Sensors proven — evidence:
+- [ ] Feature list ≥3 features with verification — evidence:
+- [ ] Progress log current
+- [ ] AGENTS.md ≤150 lines, links resolve; CLAUDE.md imports it
+- [ ] Policy, permissions, CODEOWNERS
+- [ ] CI workflow green
+- [ ] qhc_check.py clean
+- [ ] Fresh-session test (5 answers):
+- [ ] Manifest complete
+- [ ] Clean state, all committed

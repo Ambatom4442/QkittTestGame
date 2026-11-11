@@ -1,0 +1,23 @@
+# .github/workflows/copilot-setup-steps.yml — prepares the GitHub Copilot cloud agent's environment.
+# Must be on the default branch; exactly one job named copilot-setup-steps; timeout ≤ 59.
+# Only steps, permissions, runs-on, services, snapshot and timeout-minutes are honoured.
+name: "Copilot Setup Steps"
+
+on:
+  workflow_dispatch:
+  push:
+    paths: [.github/workflows/copilot-setup-steps.yml]
+  pull_request:
+    paths: [.github/workflows/copilot-setup-steps.yml]
+
+jobs:
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      # {{language setup, e.g. actions/setup-node@v4 with node-version-file: .nvmrc}}
+      - name: Harness setup (same path every agent uses)
+        run: ./init.sh

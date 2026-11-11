@@ -1,0 +1,26 @@
+# Reliability — {{PROJECT_NAME}}
+
+How the system proves it is healthy and restartable.
+
+## Standard paths
+- Setup: `{{command}}`
+- Start: `{{command}}` — ready when: {{signal}}
+- Fast check: `{{command}}` · Full check: `{{command}}`
+- Inspect runtime (logs, traces, health): `{{commands}}`
+
+## Golden journeys
+| Journey | Command | Clean when | Owner |
+|---|---|---|---|
+| {{login}} | `{{npx playwright test journeys/login.spec.ts}}` | {{dashboard visible, no console errors}} | {{team}} |
+
+## Required runtime signals
+- Structured logs for startup and critical paths
+- Health checks: {{endpoints}}
+- Traces / timing for slow paths: {{where}}
+- User-visible error states for recoverable failures
+
+## Rules
+- No feature is done if the system cannot restart cleanly afterwards.
+- Failures must be diagnosable from repo-local signals.
+- A repeated failure mode gets a benchmark or a guardrail.
+- Cleanup is part of reliability.

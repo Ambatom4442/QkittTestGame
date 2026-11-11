@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "wip_limit_per_agent": 1,
+  "states": ["not_started", "active", "blocked", "passing"],
+  "features": [
+    {
+      "id": "F-001",
+      "title": "{{short title}}",
+      "behavior": "{{One sentence: what a user can do when this works}}",
+      "verification": [
+        "{{exact command, e.g. npm test -- cart.add}}",
+        "{{e2e command if it crosses components}}"
+      ],
+      "layers_required": ["static", "runtime", "system"],
+      "depends_on": [],
+      "priority": 1,
+      "state": "not_started",
+      "owner": null,
+      "source": "{{docs/product-specs/cart.md#add-item or ticket id}}",
+      "blocked_reason": null,
+      "evidence": null
+    }
+  ],
+  "_notes": [
+    "Only harness/checks/verify_feature.py sets state=passing and writes evidence.",
+    "Agents may set not_started->active (claim) and active<->blocked (with blocked_reason).",
+    "One feature must be completable and verifiable in one session."
+  ]
+}
