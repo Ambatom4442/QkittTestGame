@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "tiers": {
+    "fast": "npm run check:fast",
+    "changed": "npm run check:changed",
+    "full": "npm run check"
+  },
+  "sensors": [
+    {
+      "id": "S-001-qhc",
+      "command": "python q_heat_kit/scripts/qhc_check.py --harness .",
+      "kind": "computational",
+      "category": "policy",
+      "layer": "static",
+      "tier": "fast",
+      "paths": [
+        "AGENTS.md",
+        "CLAUDE.md",
+        "ARCHITECTURE.md",
+        "harness/**",
+        "docs/**"
+      ],
+      "blocking": true,
+      "timeout_s": 120,
+      "owner": "harness",
+      "introduced_by": "init"
+    },
+    {
+      "id": "S-010-typecheck",
+      "command": "npm run typecheck",
+      "kind": "computational",
+      "category": "static",
+      "layer": "static",
+      "tier": "fast",
+      "paths": [
+        "shared/**",
+        "scripts/**",
+        "*.ts",
+        "*.js"
+      ],
+      "blocking": true,
+      "timeout_s": 120,
+      "owner": "harness",
+      "introduced_by": "architecture/07-testing-strategy.md"
+    },
+    {
+      "id": "S-020-lint-boundaries",
+      "command": "npm run lint",
+      "kind": "computational",
+      "category": "structural",
+      "layer": "static",
+      "tier": "fast",
+      "paths": [
+        "shared/**",
+        "scripts/**",
+        "eslint.config.js"
+      ],
+      "blocking": true,
+      "timeout_s": 120,
+      "owner": "harness",
+      "introduced_by": "architecture/06-repo-layout.md"
+    },
+    {
+      "id": "S-030-content-validate",
+      "command": "npm run content:validate",
+      "kind": "computational",
+      "category": "runtime",
+      "layer": "runtime",
+      "tier": "fast",
+      "paths": [
+        "content/**",
+        "scripts/content-validate.mjs"
+      ],
+      "blocking": true,
+      "timeout_s": 120,
+      "owner": "harness",
+      "introduced_by": "architecture/07-testing-strategy.md"
+    },
+    {
+      "id": "S-040-unit",
+      "command": "npm run test:unit",
+      "kind": "computational",
+      "category": "runtime",
+      "layer": "runtime",
+      "tier": "fast",
+      "paths": [
+        "shared/**"
+      ],
+      "blocking": true,
+      "timeout_s": 300,
+      "owner": "harness",
+      "introduced_by": "architecture/07-testing-strategy.md"
+    },
+    {
+      "id": "S-050-e2e-registered",
+      "command": "npm run test:e2e",
+      "kind": "computational",
+      "category": "runtime",
+      "layer": "system",
+      "tier": "full",
+      "paths": [
+        "tests/e2e/**",
+        "scripts/nonblocking-check.mjs"
+      ],
+      "blocking": false,
+      "timeout_s": 600,
+      "owner": "harness",
+      "introduced_by": "architecture/07-testing-strategy.md"
+    },
+    {
+      "id": "S-060-bundle-leak-registered",
+      "command": "npm run check:bundle-leak",
+      "kind": "computational",
+      "category": "static",
+      "layer": "system",
+      "tier": "full",
+      "paths": [
+        "scripts/nonblocking-check.mjs"
+      ],
+      "blocking": false,
+      "timeout_s": 120,
+      "owner": "harness",
+      "introduced_by": "architecture/07-testing-strategy.md"
+    },
+    {
+      "id": "S-080-policy",
+      "command": "python harness/checks/policy_check.py --base origin/main",
+      "kind": "computational",
+      "category": "policy",
+      "layer": "static",
+      "tier": "fast",
+      "paths": [
+        "**"
+      ],
+      "blocking": true,
+      "timeout_s": 120,
+      "owner": "harness",
+      "introduced_by": "init"
+    },
+    {
+      "id": "S-090-traceability",
+      "command": "python harness/checks/check_traceability.py",
+      "kind": "computational",
+      "category": "structural",
+      "layer": "static",
+      "tier": "changed",
+      "paths": [
+        "harness/feature_list.json"
+      ],
+      "blocking": false,
+      "timeout_s": 30,
+      "owner": "harness",
+      "introduced_by": "init"
+    }
+  ]
+}

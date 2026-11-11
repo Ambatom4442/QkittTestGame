@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "kit_version": "1.0.0",
+  "project": "Q-Game",
+  "tier": "standard",
+  "tier_reasons": [
+    "Greenfield project with multi-session development",
+    "Two agent platforms and GitHub Actions CI"
+  ],
+  "created": "2026-11-11",
+  "updated": "2026-11-11",
+  "harness_owners": [
+    "@Ambatom4442"
+  ],
+  "platforms": [
+    "claude-code",
+    "vscode-copilot"
+  ],
+  "state_layout": "single-file",
+  "paths": {
+    "feature_list": "harness/feature_list.json",
+    "progress": "harness/progress.md",
+    "sensors": "harness/sensors.json",
+    "policy": "harness/policy.json"
+  },
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "purpose": "Entry map for all agents",
+      "template": "root/AGENTS.md.tmpl",
+      "owner": "harness"
+    },
+    {
+      "path": "CLAUDE.md",
+      "purpose": "Claude bridge to AGENTS.md",
+      "template": "root/CLAUDE.md.tmpl",
+      "owner": "harness"
+    },
+    {
+      "path": "ARCHITECTURE.md",
+      "purpose": "System map and dependency rules",
+      "template": "root/ARCHITECTURE.md.tmpl",
+      "owner": "harness"
+    },
+    {
+      "path": "harness/feature_list.json",
+      "purpose": "Feature scope, verification, state",
+      "template": "harness/feature_list.json.tmpl",
+      "owner": "shared"
+    },
+    {
+      "path": "harness/policy.json",
+      "purpose": "Scope and approvals",
+      "template": "harness/policy.json.tmpl",
+      "owner": "harness"
+    },
+    {
+      "path": "harness/sensors.json",
+      "purpose": "Verification registry",
+      "template": "harness/sensors.json.tmpl",
+      "owner": "harness"
+    }
+  ],
+  "external_components": [],
+  "baseline": {
+    "time_to_first_passing_test_min": null,
+    "check_fast_seconds": null,
+    "check_full_seconds": null,
+    "baseline_failures": null
+  }
+}

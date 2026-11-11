@@ -1,0 +1,34 @@
+{
+  "name": "q-game",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Q-Game harness bootstrap workspace",
+  "workspaces": [
+    "shared"
+  ],
+  "scripts": {
+    "setup": "node scripts/setup.mjs",
+    "qhc:check": "python q_heat_kit/scripts/qhc_check.py --harness .",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --max-warnings=0",
+    "format": "prettier --check .",
+    "test:unit": "vitest run",
+    "test:api": "node scripts/nonblocking-check.mjs test:api",
+    "test:e2e": "node scripts/nonblocking-check.mjs test:e2e",
+    "check:bundle-leak": "node scripts/nonblocking-check.mjs check:bundle-leak",
+    "content:validate": "node scripts/content-validate.mjs",
+    "check:traceability": "python harness/checks/check_traceability.py",
+    "check:fast": "npm run qhc:check && npm run typecheck && npm run lint && npm run content:validate && npm run test:unit && python harness/checks/policy_check.py --base origin/main",
+    "check:changed": "npm run check:fast && npm run check:traceability",
+    "check": "npm run check:changed && npm run test:e2e && npm run check:bundle-leak"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.36.0",
+    "eslint": "^9.36.0",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.44.0",
+    "vitest": "^3.2.4"
+  }
+}

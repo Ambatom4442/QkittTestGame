@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "scope": {
+    "allowed_paths": [
+      "requirements/**",
+      "architecture/**",
+      "shared/**",
+      "scripts/**",
+      "docs/**",
+      "harness/progress.md",
+      "harness/feature_list.json"
+    ],
+    "frozen_paths": [
+      {
+        "path": "q_heat_kit/**",
+        "reason": "Kit is read-only in product repositories",
+        "owner": "@Ambatom4442",
+        "since": "2026-11-11",
+        "decision": "ADR-0002"
+      }
+    ],
+    "opened_paths": [],
+    "harness_paths": [
+      "AGENTS.md",
+      "CLAUDE.md",
+      "**/AGENTS.md",
+      "ARCHITECTURE.md",
+      "harness/policy.json",
+      "harness/sensors.json",
+      "harness/checks/**",
+      "harness/hooks/**",
+      "harness/manifest.json",
+      "harness/CHANGELOG.md",
+      ".claude/**",
+      ".github/workflows/**",
+      ".github/CODEOWNERS"
+    ]
+  },
+  "approvals": {
+    "required_for": [
+      "new_dependency",
+      "schema_migration",
+      "public_api_change",
+      "auth_or_permissions_code",
+      "deleting_or_skipping_tests",
+      "ci_or_harness_change",
+      "frozen_path_change",
+      "production_access",
+      "external_messages"
+    ]
+  },
+  "limits": {
+    "wip_per_agent": 1,
+    "max_files_changed": 25,
+    "max_lines_changed": 800
+  },
+  "limits_exempt_branches": [
+    "harness/init"
+  ],
+  "branches": {
+    "feature_pattern": "feature/*",
+    "harness_pattern": "harness/*",
+    "protected": [
+      "main"
+    ],
+    "agents_may_merge": false
+  },
+  "escalation": [
+    {
+      "decision": "scope_or_requirement",
+      "who": "product owner",
+      "channel": "PR discussion"
+    },
+    {
+      "decision": "architecture_or_frozen_path",
+      "who": "harness owner",
+      "channel": "PR review request"
+    },
+    {
+      "decision": "security",
+      "who": "security contact",
+      "channel": "PR discussion"
+    }
+  ]
+}
