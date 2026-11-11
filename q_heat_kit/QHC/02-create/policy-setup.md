@@ -30,6 +30,12 @@ Prose policy is ignored under pressure. Enforce in three places:
 3. **CODEOWNERS** so a named human must approve changes to frozen and harness
    paths ([template](../../templates/ci/CODEOWNERS.tmpl)).
 
+Policy check details: it takes the branch from `BRANCH_NAME`, then GitHub's
+`GITHUB_HEAD_REF`/`GITHUB_REF_NAME` (CI checkouts are detached, so `git` alone
+reports `HEAD`); size limits ignore lock and generated files; and the init PR
+(the one that introduces `harness/policy.json`) is exempt from size limits.
+Never raise the limits to get one PR through.
+
 ## Opening a frozen area
 
 New work sometimes needs a frozen path. Process: requirement → decision record
