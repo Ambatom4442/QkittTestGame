@@ -42,16 +42,18 @@ Work:
 
 Clock-out:
 1. Run feature verification commands.
-2. Record evidence and status via verify_feature.py.
-3. Update harness/progress.md.
+2. Set a feature to passing only via `python harness/checks/verify_feature.py <id>`; never by manual edit.
+3. Record evidence and status via verify_feature.py.
+4. Update harness/progress.md.
 
 ## Definition of done
 
 1. Feature behavior matches its source requirement ids.
 2. Feature verification commands pass in required layers.
-3. Evidence is recorded in feature entry.
-4. Fast checks still pass from clean setup.
-5. Relevant docs are updated.
+3. Feature state becomes passing only through `python harness/checks/verify_feature.py <id>`.
+4. Evidence is recorded in feature entry.
+5. Fast checks still pass from clean setup.
+6. Relevant docs are updated.
 
 ## Where to look
 

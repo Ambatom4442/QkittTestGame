@@ -7,7 +7,7 @@
 - Full check (last CI): local pass (`npm run check`)
 - Active feature: harness init bootstrap (owner: Q-HEAT)
 - Blocker: none
-- Next best step: user runs fresh-session validation; then open PR
+- Next best step: F-001 — server serves the built client and /api/health
 
 ## Harness feedback (for Q-HEAT change)
 
@@ -28,4 +28,4 @@
 - Commits: 6 local commits on harness/init (all messages start with harness:)
 - Files / docs updated: root harness docs/configs, harness state/checks/hooks, .claude, .github workflow, shared skeleton
 - Risks or unverified paths: product runtime/API/gameplay features not implemented yet by design
-- Next best step: fresh-session test is user-owned; then prepare and open PR from harness/init
+- Next best step: F-001 — server serves the built client and /api/health
