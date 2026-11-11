@@ -1,6 +1,6 @@
 # ADR-0003: Init PR size exception for harness/init
 
-- Status: accepted
+- Status: superseded
 - Date: 2026-11-11
 - Deciders: @Ambatom4442
 - Drafted by: Q-HEAT
@@ -25,4 +25,4 @@ Keep strict limits in harness/policy.json (`max_files_changed: 25`, `max_lines_c
 
 ## Review
 
-Remove `harness/init` from `limits_exempt_branches` after the init PR is merged.
+`harness/init` was removed from `limits_exempt_branches` after init merge.

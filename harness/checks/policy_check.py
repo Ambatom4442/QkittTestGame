@@ -60,7 +60,12 @@ def main():
     policy = json.loads(POLICY.read_text(encoding="utf-8"))
     scope = policy.get("scope", {})
     files = changed_files(args.base)
-    branch = os.environ.get("BRANCH_NAME") or git("rev-parse", "--abbrev-ref", "HEAD")
+    branch = (
+        os.environ.get("BRANCH_NAME")
+        or os.environ.get("GITHUB_HEAD_REF")
+        or os.environ.get("GITHUB_REF_NAME")
+        or git("rev-parse", "--abbrev-ref", "HEAD")
+    )
     harness_branch = fnmatch.fnmatch(branch, policy.get("branches", {}).get("harness_pattern", "harness/*"))
     limit_exempt = any(fnmatch.fnmatch(branch, p) for p in policy.get("limits_exempt_branches", []))
     opened = [o["path"] for o in scope.get("opened_paths", []) if "{{" not in o.get("path", "")]
