@@ -73,3 +73,15 @@ Source values are requirement ids only (FR/NFR ids).
 - game/client/server feature implementation
 - irreversible deploy or production operations
 
+## Phase 5 status (fresh-session test excluded)
+
+- [x] `python q_heat_kit/scripts/qhc_check.py --harness .` passes
+- [x] Standard setup/check path runs: `npm run setup`, `npm run check:fast`, `npm run check`
+- [x] Blocking sensors pass on skeleton; non-blocking e2e and bundle-leak remain registered
+- [ ] Fresh-session validation test (to be run by user in a new chat)
+
+Evidence snapshot:
+- qhc_check: 0 errors, 0 warnings
+- check:fast: pass (qhc, typecheck, lint, content validate, unit tests, policy)
+- ESLint module warning: gone after adding `"type": "module"`
+

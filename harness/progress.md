@@ -7,7 +7,7 @@
 - Full check (last CI): local pass (`npm run check`)
 - Active feature: harness init bootstrap (owner: Q-HEAT)
 - Blocker: none
-- Next best step: perform Phase 5/6 handoff actions (fresh-session validation, commit, PR)
+- Next best step: user runs fresh-session validation; then open PR
 
 ## Harness feedback (for Q-HEAT change)
 
@@ -23,8 +23,9 @@
 	- `npm run setup` -> pass
 	- `npm run check:fast` -> pass
 	- `npm run check` -> pass
+	- `python q_heat_kit/scripts/qhc_check.py --harness .` -> pass
 - Evidence: qhc_check 0 errors/0 warnings; unit tests 1/1 pass; traceability 13 features OK; e2e and bundle-leak registered non-blocking
-- Commits: pending
+- Commits: 6 local commits on harness/init (all messages start with harness:)
 - Files / docs updated: root harness docs/configs, harness state/checks/hooks, .claude, .github workflow, shared skeleton
 - Risks or unverified paths: product runtime/API/gameplay features not implemented yet by design
-- Next best step: continue Q-HEAT init acceptance and open PR from harness/init
+- Next best step: fresh-session test is user-owned; then prepare and open PR from harness/init
