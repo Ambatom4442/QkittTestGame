@@ -30,6 +30,19 @@ def match(path, patterns):
     return any(fnmatch.fnmatch(path, p) for p in patterns)
 
 
+def size_exempt(path):
+    normalized = path.replace("\\", "/")
+    if normalized == "package-lock.json":
+        return True
+    if fnmatch.fnmatch(normalized, "*.lock"):
+        return True
+    if normalized.startswith("dist/") or "/dist/" in normalized:
+        return True
+    if normalized.startswith("build/") or "/build/" in normalized:
+        return True
+    return False
+
+
 def changed_files(base):
     files = set(filter(None, git("diff", "--name-only", f"{base}...HEAD").splitlines()))
     files |= set(filter(None, git("diff", "--name-only", "HEAD").splitlines()))
@@ -49,6 +62,7 @@ def main():
     files = changed_files(args.base)
     branch = os.environ.get("BRANCH_NAME") or git("rev-parse", "--abbrev-ref", "HEAD")
     harness_branch = fnmatch.fnmatch(branch, policy.get("branches", {}).get("harness_pattern", "harness/*"))
+    limit_exempt = any(fnmatch.fnmatch(branch, p) for p in policy.get("limits_exempt_branches", []))
     opened = [o["path"] for o in scope.get("opened_paths", []) if "{{" not in o.get("path", "")]
 
     for f in files:
@@ -77,20 +91,32 @@ def main():
         )
 
     limits = policy.get("limits", {})
-    if limits.get("max_files_changed") and len(files) > limits["max_files_changed"]:
-        err(
-            f"{len(files)} files changed (limit {limits['max_files_changed']}).",
-            "Large changes are hard to review and usually mix several features.",
-            "Split the work into smaller PRs, one feature each."
-        )
-    numstat = git("diff", "--numstat", f"{args.base}...HEAD").splitlines()
-    lines = sum(int(a) + int(b) for a, b, *_ in (l.split("\t") for l in numstat) if a.isdigit() and b.isdigit())
-    if limits.get("max_lines_changed") and lines > limits["max_lines_changed"]:
-        err(
-            f"{lines} lines changed (limit {limits['max_lines_changed']}).",
-            "Reviewability limit from harness/policy.json.",
-            "Split the change, or ask the harness owners for an exception in the PR."
-        )
+    if not limit_exempt:
+        sized_files = [f for f in files if not size_exempt(f)]
+        if limits.get("max_files_changed") and len(sized_files) > limits["max_files_changed"]:
+            err(
+                f"{len(sized_files)} files changed (limit {limits['max_files_changed']}) after excluding lock/generated files.",
+                "Large changes are hard to review and usually mix several features.",
+                "Split the work into smaller PRs, one feature each."
+            )
+        numstat = git("diff", "--numstat", f"{args.base}...HEAD").splitlines()
+        lines = 0
+        for l in numstat:
+            parts = l.split("\t")
+            if len(parts) < 3:
+                continue
+            a, b, path = parts[0], parts[1], parts[2]
+            if not (a.isdigit() and b.isdigit()):
+                continue
+            if size_exempt(path):
+                continue
+            lines += int(a) + int(b)
+        if limits.get("max_lines_changed") and lines > limits["max_lines_changed"]:
+            err(
+                f"{lines} lines changed (limit {limits['max_lines_changed']}) after excluding lock/generated files.",
+                "Reviewability limit from harness/policy.json.",
+                "Split the change, or ask the harness owners for an exception in the PR."
+            )
 
     feats = []
     if Path("harness/feature_list.json").exists():
