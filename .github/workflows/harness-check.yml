@@ -16,6 +16,8 @@ jobs:
   harness-check:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -36,8 +38,6 @@ jobs:
         run: python q_heat_kit/scripts/qhc_check.py --harness .
 
       - name: Policy
-        env:
-          BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
         run: python harness/checks/policy_check.py --base origin/${{ github.base_ref || 'main' }}
 
       - name: Full check

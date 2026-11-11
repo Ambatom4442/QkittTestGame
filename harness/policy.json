@@ -54,9 +54,6 @@
     "max_files_changed": 25,
     "max_lines_changed": 800
   },
-  "limits_exempt_branches": [
-    "harness/init"
-  ],
   "branches": {
     "feature_pattern": "feature/*",
     "harness_pattern": "harness/*",
