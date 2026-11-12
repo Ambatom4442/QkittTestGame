@@ -8,11 +8,22 @@ export default [
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    files: ["scripts/**/*.mjs"],
+    files: ["scripts/**/*.mjs", "server/**/*.js"],
     languageOptions: {
       globals: {
         console: "readonly",
         process: "readonly"
+      }
+    }
+  },
+  {
+    files: ["tests/**/*.js"],
+    languageOptions: {
+      globals: {
+        describe: "readonly",
+        expect: "readonly",
+        fetch: "readonly",
+        it: "readonly"
       }
     }
   },

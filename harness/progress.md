@@ -2,10 +2,10 @@
 
 ## Current verified state
 
-- Branch / commit: harness/init @ working tree (uncommitted)
+- Branch / commit: feature/f-001-server-health @ working tree (uncommitted)
 - Fast check: pass (qhc, typecheck, lint, content validate, unit tests, policy)
 - Full check (last CI): local pass (`npm run check`)
-- Active feature: harness init bootstrap (owner: Q-HEAT)
+- Active feature: F-001 ? server serves built client and health endpoint (owner: Copilot)
 - Blocker: none
 - Next best step: F-001 — server serves the built client and /api/health
 
@@ -14,6 +14,17 @@
 - None yet.
 
 ## Session log
+
+### 2026-11-12 - Copilot - F-001
+
+- Goal: implement F-001 on a dedicated feature branch
+- Done: added Fastify server startup, static built-client serving from client/build, and `/api/health`
+- Verification run (commands -> result):
+	- `npm run check:fast` -> pass
+	- `python harness/checks/verify_feature.py F-001` -> pass
+- Evidence: F-001 marked passing in harness/feature_list.json with command tails
+- Risks or unverified paths: health/page baseline only; deeper runtime features remain for later features
+- Next best step: F-002 ? SQLite connection with WAL and numbered migrations
 
 ### 2026-11-11 - Q-HEAT - init
 
@@ -29,3 +40,4 @@
 - Files / docs updated: root harness docs/configs, harness state/checks/hooks, .claude, .github workflow, shared skeleton
 - Risks or unverified paths: product runtime/API/gameplay features not implemented yet by design
 - Next best step: F-001 — server serves the built client and /api/health
+
