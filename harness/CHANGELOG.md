@@ -2,6 +2,7 @@
 
 | Date | PR | Type | Summary | Trigger | Files |
 |---|---|---|---|---|---|
+| 2026-11-12 | pending | change | H-05 architecture-conformance sensor, ESLint boundary coverage for real folders, and non-blocking registration with P-02/P-03 blocking plan | Q-HEAT change ticket H-05 | harness/checks/architecture_conformance.mjs, harness/sensors.json, eslint.config.js, .gitignore, package.json, docs/RELIABILITY.md, docs/decisions/ADR-0008-architecture-conformance-gate.md, ARCHITECTURE.md, harness/manifest.json |
 | 2026-11-12 | pending | change | H-04 content-as-data sensor + real speckled-band case files; server now loads clue/deduction/scene data from content JSON | Q-HEAT change ticket H-04 | harness/checks/content_as_data.mjs, content/cases/speckled-band/*.json, server/src/contentLoader.js, server/src/buildServer.js, package.json, harness/sensors.json, docs/RELIABILITY.md, docs/decisions/ADR-0007-content-as-data-gate.md |
 | 2026-11-12 | pending | change | H-03 golden-boot Chromium render gate with screenshot artifact | Q-HEAT change ticket H-03 | harness/checks/golden_boot.mjs, package.json, harness/sensors.json, .github/workflows/harness-check.yml, docs/RELIABILITY.md, docs/decisions/ADR-0006-golden-boot-gate.md |
 | 2026-11-12 | pending | change | H-02 real-browser Playwright e2e + fake-ban sensor | Q-HEAT change ticket H-02 | tests/e2e/**, playwright.config.js, harness/checks/e2e_real_browser.py, package.json, docker-compose.yml, harness/sensors.json, docs/decisions/ADR-0005-real-browser-e2e.md |

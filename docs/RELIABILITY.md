@@ -9,6 +9,7 @@
 - E2E (real browser): `npm run test:e2e`
 - Golden boot (real browser + screenshot): `npm run check:golden-boot`
 - Content-as-data sensor: `npm run check:content-as-data`
+- Architecture conformance sensor: `npm run check:architecture-conformance`
 - Sandbox start (Docker): `npm run sandbox:up`
 - Sandbox full check (Docker): `npm run sandbox:check`
 - Sandbox teardown (Docker): `npm run sandbox:down`
@@ -28,5 +29,6 @@
 - `tests/e2e/**` must run via Playwright in a real Chromium browser (no fake/mocked browser-engine classes).
 - Golden-boot checks must emit `artifacts/golden-boot.png` and CI must upload it.
 - `content-as-data` is registered as non-blocking in this PR; it becomes blocking when P-04 merges.
+- `architecture-conformance` is registered as non-blocking in this PR; it becomes blocking when P-02 and P-03 are merged.
 - `npm run sandbox:check` must match local Docker and GitHub Actions behavior.
 - Any repeated failure should become a dedicated sensor or feature.
