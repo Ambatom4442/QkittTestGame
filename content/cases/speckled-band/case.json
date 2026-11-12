@@ -1,0 +1,87 @@
+{
+  "id": "speckled-band",
+  "title": "The Speckled Band",
+  "version": "0.1.0",
+  "chapters": [
+    {
+      "id": "C-04",
+      "title": "Stoke Moran",
+      "sceneIds": [
+        "L-05",
+        "L-06",
+        "L-07"
+      ]
+    }
+  ],
+  "scenes": [
+    {
+      "id": "L-05",
+      "chapterId": "C-04",
+      "title": "Roylott's bedroom",
+      "interactables": [
+        {
+          "objectId": "iron-safe",
+          "action": "inspect",
+          "clueId": "E-14",
+          "prompt": "Inspect iron safe"
+        },
+        {
+          "objectId": "saucer-of-milk",
+          "action": "inspect",
+          "clueId": "E-15",
+          "prompt": "Inspect saucer of milk"
+        }
+      ]
+    },
+    {
+      "id": "L-06",
+      "chapterId": "C-04",
+      "title": "Julia's bedroom",
+      "interactables": [
+        {
+          "objectId": "barred-shutters",
+          "action": "inspect",
+          "clueId": "E-07",
+          "prompt": "Inspect barred shutters"
+        },
+        {
+          "objectId": "bell-pull",
+          "action": "pull",
+          "clueId": "E-09",
+          "prompt": "Pull bell-pull"
+        },
+        {
+          "objectId": "ventilator",
+          "action": "inspect",
+          "clueId": "E-10",
+          "prompt": "Inspect ventilator"
+        },
+        {
+          "objectId": "bed-frame",
+          "action": "inspect",
+          "clueId": "E-11",
+          "prompt": "Inspect bed frame"
+        },
+        {
+          "objectId": "bell-wire",
+          "action": "inspect",
+          "clueId": "E-12",
+          "prompt": "Inspect bell wire"
+        }
+      ]
+    },
+    {
+      "id": "L-07",
+      "chapterId": "C-04",
+      "title": "Helen's bedroom",
+      "interactables": [
+        {
+          "objectId": "repair-wall",
+          "action": "inspect",
+          "clueId": "E-06",
+          "prompt": "Inspect repaired wall"
+        }
+      ]
+    }
+  ]
+}

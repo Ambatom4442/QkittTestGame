@@ -76,6 +76,11 @@
       "name": "golden-boot browser render gate",
       "purpose": "Block blank/failed browser boots and persist screenshot evidence",
       "introduced_by": "H-03"
+    },
+    {
+      "name": "content-as-data static sensor",
+      "purpose": "Detect hard-coded E-/D-/R- ids in source and require real case content file presence",
+      "introduced_by": "H-04"
     }
   ],
   "baseline": {

@@ -142,6 +142,24 @@
       "introduced_by": "ticket H-03"
     },
     {
+      "id": "S-058-content-as-data",
+      "command": "npm run check:content-as-data",
+      "kind": "computational",
+      "category": "structural",
+      "layer": "static",
+      "tier": "full",
+      "paths": [
+        "harness/checks/content_as_data.mjs",
+        "server/src/**",
+        "client/src/**",
+        "content/cases/speckled-band/case.json"
+      ],
+      "blocking": false,
+      "timeout_s": 60,
+      "owner": "harness",
+      "introduced_by": "ticket H-04"
+    },
+    {
       "id": "S-060-bundle-leak-registered",
       "command": "npm run check:bundle-leak",
       "kind": "computational",
