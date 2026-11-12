@@ -67,4 +67,6 @@ Holmes; `game` knows the case only through content data.
 
 In test mode (`?test=1`, only when the server allows it) the app exposes
 `window.__qgame` with read-only state, `teleport(spawnId)`, `interact(objectId,
-action)`, `skipAnimations()`, and `fps()`. See [07-testing-strategy.md](07-testing-strategy.md).
+action)`, `skipAnimations()`, and `fps()`. The client reads test-mode permission
+from `/api/client-config`, which is controlled by the server-side
+`QGAME_TEST_MODE=1` toggle. See [07-testing-strategy.md](07-testing-strategy.md).

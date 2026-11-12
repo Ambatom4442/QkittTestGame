@@ -306,11 +306,56 @@
         "F-001"
       ],
       "priority": 5,
-      "state": "not_started",
+      "state": "passing",
       "owner": null,
       "source": "NFR-62",
       "blocked_reason": null,
-      "evidence": null
+      "evidence": {
+        "date": "2026-11-12T07:21:41",
+        "commit": "8061bd3",
+        "result": "pass",
+        "runs": [
+          {
+            "command": "npm run test:unit -- client.boot",
+            "exit": 0,
+            "seconds": 2.0,
+            "tail": [
+              "> q-game@0.1.0 test:unit",
+              "> vitest run --config vitest.unit.config.ts client.boot",
+              "",
+              "",
+              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
+              "",
+              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/unit/client.boot.test.js \u001b[2m(\u001b[22m\u001b[2m2 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 7\u001b[2mms\u001b[22m\u001b[39m",
+              "",
+              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m2 passed\u001b[39m\u001b[22m\u001b[90m (2)\u001b[39m",
+              "\u001b[2m   Start at \u001b[22m 07:21:38",
+              "\u001b[2m   Duration \u001b[22m 524ms\u001b[2m (transform 41ms, setup 0ms, collect 35ms, tests 7ms, environment 0ms, prepare 203ms)\u001b[22m"
+            ]
+          },
+          {
+            "command": "npm run test:e2e -- test-mode-hook",
+            "exit": 0,
+            "seconds": 2.6,
+            "tail": [
+              "> q-game@0.1.0 test:e2e",
+              "> vitest run --config vitest.e2e.config.ts test-mode-hook",
+              "",
+              "",
+              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
+              "",
+              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/e2e/test-mode-hook.test.js \u001b[2m(\u001b[22m\u001b[2m1 test\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 437\u001b[2mms\u001b[22m\u001b[39m",
+              "   \u001b[33m\u001b[2m\u00e2\u0153\u201c\u001b[22m\u001b[39m test-mode-hook\u001b[2m > \u001b[22mserves boot assets and test-mode client config \u001b[33m 435\u001b[2mms\u001b[22m\u001b[39m",
+              "",
+              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m   Start at \u001b[22m 07:21:40",
+              "\u001b[2m   Duration \u001b[22m 1.24s\u001b[2m (transform 38ms, setup 0ms, collect 203ms, tests 437ms, environment 0ms, prepare 132ms)\u001b[22m"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "F-006",

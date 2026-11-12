@@ -2,18 +2,30 @@
 
 ## Current verified state
 
-- Branch / commit: feature/f-004-games-save-slots-autosave @ working tree (uncommitted)
+- Branch / commit: feature/f-005-client-boot-test-mode-hook @ working tree (uncommitted)
 - Fast check: pass (qhc, typecheck, lint, content validate, unit tests, policy)
 - Full check (last CI): local pass (`npm run check`)
-- Active feature: F-004 - Games and save slots API with autosave position (owner: Copilot)
+- Active feature: F-005 - Client boots Three.js scene with test mode hook (owner: Copilot)
 - Blocker: none
-- Next best step: F-005 - Client boots Three.js scene with test mode hook
+- Next best step: F-006 - First-person movement with collision and click-to-move
 
 ## Harness feedback (for Q-HEAT change)
 
 - None yet.
 
 ## Session log
+
+### 2026-11-12 - Copilot - F-005
+
+- Goal: implement F-005 on a dedicated feature branch
+- Done: booted a browser client scene with Three.js, added server-gated test mode config, and exposed `window.__qgame` only for approved `?test=1` runs
+- Verification run (commands -> result):
+  - `npm run test:unit -- client.boot` -> pass
+  - `npm run test:e2e -- test-mode-hook` -> pass
+  - `python harness/checks/verify_feature.py F-005` -> pass
+- Evidence: F-005 marked passing in harness/feature_list.json with command tails
+- Risks or unverified paths: headless e2e verifies asset/config wiring and hook gating; full browser interaction coverage remains for later gameplay features
+- Next best step: F-006 - First-person movement with collision and click-to-move
 
 ### 2026-11-12 - Copilot - F-004
 
