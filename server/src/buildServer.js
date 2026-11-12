@@ -37,10 +37,52 @@ async function exists(filePath) {
   }
 }
 
-export function buildServer({ logger = false, staticRoot = "client/build" } = {}) {
+function formatProfile(row) {
+  return {
+    id: Number(row.id),
+    name: row.name,
+    createdAt: row.created_at
+  };
+}
+
+export function buildServer({ logger = false, staticRoot = "client/build", db = null } = {}) {
   const app = Fastify({ logger });
 
   app.get("/api/health", async () => ({ status: "ok" }));
+
+  app.get("/api/profiles", async (request, reply) => {
+    if (!db) {
+      return reply.code(503).send({ code: "DB_UNAVAILABLE", message: "Database is not available" });
+    }
+
+    const profiles = db
+      .prepare("SELECT id, name, created_at FROM profiles ORDER BY id ASC")
+      .all()
+      .map((row) => formatProfile(row));
+
+    return { profiles };
+  });
+
+  app.post("/api/profiles", async (request, reply) => {
+    if (!db) {
+      return reply.code(503).send({ code: "DB_UNAVAILABLE", message: "Database is not available" });
+    }
+
+    const name = typeof request.body?.name === "string" ? request.body.name.trim() : "";
+    if (!name) {
+      return reply.code(400).send({ code: "INVALID_PROFILE_NAME", message: "Profile name is required" });
+    }
+
+    const createdAt = new Date().toISOString();
+    const insertResult = db
+      .prepare("INSERT INTO profiles (name, created_at) VALUES (?, ?)")
+      .run(name, createdAt);
+    const row = db
+      .prepare("SELECT id, name, created_at FROM profiles WHERE id = ?")
+      .get(insertResult.lastInsertRowid);
+
+    return reply.code(201).send(formatProfile(row));
+  });
 
   app.get("/*", async (request, reply) => {
     const pathFromRequest = resolveClientPath(staticRoot, request.raw.url ?? "/");
@@ -64,4 +106,3 @@ export function buildServer({ logger = false, staticRoot = "client/build" } = {}
 
   return app;
 }
-
