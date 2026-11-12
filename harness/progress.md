@@ -2,12 +2,12 @@
 
 ## Current verified state
 
-- Branch / commit: feature/f-006-movement-controls @ working tree (uncommitted)
+- Branch / commit: feature/f-007-save-resume-position @ working tree (uncommitted)
 - Fast check: pass (qhc, typecheck, lint, content validate, unit tests, policy)
 - Full check (last CI): local pass (`npm run check`)
-- Active feature: F-006 - First-person movement with collision and click-to-move (owner: Copilot)
+- Active feature: F-007 - Save and resume position end to end (owner: Copilot)
 - Blocker: none
-- Next best step: F-007 - Save and resume position end to end
+- Next best step: F-008 - Case content schemas and validator with fair-play skeleton
 
 ## Harness feedback (for Q-HEAT change)
 
@@ -15,6 +15,16 @@
 
 ## Session log
 
+### 2026-11-12 - Copilot - F-007
+
+- Goal: implement F-007 on a dedicated feature branch
+- Done: added resume endpoint `GET /api/games/:id/resume` and a reload-resume e2e flow that persists position then resumes scene and transform after server restart
+- Verification run (commands -> result):
+  - `npm run test:e2e -- save-resume-position` -> pass
+  - `python harness/checks/verify_feature.py F-007` -> pass
+- Evidence: F-007 marked passing in harness/feature_list.json with command tails
+- Risks or unverified paths: flow verifies server persistence and resume payloads; client-side scene application of resume state is deferred to later gameplay integration
+- Next best step: F-008 - Case content schemas and validator with fair-play skeleton
 
 ### 2026-11-12 - Copilot - F-006
 
@@ -26,7 +36,9 @@
   - `python harness/checks/verify_feature.py F-006` -> pass
 - Evidence: F-006 marked passing in harness/feature_list.json with command tails
 - Risks or unverified paths: movement coverage is currently headless and logic-driven; full pointer-lock/mouse-look browser behavior remains for later scene features
-- Next best step: F-007 - Save and resume position end to end`r`n`r`n### 2026-11-12 - Copilot - F-005
+- Next best step: F-007 - Save and resume position end to end
+
+### 2026-11-12 - Copilot - F-005
 
 - Goal: implement F-005 on a dedicated feature branch
 - Done: booted a browser client scene with Three.js, added server-gated test mode config, and exposed `window.__qgame` only for approved `?test=1` runs
@@ -98,7 +110,4 @@
 - Files / docs updated: root harness docs/configs, harness state/checks/hooks, .claude, .github workflow, shared skeleton
 - Risks or unverified paths: product runtime/API/gameplay features not implemented yet by design
 - Next best step: F-001 - server serves the built client and /api/health
-
-
-
 
