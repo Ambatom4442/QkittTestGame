@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { createGame, createProfile, interact, uniqueName } from "./helpers.js";
 
-test("returns a hint for wrong D-03 links and unlocks D-06 with the full clue set", async ({ page, request }) => {
+test("[shell check] returns a hint for wrong D-03 links and unlocks D-06 with the full clue set", async ({ page, request }) => {
   const profile = await createProfile(request, uniqueName("helen"));
   const game = await createGame(request, { profileId: profile.id, slot: 3 });
 

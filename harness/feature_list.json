@@ -296,7 +296,7 @@
       "behavior": "A player can load a Three.js scene and test mode exposes window.__qgame for deterministic checks.",
       "verification": [
         "npm run test:unit -- client.boot",
-        "npm run test:e2e -- test-mode-hook"
+        "npm run test:e2e -- test-mode-hook-behaviour"
       ],
       "layers_required": [
         "static",
@@ -307,56 +307,11 @@
         "F-001"
       ],
       "priority": 5,
-      "state": "passing",
+      "state": "not_started",
       "owner": null,
       "source": "NFR-62",
       "blocked_reason": null,
-      "evidence": {
-        "date": "2026-11-12T07:21:41",
-        "commit": "8061bd3",
-        "result": "pass",
-        "runs": [
-          {
-            "command": "npm run test:unit -- client.boot",
-            "exit": 0,
-            "seconds": 2.0,
-            "tail": [
-              "> q-game@0.1.0 test:unit",
-              "> vitest run --config vitest.unit.config.ts client.boot",
-              "",
-              "",
-              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
-              "",
-              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/unit/client.boot.test.js \u001b[2m(\u001b[22m\u001b[2m2 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 7\u001b[2mms\u001b[22m\u001b[39m",
-              "",
-              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
-              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m2 passed\u001b[39m\u001b[22m\u001b[90m (2)\u001b[39m",
-              "\u001b[2m   Start at \u001b[22m 07:21:38",
-              "\u001b[2m   Duration \u001b[22m 524ms\u001b[2m (transform 41ms, setup 0ms, collect 35ms, tests 7ms, environment 0ms, prepare 203ms)\u001b[22m"
-            ]
-          },
-          {
-            "command": "npm run test:e2e -- test-mode-hook",
-            "exit": 0,
-            "seconds": 2.6,
-            "tail": [
-              "> q-game@0.1.0 test:e2e",
-              "> vitest run --config vitest.e2e.config.ts test-mode-hook",
-              "",
-              "",
-              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
-              "",
-              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/e2e/test-mode-hook.test.js \u001b[2m(\u001b[22m\u001b[2m1 test\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 437\u001b[2mms\u001b[22m\u001b[39m",
-              "   \u001b[33m\u001b[2m\u00e2\u0153\u201c\u001b[22m\u001b[39m test-mode-hook\u001b[2m > \u001b[22mserves boot assets and test-mode client config \u001b[33m 435\u001b[2mms\u001b[22m\u001b[39m",
-              "",
-              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
-              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
-              "\u001b[2m   Start at \u001b[22m 07:21:40",
-              "\u001b[2m   Duration \u001b[22m 1.24s\u001b[2m (transform 38ms, setup 0ms, collect 203ms, tests 437ms, environment 0ms, prepare 132ms)\u001b[22m"
-            ]
-          }
-        ]
-      },
+      "evidence": null,
       "acceptance": [
         "The boot page visibly renders a non-blank 3D scene canvas and initializes test mode without a blank frame."
       ]
@@ -367,7 +322,7 @@
       "behavior": "A player can move with first-person controls, collision, and click-to-move.",
       "verification": [
         "npm run test:unit -- movement",
-        "npm run test:e2e -- movement-controls"
+        "npm run test:e2e -- movement-controls-behaviour"
       ],
       "layers_required": [
         "static",
@@ -378,55 +333,11 @@
         "F-005"
       ],
       "priority": 6,
-      "state": "passing",
+      "state": "not_started",
       "owner": null,
       "source": "FR-10,FR-11",
       "blocked_reason": null,
-      "evidence": {
-        "date": "2026-11-12T07:45:18",
-        "commit": "847150e",
-        "result": "pass",
-        "runs": [
-          {
-            "command": "npm run test:unit -- movement",
-            "exit": 0,
-            "seconds": 2.4,
-            "tail": [
-              "> q-game@0.1.0 test:unit",
-              "> vitest run --config vitest.unit.config.ts movement",
-              "",
-              "",
-              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
-              "",
-              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/unit/movement.test.js \u001b[2m(\u001b[22m\u001b[2m2 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 6\u001b[2mms\u001b[22m\u001b[39m",
-              "",
-              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
-              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m2 passed\u001b[39m\u001b[22m\u001b[90m (2)\u001b[39m",
-              "\u001b[2m   Start at \u001b[22m 07:45:15",
-              "\u001b[2m   Duration \u001b[22m 721ms\u001b[2m (transform 45ms, setup 0ms, collect 53ms, tests 6ms, environment 0ms, prepare 261ms)\u001b[22m"
-            ]
-          },
-          {
-            "command": "npm run test:e2e -- movement-controls",
-            "exit": 0,
-            "seconds": 2.5,
-            "tail": [
-              "> q-game@0.1.0 test:e2e",
-              "> vitest run --config vitest.e2e.config.ts movement-controls",
-              "",
-              "",
-              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
-              "",
-              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/e2e/movement-controls.test.js \u001b[2m(\u001b[22m\u001b[2m1 test\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 5\u001b[2mms\u001b[22m\u001b[39m",
-              "",
-              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
-              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
-              "\u001b[2m   Start at \u001b[22m 07:45:17",
-              "\u001b[2m   Duration \u001b[22m 759ms\u001b[2m (transform 49ms, setup 0ms, collect 55ms, tests 5ms, environment 0ms, prepare 331ms)\u001b[22m"
-            ]
-          }
-        ]
-      },
+      "evidence": null,
       "acceptance": [
         "On screen, movement visibly changes player position while collision boundaries stop traversal and click-to-move lands at a visible target point."
       ]
@@ -436,7 +347,7 @@
       "title": "Save and resume position end to end",
       "behavior": "A player can reload and resume at the saved scene and position.",
       "verification": [
-        "npm run test:e2e -- save-resume-position"
+        "npm run test:e2e -- save-resume-position-behaviour"
       ],
       "layers_required": [
         "static",
@@ -448,39 +359,11 @@
         "F-006"
       ],
       "priority": 7,
-      "state": "passing",
+      "state": "not_started",
       "owner": null,
       "source": "FR-02,FR-03,FR-04",
       "blocked_reason": null,
-      "evidence": {
-        "date": "2026-11-12T07:53:16",
-        "commit": "03b1d28",
-        "result": "pass",
-        "runs": [
-          {
-            "command": "npm run test:e2e -- save-resume-position",
-            "exit": 0,
-            "seconds": 3.9,
-            "tail": [
-              "> vitest run --config vitest.e2e.config.ts save-resume-position",
-              "",
-              "",
-              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
-              "",
-              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/e2e/save-resume-position.test.js \u001b[2m(\u001b[22m\u001b[2m1 test\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 805\u001b[2mms\u001b[22m\u001b[39m",
-              "   \u001b[33m\u001b[2m\u00e2\u0153\u201c\u001b[22m\u001b[39m save-resume-position\u001b[2m > \u001b[22mresumes a saved scene and position after reload \u001b[33m 803\u001b[2mms\u001b[22m\u001b[39m",
-              "",
-              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
-              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
-              "\u001b[2m   Start at \u001b[22m 07:53:14",
-              "\u001b[2m   Duration \u001b[22m 1.99s\u001b[2m (transform 59ms, setup 0ms, collect 341ms, tests 805ms, environment 0ms, prepare 365ms)\u001b[22m",
-              "",
-              "(node:37776) ExperimentalWarning: SQLite is an experimental feature and might change at any time",
-              "(Use `node --trace-warnings ...` to show where the warning was created)"
-            ]
-          }
-        ]
-      },
+      "evidence": null,
       "acceptance": [
         "After reload, the same room is visible and the resumed camera/player position matches the saved location on screen."
       ]
@@ -501,54 +384,18 @@
         "F-001"
       ],
       "priority": 8,
-      "state": "passing",
+      "state": "not_started",
       "owner": null,
       "source": "FR-60,FR-61",
       "blocked_reason": null,
-      "evidence": {
-        "date": "2026-11-12T08:03:32",
-        "commit": "0e383e7",
-        "result": "pass",
-        "runs": [
-          {
-            "command": "npm run content:validate",
-            "exit": 0,
-            "seconds": 1.0,
-            "tail": [
-              "> q-game@0.1.0 content:validate",
-              "> node scripts/content-validate.mjs",
-              "",
-              "content:validate: no content yet"
-            ]
-          },
-          {
-            "command": "npm run test:unit -- fair-play",
-            "exit": 0,
-            "seconds": 2.5,
-            "tail": [
-              "> q-game@0.1.0 test:unit",
-              "> vitest run --config vitest.unit.config.ts fair-play",
-              "",
-              "",
-              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
-              "",
-              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/unit/fair-play.test.js \u001b[2m(\u001b[22m\u001b[2m2 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 7\u001b[2mms\u001b[22m\u001b[39m",
-              "",
-              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
-              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m2 passed\u001b[39m\u001b[22m\u001b[90m (2)\u001b[39m",
-              "\u001b[2m   Start at \u001b[22m 08:03:31",
-              "\u001b[2m   Duration \u001b[22m 764ms\u001b[2m (transform 45ms, setup 0ms, collect 102ms, tests 7ms, environment 0ms, prepare 268ms)\u001b[22m"
-            ]
-          }
-        ]
-      }
+      "evidence": null
     },
     {
       "id": "F-009",
       "title": "Julia room scene L-06 loads with interactables",
       "behavior": "A player can load L-06 and see interactable objects in chapter order.",
       "verification": [
-        "npm run test:e2e -- julia-room-load"
+        "npm run test:e2e -- julia-room-load-behaviour"
       ],
       "layers_required": [
         "static",
@@ -560,65 +407,11 @@
         "F-008"
       ],
       "priority": 9,
-      "state": "passing",
+      "state": "not_started",
       "owner": null,
       "source": "FR-12,FR-14",
       "blocked_reason": null,
-      "evidence": {
-        "date": "2026-11-12T15:15:36",
-        "commit": "a370934",
-        "result": "pass",
-        "runs": [
-          {
-            "command": "npm run test:e2e -- julia-room-load",
-            "exit": 0,
-            "seconds": 68.4,
-            "tail": [
-              "",
-              "e2e_real_browser: OK",
-              "",
-              "Running 1 test using 1 worker",
-              "",
-              "  \u00e2\u0153\u201c  1 [chromium] \u00e2\u20ac\u00ba tests/e2e/julia-room-load.test.js:3:1 \u00e2\u20ac\u00ba loads L-06 scene data and returns interactables in chapter order (1.1s)",
-              "",
-              "  1 passed (3.9s)",
-              " Container q-game-sandbox-app-1  Running",
-              "npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.",
-              "npm notice",
-              "npm notice New major version of npm available! 10.9.3 -> 12.2.2",
-              "npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2",
-              "npm notice To update run: npm install -g npm@12.2.2",
-              "npm notice"
-            ]
-          },
-          {
-            "command": "npm run check:golden-boot",
-            "exit": 0,
-            "seconds": 67.4,
-            "tail": [
-              "  npm audit fix --force",
-              "",
-              "Run `npm audit` for details.",
-              "",
-              "> q-game@0.1.0 check:golden-boot",
-              "> node harness/checks/golden_boot.mjs",
-              "",
-              "golden-boot: OK (artifact at artifacts/golden-boot.png)",
-              " Container q-game-sandbox-app-1  Running",
-              "npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.",
-              "npm notice",
-              "npm notice New major version of npm available! 10.9.3 -> 12.2.2",
-              "npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2",
-              "npm notice To update run: npm install -g npm@12.2.2",
-              "npm notice"
-            ]
-          }
-        ],
-        "mode": "sandbox",
-        "artifacts": [
-          "artifacts/golden-boot.png"
-        ]
-      },
+      "evidence": null,
       "acceptance": [
         "The Julia room (L-06) is visibly rendered with interactable objects present in chapter order."
       ]
@@ -629,7 +422,7 @@
       "behavior": "A player interaction in L-06 grants clues E-07 through E-12 via events API.",
       "verification": [
         "npm run test:api -- events-clues",
-        "npm run test:e2e -- clues-e07-e12"
+        "npm run test:e2e -- clues-e07-e12-behaviour"
       ],
       "layers_required": [
         "runtime",
@@ -640,68 +433,18 @@
         "F-009"
       ],
       "priority": 10,
-      "state": "passing",
+      "state": "active",
       "owner": null,
       "source": "FR-13",
-      "blocked_reason": null,
-      "evidence": {
-        "date": "2026-11-12T08:22:04",
-        "commit": "9eb1bd4",
-        "result": "pass",
-        "runs": [
-          {
-            "command": "npm run test:api -- events-clues",
-            "exit": 0,
-            "seconds": 3.6,
-            "tail": [
-              "> vitest run --config vitest.api.config.ts events-clues",
-              "",
-              "",
-              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
-              "",
-              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/api/events-clues.test.js \u001b[2m(\u001b[22m\u001b[2m1 test\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 767\u001b[2mms\u001b[22m\u001b[39m",
-              "   \u001b[33m\u001b[2m\u00e2\u0153\u201c\u001b[22m\u001b[39m events-clues\u001b[2m > \u001b[22mgrants L-06 clues E-07 to E-12 from interaction events \u001b[33m 766\u001b[2mms\u001b[22m\u001b[39m",
-              "",
-              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
-              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
-              "\u001b[2m   Start at \u001b[22m 08:21:58",
-              "\u001b[2m   Duration \u001b[22m 2.01s\u001b[2m (transform 55ms, setup 0ms, collect 332ms, tests 767ms, environment 0ms, prepare 251ms)\u001b[22m",
-              "",
-              "(node:40028) ExperimentalWarning: SQLite is an experimental feature and might change at any time",
-              "(Use `node --trace-warnings ...` to show where the warning was created)"
-            ]
-          },
-          {
-            "command": "npm run test:e2e -- clues-e07-e12",
-            "exit": 0,
-            "seconds": 3.8,
-            "tail": [
-              "> vitest run --config vitest.e2e.config.ts clues-e07-e12",
-              "",
-              "",
-              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
-              "",
-              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/e2e/clues-e07-e12.test.js \u001b[2m(\u001b[22m\u001b[2m1 test\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 818\u001b[2mms\u001b[22m\u001b[39m",
-              "   \u001b[33m\u001b[2m\u00e2\u0153\u201c\u001b[22m\u001b[39m clues-e07-e12\u001b[2m > \u001b[22mcollects all L-06 interaction clues through the events API flow \u001b[33m 817\u001b[2mms\u001b[22m\u001b[39m",
-              "",
-              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
-              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
-              "\u001b[2m   Start at \u001b[22m 08:22:01",
-              "\u001b[2m   Duration \u001b[22m 2.08s\u001b[2m (transform 73ms, setup 0ms, collect 374ms, tests 818ms, environment 0ms, prepare 402ms)\u001b[22m",
-              "",
-              "(node:36804) ExperimentalWarning: SQLite is an experimental feature and might change at any time",
-              "(Use `node --trace-warnings ...` to show where the warning was created)"
-            ]
-          }
-        ]
-      }
+      "blocked_reason": "e2e verified against fakes",
+      "evidence": null
     },
     {
       "id": "F-011",
       "title": "Casebook UI lists collected clues",
       "behavior": "A player can open the casebook and view collected clues exactly once.",
       "verification": [
-        "npm run test:e2e -- casebook-clues"
+        "npm run test:e2e -- casebook-clues-behaviour"
       ],
       "layers_required": [
         "static",
@@ -712,39 +455,11 @@
         "F-010"
       ],
       "priority": 11,
-      "state": "passing",
+      "state": "not_started",
       "owner": null,
       "source": "FR-20",
       "blocked_reason": null,
-      "evidence": {
-        "date": "2026-11-12T08:41:00",
-        "commit": "705b5e7",
-        "result": "pass",
-        "runs": [
-          {
-            "command": "npm run test:e2e -- casebook-clues",
-            "exit": 0,
-            "seconds": 4.1,
-            "tail": [
-              "> vitest run --config vitest.e2e.config.ts casebook-clues",
-              "",
-              "",
-              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
-              "",
-              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/e2e/casebook-clues.test.js \u001b[2m(\u001b[22m\u001b[2m1 test\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 931\u001b[2mms\u001b[22m\u001b[39m",
-              "   \u001b[33m\u001b[2m\u00e2\u0153\u201c\u001b[22m\u001b[39m casebook-clues\u001b[2m > \u001b[22mopens casebook and lists collected clues exactly once \u001b[33m 929\u001b[2mms\u001b[22m\u001b[39m",
-              "",
-              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
-              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
-              "\u001b[2m   Start at \u001b[22m 08:40:57",
-              "\u001b[2m   Duration \u001b[22m 2.26s\u001b[2m (transform 71ms, setup 0ms, collect 398ms, tests 931ms, environment 0ms, prepare 358ms)\u001b[22m",
-              "",
-              "(node:31684) ExperimentalWarning: SQLite is an experimental feature and might change at any time",
-              "(Use `node --trace-warnings ...` to show where the warning was created)"
-            ]
-          }
-        ]
-      },
+      "evidence": null,
       "acceptance": [
         "The casebook panel visibly opens and lists each collected clue exactly once."
       ]
@@ -755,7 +470,7 @@
       "behavior": "A player can submit D-03 and D-06 links, and wrong links return hints only without leaking answers.",
       "verification": [
         "npm run test:api -- deductions",
-        "npm run test:e2e -- deduction-d03-d06",
+        "npm run test:e2e -- deduction-d03-d06-behaviour",
         "npm run test:api -- no-answer-leak"
       ],
       "layers_required": [
@@ -767,83 +482,11 @@
         "F-011"
       ],
       "priority": 12,
-      "state": "passing",
+      "state": "active",
       "owner": null,
       "source": "FR-30,FR-31,NFR-52",
-      "blocked_reason": null,
-      "evidence": {
-        "date": "2026-11-12T08:50:09",
-        "commit": "28f98e0",
-        "result": "pass",
-        "runs": [
-          {
-            "command": "npm run test:api -- deductions",
-            "exit": 0,
-            "seconds": 3.5,
-            "tail": [
-              "> vitest run --config vitest.api.config.ts deductions",
-              "",
-              "",
-              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
-              "",
-              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/api/deductions.test.js \u001b[2m(\u001b[22m\u001b[2m1 test\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 837\u001b[2mms\u001b[22m\u001b[39m",
-              "   \u001b[33m\u001b[2m\u00e2\u0153\u201c\u001b[22m\u001b[39m deductions\u001b[2m > \u001b[22mvalidates D-03 and D-06 clue links server-side \u001b[33m 836\u001b[2mms\u001b[22m\u001b[39m",
-              "",
-              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
-              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
-              "\u001b[2m   Start at \u001b[22m 08:49:59",
-              "\u001b[2m   Duration \u001b[22m 1.85s\u001b[2m (transform 66ms, setup 0ms, collect 319ms, tests 837ms, environment 0ms, prepare 284ms)\u001b[22m",
-              "",
-              "(node:37980) ExperimentalWarning: SQLite is an experimental feature and might change at any time",
-              "(Use `node --trace-warnings ...` to show where the warning was created)"
-            ]
-          },
-          {
-            "command": "npm run test:e2e -- deduction-d03-d06",
-            "exit": 0,
-            "seconds": 3.7,
-            "tail": [
-              "> vitest run --config vitest.e2e.config.ts deduction-d03-d06",
-              "",
-              "",
-              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
-              "",
-              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/e2e/deduction-d03-d06.test.js \u001b[2m(\u001b[22m\u001b[2m1 test\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 829\u001b[2mms\u001b[22m\u001b[39m",
-              "   \u001b[33m\u001b[2m\u00e2\u0153\u201c\u001b[22m\u001b[39m deduction-d03-d06\u001b[2m > \u001b[22mreturns a hint for wrong D-03 links and unlocks D-06 with the full clue set \u001b[33m 828\u001b[2mms\u001b[22m\u001b[39m",
-              "",
-              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
-              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
-              "\u001b[2m   Start at \u001b[22m 08:50:03",
-              "\u001b[2m   Duration \u001b[22m 1.88s\u001b[2m (transform 74ms, setup 0ms, collect 355ms, tests 829ms, environment 0ms, prepare 341ms)\u001b[22m",
-              "",
-              "(node:37468) ExperimentalWarning: SQLite is an experimental feature and might change at any time",
-              "(Use `node --trace-warnings ...` to show where the warning was created)"
-            ]
-          },
-          {
-            "command": "npm run test:api -- no-answer-leak",
-            "exit": 0,
-            "seconds": 3.6,
-            "tail": [
-              "> vitest run --config vitest.api.config.ts no-answer-leak",
-              "",
-              "",
-              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
-              "",
-              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/api/no-answer-leak.test.js \u001b[2m(\u001b[22m\u001b[2m1 test\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 817\u001b[2mms\u001b[22m\u001b[39m",
-              "   \u001b[33m\u001b[2m\u00e2\u0153\u201c\u001b[22m\u001b[39m no-answer-leak\u001b[2m > \u001b[22mreturns hint ids for wrong links without leaking required clue ids \u001b[33m 816\u001b[2mms\u001b[22m\u001b[39m",
-              "",
-              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
-              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
-              "\u001b[2m   Start at \u001b[22m 08:50:07",
-              "\u001b[2m   Duration \u001b[22m 1.79s\u001b[2m (transform 64ms, setup 0ms, collect 328ms, tests 817ms, environment 0ms, prepare 297ms)\u001b[22m",
-              "",
-              "(node:18024) ExperimentalWarning: SQLite is an experimental feature and might change at any time",
-              "(Use `node --trace-warnings ...` to show where the warning was created)"
-            ]
-          }
-        ]
-      }
+      "blocked_reason": "e2e verified against fakes",
+      "evidence": null
     },
     {
       "id": "F-013",

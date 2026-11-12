@@ -2,18 +2,31 @@
 
 ## Current verified state
 
-- Branch / commit: harness/change-h09-agent-tooling-prereqs @ working tree (uncommitted)
+- Branch / commit: harness/change-h07-reset-fake-verified-features @ working tree (uncommitted)
 - Fast check: pass (`npm run check:fast` as part of `npm run check:changed`)
-- Changed-scope check: pass (`npm run check:changed`)
-- Active ticket: H-09 - Agent tooling prerequisites (owner: Q-HEAT)
-- Blocker: `gh` is not installed in this environment, so `npm run setup` exits with an actionable missing-prerequisite message
-- Next best step: open PR with H-09 acceptance evidence and reviewer verdict
+- Active ticket: H-07 - Reset features that passed against fakes (owner: Q-HEAT)
+- Blocker: none
+- Next best step: capture reviewer verdict and open PR
 
 ## Harness feedback (for Q-HEAT change)
 
 - None yet.
 
 ## Session log
+### 2026-11-12 - Q-HEAT - H-07
+
+- Goal: reset fake-verified feature pass states and require behavior-level browser verification for UI features
+- Done: reset F-005/F-006/F-007/F-008/F-009/F-011 to `not_started`, moved F-010/F-012 to `active` with `blocked_reason: "e2e verified against fakes"`, labeled existing e2e tests as `[shell check]`, added behavior-driving Playwright tests (`*behaviour.test.js`) for F-005/F-006/F-007/F-009/F-011 plus F-010/F-012 e2e paths, and updated ADR-0005/H-07/changelog/manifest metadata
+- Verification run (commands -> result):
+  - `python q_heat_kit/scripts/qhc_check.py --harness .` -> pass
+  - `npm run check:fast` -> pass
+  - `npm run check:changed` -> pass
+  - `docker compose run --rm checks npm run test:e2e -- behaviour` -> pass
+  - `python harness/checks/verify_feature.py F-010 --sandbox` -> fail (expected dependency gate proof after reset)
+- Evidence: `harness/feature_list.json` now points UI verification commands at behavior tests; legacy shell checks remain explicit smoke checks
+- Risks or unverified paths: full `npm run sandbox:check` was not executed because H-07 intentionally resets multiple features from passing to active/not_started
+- Next best step: open PR with reviewer verdict and list remaining features that still lack deeper behavior coverage
+
 ### 2026-11-12 - Q-HEAT - H-09
 
 - Goal: gate setup on required local tooling (Docker, Node, Python, GitHub CLI) and document prerequisites for PR workflow

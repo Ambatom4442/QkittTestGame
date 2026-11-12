@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("serves movement scene shell in real browser mode", async ({ page, request }) => {
+test("[shell check] serves movement scene shell in real browser mode", async ({ page, request }) => {
   const pageResponse = await page.goto("/?test=1");
   expect(pageResponse?.ok()).toBeTruthy();
 

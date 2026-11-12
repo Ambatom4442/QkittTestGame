@@ -96,6 +96,11 @@
       "name": "setup prerequisite preflight",
       "purpose": "Validate Docker, Node.js, Python and GitHub CLI availability before dependency install and surface actionable remediation",
       "introduced_by": "H-09"
+    },
+    {
+      "name": "e2e shell-vs-behavior split",
+      "purpose": "Keep shell smoke checks while requiring behavior-driving Playwright verification for UI feature pass-state",
+      "introduced_by": "H-07"
     }
   ],
   "baseline": {
