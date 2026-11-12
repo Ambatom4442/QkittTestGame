@@ -45,6 +45,45 @@ function formatProfile(row) {
   };
 }
 
+function parseSlotName(slotName) {
+  const match = /^slot-(\d+)$/.exec(slotName);
+  if (!match) {
+    throw new Error(`Invalid slot name: ${slotName}`);
+  }
+
+  return Number.parseInt(match[1], 10);
+}
+
+function parseSlotState(positionJson) {
+  if (!positionJson) {
+    return { caseId: null, transform: null };
+  }
+
+  const parsed = JSON.parse(positionJson);
+  const caseId = typeof parsed.caseId === "string" ? parsed.caseId : null;
+  const transform = parsed.transform && typeof parsed.transform === "object" ? parsed.transform : null;
+
+  return { caseId, transform };
+}
+
+function formatSaveSlot(row) {
+  const state = parseSlotState(row.position_json);
+
+  return {
+    id: Number(row.id),
+    profileId: Number(row.profile_id),
+    slot: parseSlotName(row.slot_name),
+    caseId: state.caseId,
+    sceneId: row.scene_id,
+    transform: state.transform,
+    updatedAt: row.updated_at
+  };
+}
+
+function sendDbUnavailable(reply) {
+  return reply.code(503).send({ code: "DB_UNAVAILABLE", message: "Database is not available" });
+}
+
 export function buildServer({ logger = false, staticRoot = "client/build", db = null } = {}) {
   const app = Fastify({ logger });
 
@@ -52,7 +91,7 @@ export function buildServer({ logger = false, staticRoot = "client/build", db = 
 
   app.get("/api/profiles", async (request, reply) => {
     if (!db) {
-      return reply.code(503).send({ code: "DB_UNAVAILABLE", message: "Database is not available" });
+      return sendDbUnavailable(reply);
     }
 
     const profiles = db
@@ -65,7 +104,7 @@ export function buildServer({ logger = false, staticRoot = "client/build", db = 
 
   app.post("/api/profiles", async (request, reply) => {
     if (!db) {
-      return reply.code(503).send({ code: "DB_UNAVAILABLE", message: "Database is not available" });
+      return sendDbUnavailable(reply);
     }
 
     const name = typeof request.body?.name === "string" ? request.body.name.trim() : "";
@@ -82,6 +121,114 @@ export function buildServer({ logger = false, staticRoot = "client/build", db = 
       .get(insertResult.lastInsertRowid);
 
     return reply.code(201).send(formatProfile(row));
+  });
+
+  app.get("/api/profiles/:id/saves", async (request, reply) => {
+    if (!db) {
+      return sendDbUnavailable(reply);
+    }
+
+    const profileId = Number.parseInt(request.params?.id ?? "", 10);
+    if (!Number.isInteger(profileId) || profileId <= 0) {
+      return reply.code(400).send({ code: "INVALID_PROFILE_ID", message: "Profile id must be a positive integer" });
+    }
+
+    const saveSlots = db
+      .prepare("SELECT id, profile_id, slot_name, scene_id, position_json, updated_at FROM save_slots WHERE profile_id = ? ORDER BY slot_name ASC")
+      .all(profileId)
+      .map((row) => formatSaveSlot(row));
+
+    return { saveSlots };
+  });
+
+  app.post("/api/games", async (request, reply) => {
+    if (!db) {
+      return sendDbUnavailable(reply);
+    }
+
+    const profileId = Number.parseInt(`${request.body?.profileId ?? ""}`, 10);
+    const slot = Number.parseInt(`${request.body?.slot ?? ""}`, 10);
+    const caseId = typeof request.body?.caseId === "string" ? request.body.caseId.trim() : "";
+
+    if (!Number.isInteger(profileId) || profileId <= 0 || !Number.isInteger(slot) || slot <= 0 || !caseId) {
+      return reply.code(400).send({ code: "INVALID_GAME_REQUEST", message: "profileId, slot, and caseId are required" });
+    }
+
+    const slotName = `slot-${slot}`;
+    const now = new Date().toISOString();
+
+    const existing = db
+      .prepare("SELECT id, profile_id, slot_name, scene_id, position_json, updated_at FROM save_slots WHERE profile_id = ? AND slot_name = ?")
+      .get(profileId, slotName);
+
+    if (existing) {
+      const existingState = parseSlotState(existing.position_json);
+      const shouldResetProgress = existingState.caseId !== caseId;
+      const nextPositionJson = shouldResetProgress
+        ? JSON.stringify({ caseId, transform: null })
+        : JSON.stringify({ caseId, transform: existingState.transform });
+      const nextSceneId = shouldResetProgress ? null : existing.scene_id;
+
+      db.prepare("UPDATE save_slots SET scene_id = ?, position_json = ?, updated_at = ? WHERE id = ?")
+        .run(nextSceneId, nextPositionJson, now, existing.id);
+
+      const row = db
+        .prepare("SELECT id, profile_id, slot_name, scene_id, position_json, updated_at FROM save_slots WHERE id = ?")
+        .get(existing.id);
+
+      return reply.code(200).send(formatSaveSlot(row));
+    }
+
+    const positionJson = JSON.stringify({ caseId, transform: null });
+    const insertResult = db
+      .prepare("INSERT INTO save_slots (profile_id, slot_name, scene_id, position_json, updated_at) VALUES (?, ?, ?, ?, ?)")
+      .run(profileId, slotName, null, positionJson, now);
+    const row = db
+      .prepare("SELECT id, profile_id, slot_name, scene_id, position_json, updated_at FROM save_slots WHERE id = ?")
+      .get(insertResult.lastInsertRowid);
+
+    return reply.code(201).send(formatSaveSlot(row));
+  });
+
+  app.put("/api/games/:id/position", async (request, reply) => {
+    if (!db) {
+      return sendDbUnavailable(reply);
+    }
+
+    const gameId = Number.parseInt(request.params?.id ?? "", 10);
+    const sceneId = typeof request.body?.sceneId === "string" ? request.body.sceneId.trim() : "";
+    const transform = request.body?.transform;
+
+    if (!Number.isInteger(gameId) || gameId <= 0) {
+      return reply.code(400).send({ code: "INVALID_GAME_ID", message: "Game id must be a positive integer" });
+    }
+
+    if (!sceneId || !transform || typeof transform !== "object" || Array.isArray(transform)) {
+      return reply
+        .code(400)
+        .send({ code: "INVALID_POSITION_PAYLOAD", message: "sceneId and transform are required" });
+    }
+
+    const existing = db
+      .prepare("SELECT id, profile_id, slot_name, scene_id, position_json, updated_at FROM save_slots WHERE id = ?")
+      .get(gameId);
+
+    if (!existing) {
+      return reply.code(404).send({ code: "GAME_NOT_FOUND", message: "Game not found" });
+    }
+
+    const existingState = parseSlotState(existing.position_json);
+    const updatedAt = new Date().toISOString();
+    const positionJson = JSON.stringify({ caseId: existingState.caseId, transform });
+
+    db.prepare("UPDATE save_slots SET scene_id = ?, position_json = ?, updated_at = ? WHERE id = ?")
+      .run(sceneId, positionJson, updatedAt, gameId);
+
+    const row = db
+      .prepare("SELECT id, profile_id, slot_name, scene_id, position_json, updated_at FROM save_slots WHERE id = ?")
+      .get(gameId);
+
+    return formatSaveSlot(row);
   });
 
   app.get("/*", async (request, reply) => {
