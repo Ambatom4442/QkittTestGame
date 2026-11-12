@@ -204,6 +204,27 @@ export function buildServer({ logger = false, staticRoot = "client/build", db = 
     return reply.code(201).send(formatSaveSlot(row));
   });
 
+
+  app.get("/api/games/:id/resume", async (request, reply) => {
+    if (!db) {
+      return sendDbUnavailable(reply);
+    }
+
+    const gameId = Number.parseInt(request.params?.id ?? "", 10);
+    if (!Number.isInteger(gameId) || gameId <= 0) {
+      return reply.code(400).send({ code: "INVALID_GAME_ID", message: "Game id must be a positive integer" });
+    }
+
+    const row = db
+      .prepare("SELECT id, profile_id, slot_name, scene_id, position_json, updated_at FROM save_slots WHERE id = ?")
+      .get(gameId);
+
+    if (!row) {
+      return reply.code(404).send({ code: "GAME_NOT_FOUND", message: "Game not found" });
+    }
+
+    return formatSaveSlot(row);
+  });
   app.put("/api/games/:id/position", async (request, reply) => {
     if (!db) {
       return sendDbUnavailable(reply);
@@ -267,3 +288,4 @@ export function buildServer({ logger = false, staticRoot = "client/build", db = 
 
   return app;
 }
+

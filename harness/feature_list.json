@@ -439,11 +439,39 @@
         "F-006"
       ],
       "priority": 7,
-      "state": "not_started",
+      "state": "passing",
       "owner": null,
       "source": "FR-02,FR-03,FR-04",
       "blocked_reason": null,
-      "evidence": null
+      "evidence": {
+        "date": "2026-11-12T07:53:16",
+        "commit": "03b1d28",
+        "result": "pass",
+        "runs": [
+          {
+            "command": "npm run test:e2e -- save-resume-position",
+            "exit": 0,
+            "seconds": 3.9,
+            "tail": [
+              "> vitest run --config vitest.e2e.config.ts save-resume-position",
+              "",
+              "",
+              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
+              "",
+              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/e2e/save-resume-position.test.js \u001b[2m(\u001b[22m\u001b[2m1 test\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 805\u001b[2mms\u001b[22m\u001b[39m",
+              "   \u001b[33m\u001b[2m\u00e2\u0153\u201c\u001b[22m\u001b[39m save-resume-position\u001b[2m > \u001b[22mresumes a saved scene and position after reload \u001b[33m 803\u001b[2mms\u001b[22m\u001b[39m",
+              "",
+              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m   Start at \u001b[22m 07:53:14",
+              "\u001b[2m   Duration \u001b[22m 1.99s\u001b[2m (transform 59ms, setup 0ms, collect 341ms, tests 805ms, environment 0ms, prepare 365ms)\u001b[22m",
+              "",
+              "(node:37776) ExperimentalWarning: SQLite is an experimental feature and might change at any time",
+              "(Use `node --trace-warnings ...` to show where the warning was created)"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "F-008",
