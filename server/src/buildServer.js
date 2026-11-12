@@ -14,6 +14,38 @@ const CONTENT_TYPES = {
 
 const THREE_MODULE_PATH = fileURLToPath(new URL("../../node_modules/three/build/three.module.js", import.meta.url));
 
+const SCENE_DEFINITIONS = Object.freeze([
+  Object.freeze({
+    id: "L-05",
+    chapterId: "C-04",
+    title: "Roylott's bedroom",
+    interactables: Object.freeze([
+      Object.freeze({ objectId: "iron-safe", action: "inspect", clueId: "E-14", prompt: "Inspect iron safe" }),
+      Object.freeze({ objectId: "saucer-of-milk", action: "inspect", clueId: "E-15", prompt: "Inspect saucer of milk" })
+    ])
+  }),
+  Object.freeze({
+    id: "L-06",
+    chapterId: "C-04",
+    title: "Julia's bedroom",
+    interactables: Object.freeze([
+      Object.freeze({ objectId: "barred-shutters", action: "inspect", clueId: "E-07", prompt: "Inspect barred shutters" }),
+      Object.freeze({ objectId: "bell-pull", action: "pull", clueId: "E-09", prompt: "Pull bell-pull" }),
+      Object.freeze({ objectId: "ventilator", action: "inspect", clueId: "E-10", prompt: "Inspect ventilator" }),
+      Object.freeze({ objectId: "bed-frame", action: "inspect", clueId: "E-11", prompt: "Inspect bed frame" }),
+      Object.freeze({ objectId: "bell-wire", action: "inspect", clueId: "E-12", prompt: "Inspect bell wire" })
+    ])
+  }),
+  Object.freeze({
+    id: "L-07",
+    chapterId: "C-04",
+    title: "Helen's bedroom",
+    interactables: Object.freeze([
+      Object.freeze({ objectId: "repair-wall", action: "inspect", clueId: "E-06", prompt: "Inspect repaired wall" })
+    ])
+  })
+]);
+
 function contentTypeFor(filePath) {
   return CONTENT_TYPES[extname(filePath)] ?? "application/octet-stream";
 }
@@ -87,6 +119,19 @@ function sendDbUnavailable(reply) {
   return reply.code(503).send({ code: "DB_UNAVAILABLE", message: "Database is not available" });
 }
 
+function formatScene(scene) {
+  return {
+    id: scene.id,
+    chapterId: scene.chapterId,
+    title: scene.title,
+    interactables: scene.interactables.map((interactable) => ({
+      objectId: interactable.objectId,
+      action: interactable.action,
+      clueId: interactable.clueId,
+      prompt: interactable.prompt
+    }))
+  };
+}
 export function buildServer({ logger = false, staticRoot = "client/build", db = null, testModeEnabled = false } = {}) {
   const app = Fastify({ logger });
 
@@ -94,6 +139,36 @@ export function buildServer({ logger = false, staticRoot = "client/build", db = 
 
   app.get("/api/client-config", async () => ({ testModeEnabled }));
 
+  app.get("/api/chapters/:id/scenes", async (request, reply) => {
+    const chapterId = String(request.params?.id ?? "").trim();
+    if (!chapterId) {
+      return reply.code(400).send({ code: "INVALID_CHAPTER_ID", message: "Chapter id is required" });
+    }
+
+    const scenes = SCENE_DEFINITIONS
+      .filter((scene) => scene.chapterId === chapterId)
+      .map((scene) => formatScene(scene));
+
+    if (scenes.length === 0) {
+      return reply.code(404).send({ code: "CHAPTER_NOT_FOUND", message: "Chapter not found" });
+    }
+
+    return { chapterId, scenes };
+  });
+
+  app.get("/api/scenes/:id", async (request, reply) => {
+    const sceneId = String(request.params?.id ?? "").trim();
+    if (!sceneId) {
+      return reply.code(400).send({ code: "INVALID_SCENE_ID", message: "Scene id is required" });
+    }
+
+    const scene = SCENE_DEFINITIONS.find((candidate) => candidate.id === sceneId);
+    if (!scene) {
+      return reply.code(404).send({ code: "SCENE_NOT_FOUND", message: "Scene not found" });
+    }
+
+    return formatScene(scene);
+  });
   app.get("/vendor/three.module.js", async (request, reply) => {
     if (!(await exists(THREE_MODULE_PATH))) {
       return reply.code(404).send({ code: "THREE_MODULE_MISSING", message: "Three.js module not found" });
@@ -288,4 +363,5 @@ export function buildServer({ logger = false, staticRoot = "client/build", db = 
 
   return app;
 }
+
 
