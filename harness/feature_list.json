@@ -299,6 +299,7 @@
         "npm run test:e2e -- test-mode-hook"
       ],
       "layers_required": [
+        "static",
         "runtime",
         "system"
       ],
@@ -355,7 +356,10 @@
             ]
           }
         ]
-      }
+      },
+      "acceptance": [
+        "The boot page visibly renders a non-blank 3D scene canvas and initializes test mode without a blank frame."
+      ]
     },
     {
       "id": "F-006",
@@ -366,6 +370,7 @@
         "npm run test:e2e -- movement-controls"
       ],
       "layers_required": [
+        "static",
         "runtime",
         "system"
       ],
@@ -421,7 +426,10 @@
             ]
           }
         ]
-      }
+      },
+      "acceptance": [
+        "On screen, movement visibly changes player position while collision boundaries stop traversal and click-to-move lands at a visible target point."
+      ]
     },
     {
       "id": "F-007",
@@ -431,6 +439,7 @@
         "npm run test:e2e -- save-resume-position"
       ],
       "layers_required": [
+        "static",
         "runtime",
         "system"
       ],
@@ -471,7 +480,10 @@
             ]
           }
         ]
-      }
+      },
+      "acceptance": [
+        "After reload, the same room is visible and the resumed camera/player position matches the saved location on screen."
+      ]
     },
     {
       "id": "F-008",
@@ -539,6 +551,7 @@
         "npm run test:e2e -- julia-room-load"
       ],
       "layers_required": [
+        "static",
         "runtime",
         "system"
       ],
@@ -552,32 +565,63 @@
       "source": "FR-12,FR-14",
       "blocked_reason": null,
       "evidence": {
-        "date": "2026-11-12T08:12:47",
-        "commit": "6c4a6b8",
+        "date": "2026-11-12T15:15:36",
+        "commit": "a370934",
         "result": "pass",
         "runs": [
           {
             "command": "npm run test:e2e -- julia-room-load",
             "exit": 0,
-            "seconds": 3.9,
+            "seconds": 68.4,
             "tail": [
-              "> q-game@0.1.0 test:e2e",
-              "> vitest run --config vitest.e2e.config.ts julia-room-load",
               "",
+              "e2e_real_browser: OK",
               "",
-              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
+              "Running 1 test using 1 worker",
               "",
-              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/e2e/julia-room-load.test.js \u001b[2m(\u001b[22m\u001b[2m1 test\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 777\u001b[2mms\u001b[22m\u001b[39m",
-              "   \u001b[33m\u001b[2m\u00e2\u0153\u201c\u001b[22m\u001b[39m julia-room-load\u001b[2m > \u001b[22mloads L-06 scene data and returns interactables in chapter order \u001b[33m 775\u001b[2mms\u001b[22m\u001b[39m",
+              "  \u00e2\u0153\u201c  1 [chromium] \u00e2\u20ac\u00ba tests/e2e/julia-room-load.test.js:3:1 \u00e2\u20ac\u00ba loads L-06 scene data and returns interactables in chapter order (1.1s)",
               "",
-              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
-              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
-              "\u001b[2m   Start at \u001b[22m 08:12:45",
-              "\u001b[2m   Duration \u001b[22m 1.98s\u001b[2m (transform 62ms, setup 0ms, collect 347ms, tests 777ms, environment 0ms, prepare 360ms)\u001b[22m"
+              "  1 passed (3.9s)",
+              " Container q-game-sandbox-app-1  Running",
+              "npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.",
+              "npm notice",
+              "npm notice New major version of npm available! 10.9.3 -> 12.2.2",
+              "npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2",
+              "npm notice To update run: npm install -g npm@12.2.2",
+              "npm notice"
+            ]
+          },
+          {
+            "command": "npm run check:golden-boot",
+            "exit": 0,
+            "seconds": 67.4,
+            "tail": [
+              "  npm audit fix --force",
+              "",
+              "Run `npm audit` for details.",
+              "",
+              "> q-game@0.1.0 check:golden-boot",
+              "> node harness/checks/golden_boot.mjs",
+              "",
+              "golden-boot: OK (artifact at artifacts/golden-boot.png)",
+              " Container q-game-sandbox-app-1  Running",
+              "npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.",
+              "npm notice",
+              "npm notice New major version of npm available! 10.9.3 -> 12.2.2",
+              "npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2",
+              "npm notice To update run: npm install -g npm@12.2.2",
+              "npm notice"
             ]
           }
+        ],
+        "mode": "sandbox",
+        "artifacts": [
+          "artifacts/golden-boot.png"
         ]
-      }
+      },
+      "acceptance": [
+        "The Julia room (L-06) is visibly rendered with interactable objects present in chapter order."
+      ]
     },
     {
       "id": "F-010",
@@ -660,6 +704,7 @@
         "npm run test:e2e -- casebook-clues"
       ],
       "layers_required": [
+        "static",
         "runtime",
         "system"
       ],
@@ -699,7 +744,10 @@
             ]
           }
         ]
-      }
+      },
+      "acceptance": [
+        "The casebook panel visibly opens and lists each collected clue exactly once."
+      ]
     },
     {
       "id": "F-012",
@@ -817,21 +865,58 @@
       "source": "NFR-52",
       "blocked_reason": null,
       "evidence": {
-        "date": "2026-11-12T08:55:51",
-        "commit": "c1639c6",
+        "date": "2026-11-12T14:53:33",
+        "commit": "a370934",
         "result": "pass",
         "runs": [
           {
             "command": "npm run check:bundle-leak -- F-013",
             "exit": 0,
-            "seconds": 0.9,
+            "seconds": 70.1,
             "tail": [
+              "  npm audit fix --force",
+              "",
+              "Run `npm audit` for details.",
+              "",
               "> q-game@0.1.0 check:bundle-leak",
               "> node scripts/check-bundle-leak.mjs F-013",
               "",
-              "check:bundle-leak: pass (3 files scanned, no server-only leaks detected)"
+              "check:bundle-leak: pass (3 files scanned, no server-only leaks detected)",
+              " Container q-game-sandbox-app-1  Running",
+              "npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.",
+              "npm notice",
+              "npm notice New major version of npm available! 10.9.3 -> 12.2.2",
+              "npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2",
+              "npm notice To update run: npm install -g npm@12.2.2",
+              "npm notice"
+            ]
+          },
+          {
+            "command": "npm run check:golden-boot",
+            "exit": 0,
+            "seconds": 72.5,
+            "tail": [
+              "  npm audit fix --force",
+              "",
+              "Run `npm audit` for details.",
+              "",
+              "> q-game@0.1.0 check:golden-boot",
+              "> node harness/checks/golden_boot.mjs",
+              "",
+              "golden-boot: OK (artifact at artifacts/golden-boot.png)",
+              " Container q-game-sandbox-app-1  Running",
+              "npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.",
+              "npm notice",
+              "npm notice New major version of npm available! 10.9.3 -> 12.2.2",
+              "npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2",
+              "npm notice To update run: npm install -g npm@12.2.2",
+              "npm notice"
             ]
           }
+        ],
+        "mode": "sandbox",
+        "artifacts": [
+          "artifacts/golden-boot.png"
         ]
       }
     }

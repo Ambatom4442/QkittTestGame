@@ -49,11 +49,11 @@ Clock-out:
 ## Definition of done
 
 1. Feature behavior matches its source requirement ids.
-2. Feature verification commands pass in required layers.
+2. Feature verification commands pass in required layers (UI features require static + runtime + system).
 3. Feature state becomes passing only through `python harness/checks/verify_feature.py <id>`.
-4. Evidence is recorded in feature entry.
+4. Evidence is recorded in feature entry, including screenshot artifact paths for system-layer features.
 5. Fast checks still pass from clean setup.
-6. Relevant docs are updated.
+6. Relevant docs are updated, and PR evidence includes screenshot(s), reviewer-agent verdict, and `npm run sandbox:check` result.
 
 ## Where to look
 

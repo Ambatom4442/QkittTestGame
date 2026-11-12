@@ -86,6 +86,11 @@
       "name": "architecture conformance static gate",
       "purpose": "Enforce TypeScript source layout, explicit Vite dependency, and client/dist hygiene against architecture/06-repo-layout.md",
       "introduced_by": "H-05"
+    },
+    {
+      "name": "system-layer screenshot evidence and PR review checklist",
+      "purpose": "Capture visible UI proof in feature evidence and require independent review artifacts in PRs",
+      "introduced_by": "H-06"
     }
   ],
   "baseline": {
