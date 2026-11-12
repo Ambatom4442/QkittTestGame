@@ -161,11 +161,39 @@
         "F-002"
       ],
       "priority": 3,
-      "state": "not_started",
+      "state": "passing",
       "owner": null,
       "source": "FR-01",
       "blocked_reason": null,
-      "evidence": null
+      "evidence": {
+        "date": "2026-11-12T06:24:39",
+        "commit": "989be0f",
+        "result": "pass",
+        "runs": [
+          {
+            "command": "npm run test:api -- profiles",
+            "exit": 0,
+            "seconds": 2.7,
+            "tail": [
+              "> vitest run --config vitest.api.config.ts profiles",
+              "",
+              "",
+              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
+              "",
+              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/api/profiles.test.js \u001b[2m(\u001b[22m\u001b[2m2 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 508\u001b[2mms\u001b[22m\u001b[39m",
+              "   \u001b[33m\u001b[2m\u00e2\u0153\u201c\u001b[22m\u001b[39m profiles\u001b[2m > \u001b[22mcreates a profile and returns it from the list \u001b[33m 482\u001b[2mms\u001b[22m\u001b[39m",
+              "",
+              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m2 passed\u001b[39m\u001b[22m\u001b[90m (2)\u001b[39m",
+              "\u001b[2m   Start at \u001b[22m 06:24:38",
+              "\u001b[2m   Duration \u001b[22m 1.30s\u001b[2m (transform 43ms, setup 0ms, collect 230ms, tests 508ms, environment 0ms, prepare 215ms)\u001b[22m",
+              "",
+              "(node:12584) ExperimentalWarning: SQLite is an experimental feature and might change at any time",
+              "(Use `node --trace-warnings ...` to show where the warning was created)"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "F-004",

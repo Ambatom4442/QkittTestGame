@@ -8,7 +8,7 @@ const dbPath = process.env.QGAME_DB_PATH ?? "data/qgame.db";
 const migrationsDir = process.env.QGAME_MIGRATIONS_DIR ?? "server/migrations";
 
 const db = openDatabase({ dbPath, migrationsDir });
-const server = buildServer({ logger: true, staticRoot });
+const server = buildServer({ logger: true, staticRoot, db });
 
 const shutdown = async (exitCode = 0) => {
   try {
