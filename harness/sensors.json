@@ -124,6 +124,24 @@
       "introduced_by": "ticket H-02"
     },
     {
+      "id": "S-057-golden-boot",
+      "command": "npm run check:golden-boot",
+      "kind": "computational",
+      "category": "runtime",
+      "layer": "system",
+      "tier": "full",
+      "paths": [
+        "harness/checks/golden_boot.mjs",
+        "client/build/**",
+        "server/src/**",
+        "docker-compose.yml"
+      ],
+      "blocking": true,
+      "timeout_s": 180,
+      "owner": "harness",
+      "introduced_by": "ticket H-03"
+    },
+    {
       "id": "S-060-bundle-leak-registered",
       "command": "npm run check:bundle-leak",
       "kind": "computational",

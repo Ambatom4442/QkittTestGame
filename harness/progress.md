@@ -204,3 +204,17 @@
 - Risks or unverified paths: none
 - Next best step: confirm PR CI reproduces the same pass in `harness-check`
 
+### 2026-11-12 - Q-HEAT - H-03
+
+- Goal: add a blocking golden-boot browser sensor with screenshot evidence and CI upload
+- Done: added `harness/checks/golden_boot.mjs`, wired `npm run check:golden-boot` into full checks, registered blocking sensor `S-057-golden-boot`, added CI artifact upload for `artifacts/golden-boot.png`, and documented the golden journey
+- Verification run (commands -> result):
+  - `python q_heat_kit/scripts/qhc_check.py --harness .` -> pass
+  - `npm run check:fast` -> pass
+  - `docker compose run --rm checks npm run check:golden-boot` -> fail (expected blank-page detection)
+  - `npm run sandbox:check` -> fail at `check:golden-boot` (blocking sensor enforced)
+  - `docker compose run --rm checks node harness/checks/golden_boot.mjs` in temp worktree at `origin/main` -> fail (proof on current main)
+- Evidence: failure reports missing `window.__qgame`, MIME-type console error for module script, and blank canvas sample; screenshot emitted at `artifacts/golden-boot.png`
+- Risks or unverified paths: none for harness scope; product boot bug remains and is now surfaced by the new blocking gate
+- Next best step: fix the runtime module MIME/path issue so golden-boot passes
+

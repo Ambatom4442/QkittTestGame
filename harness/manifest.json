@@ -71,6 +71,11 @@
       "name": "playwright real-browser e2e gate",
       "purpose": "Run e2e in Chromium and block fake/mock browser-engine patterns",
       "introduced_by": "H-02"
+    },
+    {
+      "name": "golden-boot browser render gate",
+      "purpose": "Block blank/failed browser boots and persist screenshot evidence",
+      "introduced_by": "H-03"
     }
   ],
   "baseline": {
