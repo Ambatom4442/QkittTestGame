@@ -212,11 +212,83 @@
         "F-003"
       ],
       "priority": 4,
-      "state": "not_started",
+      "state": "passing",
       "owner": null,
       "source": "FR-02,FR-03,FR-04",
       "blocked_reason": null,
-      "evidence": null
+      "evidence": {
+        "date": "2026-11-12T06:47:54",
+        "commit": "8a7a3e9",
+        "result": "pass",
+        "runs": [
+          {
+            "command": "npm run test:api -- games",
+            "exit": 0,
+            "seconds": 2.8,
+            "tail": [
+              "> vitest run --config vitest.api.config.ts games",
+              "",
+              "",
+              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
+              "",
+              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/api/games.test.js \u001b[2m(\u001b[22m\u001b[2m1 test\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 523\u001b[2mms\u001b[22m\u001b[39m",
+              "   \u001b[33m\u001b[2m\u00e2\u0153\u201c\u001b[22m\u001b[39m games\u001b[2m > \u001b[22mcreates a game slot and continues it on a repeated request \u001b[33m 522\u001b[2mms\u001b[22m\u001b[39m",
+              "",
+              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m   Start at \u001b[22m 06:47:46",
+              "\u001b[2m   Duration \u001b[22m 1.34s\u001b[2m (transform 53ms, setup 0ms, collect 245ms, tests 523ms, environment 0ms, prepare 215ms)\u001b[22m",
+              "",
+              "(node:29284) ExperimentalWarning: SQLite is an experimental feature and might change at any time",
+              "(Use `node --trace-warnings ...` to show where the warning was created)"
+            ]
+          },
+          {
+            "command": "npm run test:api -- save-slots",
+            "exit": 0,
+            "seconds": 3.0,
+            "tail": [
+              "> vitest run --config vitest.api.config.ts save-slots",
+              "",
+              "",
+              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
+              "",
+              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/api/save-slots.test.js \u001b[2m(\u001b[22m\u001b[2m1 test\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 514\u001b[2mms\u001b[22m\u001b[39m",
+              "   \u001b[33m\u001b[2m\u00e2\u0153\u201c\u001b[22m\u001b[39m save-slots\u001b[2m > \u001b[22mlists slots for a profile \u001b[33m 513\u001b[2mms\u001b[22m\u001b[39m",
+              "",
+              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m   Start at \u001b[22m 06:47:49",
+              "\u001b[2m   Duration \u001b[22m 1.48s\u001b[2m (transform 67ms, setup 0ms, collect 299ms, tests 514ms, environment 0ms, prepare 315ms)\u001b[22m",
+              "",
+              "(node:26968) ExperimentalWarning: SQLite is an experimental feature and might change at any time",
+              "(Use `node --trace-warnings ...` to show where the warning was created)"
+            ]
+          },
+          {
+            "command": "npm run test:api -- autosave",
+            "exit": 0,
+            "seconds": 2.9,
+            "tail": [
+              "> vitest run --config vitest.api.config.ts autosave",
+              "",
+              "",
+              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
+              "",
+              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/api/autosave.test.js \u001b[2m(\u001b[22m\u001b[2m1 test\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 514\u001b[2mms\u001b[22m\u001b[39m",
+              "   \u001b[33m\u001b[2m\u00e2\u0153\u201c\u001b[22m\u001b[39m autosave\u001b[2m > \u001b[22mautosaves position for an existing game slot \u001b[33m 512\u001b[2mms\u001b[22m\u001b[39m",
+              "",
+              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m   Start at \u001b[22m 06:47:52",
+              "\u001b[2m   Duration \u001b[22m 1.43s\u001b[2m (transform 54ms, setup 0ms, collect 266ms, tests 514ms, environment 0ms, prepare 269ms)\u001b[22m",
+              "",
+              "(node:19800) ExperimentalWarning: SQLite is an experimental feature and might change at any time",
+              "(Use `node --trace-warnings ...` to show where the warning was created)"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "F-005",

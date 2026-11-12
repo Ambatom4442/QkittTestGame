@@ -2,18 +2,31 @@
 
 ## Current verified state
 
-- Branch / commit: feature/f-003-profiles-api @ working tree (uncommitted)
+- Branch / commit: feature/f-004-games-save-slots-autosave @ working tree (uncommitted)
 - Fast check: pass (qhc, typecheck, lint, content validate, unit tests, policy)
 - Full check (last CI): local pass (`npm run check`)
-- Active feature: F-003 - Profiles API (owner: Copilot)
+- Active feature: F-004 - Games and save slots API with autosave position (owner: Copilot)
 - Blocker: none
-- Next best step: F-004 - Games and save slots API with autosave position
+- Next best step: F-005 - Client boots Three.js scene with test mode hook
 
 ## Harness feedback (for Q-HEAT change)
 
 - None yet.
 
 ## Session log
+
+### 2026-11-12 - Copilot - F-004
+
+- Goal: implement F-004 on a dedicated feature branch
+- Done: added `GET /api/profiles/:id/saves`, `POST /api/games`, and `PUT /api/games/:id/position` using SQLite save slots
+- Verification run (commands -> result):
+  - `npm run test:api -- games` -> pass
+  - `npm run test:api -- save-slots` -> pass
+  - `npm run test:api -- autosave` -> pass
+  - `python harness/checks/verify_feature.py F-004` -> pass
+- Evidence: F-004 marked passing in harness/feature_list.json with command tails
+- Risks or unverified paths: full game progress model is deferred to later features
+- Next best step: F-005 - Client boots Three.js scene with test mode hook
 
 ### 2026-11-12 - Copilot - F-003
 
