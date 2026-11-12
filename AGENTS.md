@@ -20,6 +20,13 @@ Q-Game is a browser 3D detective game based on The Speckled Band. Agents impleme
 
 ## Quick start
 
+Prerequisites:
+- Docker Desktop with `docker compose` available
+- Node.js (project target from `.nvmrc`)
+- Python 3 (`python` on PATH)
+- GitHub CLI (`gh`) installed
+- GitHub CLI authenticated once: `gh auth status` (run `gh auth login` if needed)
+
 ```bash
 npm run setup
 npm run check:fast

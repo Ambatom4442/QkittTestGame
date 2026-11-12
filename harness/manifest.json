@@ -91,6 +91,11 @@
       "name": "system-layer screenshot evidence and PR review checklist",
       "purpose": "Capture visible UI proof in feature evidence and require independent review artifacts in PRs",
       "introduced_by": "H-06"
+    },
+    {
+      "name": "setup prerequisite preflight",
+      "purpose": "Validate Docker, Node.js, Python and GitHub CLI availability before dependency install and surface actionable remediation",
+      "introduced_by": "H-09"
     }
   ],
   "baseline": {
