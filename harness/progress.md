@@ -2,7 +2,7 @@
 
 ## Current verified state
 
-- Branch / commit: harness/change-h07-reset-fake-verified-features @ working tree (uncommitted)
+- Branch / commit: harness/change-h07-reset-fake-verified-features @ 52c2385
 - Fast check: pass (`npm run check:fast` and `npm run check:changed`)
 - Active ticket: H-07 - Reset features that passed against fakes (owner: Q-HEAT)
 - Blocker: none

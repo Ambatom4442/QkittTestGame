@@ -371,6 +371,8 @@
       "title": "Case content schemas and validator with fair-play skeleton",
       "behavior": "A contributor can run schema validation and a fair-play checker skeleton for case content.",
       "verification": [
+        "npm run content:validate",
+        "npm run test:unit -- fair-play",
         "npm run test:e2e -- tests/e2e/content-contract.spec.ts"
       ],
       "layers_required": [
