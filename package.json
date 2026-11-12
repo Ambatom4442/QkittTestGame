@@ -13,7 +13,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --max-warnings=0",
     "format": "prettier --check .",
-    "test:unit": "vitest run",
+    "test:unit": "vitest run --config vitest.unit.config.ts",
     "test:api": "vitest run --config vitest.api.config.ts",
     "test:e2e": "vitest run --config vitest.e2e.config.ts",
     "check:bundle-leak": "node scripts/nonblocking-check.mjs check:bundle-leak",
