@@ -719,11 +719,83 @@
         "F-011"
       ],
       "priority": 12,
-      "state": "not_started",
+      "state": "passing",
       "owner": null,
       "source": "FR-30,FR-31,NFR-52",
       "blocked_reason": null,
-      "evidence": null
+      "evidence": {
+        "date": "2026-11-12T08:50:09",
+        "commit": "28f98e0",
+        "result": "pass",
+        "runs": [
+          {
+            "command": "npm run test:api -- deductions",
+            "exit": 0,
+            "seconds": 3.5,
+            "tail": [
+              "> vitest run --config vitest.api.config.ts deductions",
+              "",
+              "",
+              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
+              "",
+              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/api/deductions.test.js \u001b[2m(\u001b[22m\u001b[2m1 test\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 837\u001b[2mms\u001b[22m\u001b[39m",
+              "   \u001b[33m\u001b[2m\u00e2\u0153\u201c\u001b[22m\u001b[39m deductions\u001b[2m > \u001b[22mvalidates D-03 and D-06 clue links server-side \u001b[33m 836\u001b[2mms\u001b[22m\u001b[39m",
+              "",
+              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m   Start at \u001b[22m 08:49:59",
+              "\u001b[2m   Duration \u001b[22m 1.85s\u001b[2m (transform 66ms, setup 0ms, collect 319ms, tests 837ms, environment 0ms, prepare 284ms)\u001b[22m",
+              "",
+              "(node:37980) ExperimentalWarning: SQLite is an experimental feature and might change at any time",
+              "(Use `node --trace-warnings ...` to show where the warning was created)"
+            ]
+          },
+          {
+            "command": "npm run test:e2e -- deduction-d03-d06",
+            "exit": 0,
+            "seconds": 3.7,
+            "tail": [
+              "> vitest run --config vitest.e2e.config.ts deduction-d03-d06",
+              "",
+              "",
+              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
+              "",
+              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/e2e/deduction-d03-d06.test.js \u001b[2m(\u001b[22m\u001b[2m1 test\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 829\u001b[2mms\u001b[22m\u001b[39m",
+              "   \u001b[33m\u001b[2m\u00e2\u0153\u201c\u001b[22m\u001b[39m deduction-d03-d06\u001b[2m > \u001b[22mreturns a hint for wrong D-03 links and unlocks D-06 with the full clue set \u001b[33m 828\u001b[2mms\u001b[22m\u001b[39m",
+              "",
+              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m   Start at \u001b[22m 08:50:03",
+              "\u001b[2m   Duration \u001b[22m 1.88s\u001b[2m (transform 74ms, setup 0ms, collect 355ms, tests 829ms, environment 0ms, prepare 341ms)\u001b[22m",
+              "",
+              "(node:37468) ExperimentalWarning: SQLite is an experimental feature and might change at any time",
+              "(Use `node --trace-warnings ...` to show where the warning was created)"
+            ]
+          },
+          {
+            "command": "npm run test:api -- no-answer-leak",
+            "exit": 0,
+            "seconds": 3.6,
+            "tail": [
+              "> vitest run --config vitest.api.config.ts no-answer-leak",
+              "",
+              "",
+              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
+              "",
+              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/api/no-answer-leak.test.js \u001b[2m(\u001b[22m\u001b[2m1 test\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 817\u001b[2mms\u001b[22m\u001b[39m",
+              "   \u001b[33m\u001b[2m\u00e2\u0153\u201c\u001b[22m\u001b[39m no-answer-leak\u001b[2m > \u001b[22mreturns hint ids for wrong links without leaking required clue ids \u001b[33m 816\u001b[2mms\u001b[22m\u001b[39m",
+              "",
+              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m   Start at \u001b[22m 08:50:07",
+              "\u001b[2m   Duration \u001b[22m 1.79s\u001b[2m (transform 64ms, setup 0ms, collect 328ms, tests 817ms, environment 0ms, prepare 297ms)\u001b[22m",
+              "",
+              "(node:18024) ExperimentalWarning: SQLite is an experimental feature and might change at any time",
+              "(Use `node --trace-warnings ...` to show where the warning was created)"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "F-013",

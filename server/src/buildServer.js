@@ -25,6 +25,19 @@ const CLUE_DEFINITIONS = Object.freeze({
   "E-15": Object.freeze({ id: "E-15", title: "Saucer of milk", text: "Food placed for an animal." })
 });
 
+const DEDUCTION_RULES = Object.freeze({
+  "D-03": Object.freeze({
+    id: "D-03",
+    requiredClueIds: Object.freeze(["E-07", "E-08"]),
+    hintId: "H-D03-SHUTTERS"
+  }),
+  "D-06": Object.freeze({
+    id: "D-06",
+    requiredClueIds: Object.freeze(["E-09", "E-10", "E-11", "E-12"]),
+    hintId: "H-D06-ROUTE"
+  })
+});
+
 const SCENE_DEFINITIONS = Object.freeze([
   Object.freeze({
     id: "L-05",
@@ -110,17 +123,28 @@ function normalizeClues(clues) {
     .filter((value, index, values) => values.indexOf(value) === index);
 }
 
+function normalizeDeductions(deductions) {
+  if (!Array.isArray(deductions)) {
+    return [];
+  }
+
+  return deductions
+    .filter((value) => typeof value === "string" && value.length > 0)
+    .filter((value, index, values) => values.indexOf(value) === index);
+}
+
 function parseSlotState(positionJson) {
   if (!positionJson) {
-    return { caseId: null, transform: null, clues: [] };
+    return { caseId: null, transform: null, clues: [], deductions: [] };
   }
 
   const parsed = JSON.parse(positionJson);
   const caseId = typeof parsed.caseId === "string" ? parsed.caseId : null;
   const transform = parsed.transform && typeof parsed.transform === "object" ? parsed.transform : null;
   const clues = normalizeClues(parsed.clues);
+  const deductions = normalizeDeductions(parsed.deductions);
 
-  return { caseId, transform, clues };
+  return { caseId, transform, clues, deductions };
 }
 
 function formatSaveSlot(row) {
@@ -134,6 +158,7 @@ function formatSaveSlot(row) {
     sceneId: row.scene_id,
     transform: state.transform,
     clues: state.clues,
+    deductions: state.deductions,
     updatedAt: row.updated_at
   };
 }
@@ -163,6 +188,16 @@ function formatCasebookClue(clueId) {
 
 function formatCasebook(state) {
   return state.clues.map((clueId) => formatCasebookClue(clueId));
+}
+
+function areSameIdSet(left, right) {
+  if (left.length !== right.length) {
+    return false;
+  }
+
+  const sortedLeft = [...left].sort();
+  const sortedRight = [...right].sort();
+  return sortedLeft.every((value, index) => value === sortedRight[index]);
 }
 
 function formatScene(scene) {
@@ -300,8 +335,13 @@ export function buildServer({ logger = false, staticRoot = "client/build", db = 
       const existingState = parseSlotState(existing.position_json);
       const shouldResetProgress = existingState.caseId !== caseId;
       const nextPositionJson = shouldResetProgress
-        ? JSON.stringify({ caseId, transform: null, clues: [] })
-        : JSON.stringify({ caseId, transform: existingState.transform, clues: existingState.clues });
+        ? JSON.stringify({ caseId, transform: null, clues: [], deductions: [] })
+        : JSON.stringify({
+          caseId,
+          transform: existingState.transform,
+          clues: existingState.clues,
+          deductions: existingState.deductions
+        });
       const nextSceneId = shouldResetProgress ? null : existing.scene_id;
 
       db.prepare("UPDATE save_slots SET scene_id = ?, position_json = ?, updated_at = ? WHERE id = ?")
@@ -314,7 +354,7 @@ export function buildServer({ logger = false, staticRoot = "client/build", db = 
       return reply.code(200).send(formatSaveSlot(row));
     }
 
-    const positionJson = JSON.stringify({ caseId, transform: null, clues: [] });
+    const positionJson = JSON.stringify({ caseId, transform: null, clues: [], deductions: [] });
     const insertResult = db
       .prepare("INSERT INTO save_slots (profile_id, slot_name, scene_id, position_json, updated_at) VALUES (?, ?, ?, ?, ?)")
       .run(profileId, slotName, null, positionJson, now);
@@ -363,7 +403,8 @@ export function buildServer({ logger = false, staticRoot = "client/build", db = 
     const positionJson = JSON.stringify({
       caseId: existingState.caseId,
       transform: existingState.transform,
-      clues
+      clues,
+      deductions: existingState.deductions
     });
 
     db.prepare("UPDATE save_slots SET scene_id = ?, position_json = ?, updated_at = ? WHERE id = ?")
@@ -404,6 +445,80 @@ export function buildServer({ logger = false, staticRoot = "client/build", db = 
       clues: formatCasebook({ clues: slot.clues })
     };
   });
+
+  app.post("/api/games/:id/deductions", async (request, reply) => {
+    if (!db) {
+      return sendDbUnavailable(reply);
+    }
+
+    const gameId = Number.parseInt(request.params?.id ?? "", 10);
+    const deductionId = typeof request.body?.deductionId === "string" ? request.body.deductionId.trim() : "";
+    const clueIds = normalizeClues(request.body?.clueIds);
+
+    if (!Number.isInteger(gameId) || gameId <= 0) {
+      return reply.code(400).send({ code: "INVALID_GAME_ID", message: "Game id must be a positive integer" });
+    }
+
+    if (!deductionId) {
+      return reply.code(400).send({ code: "INVALID_DEDUCTION_ID", message: "deductionId is required" });
+    }
+
+    if (clueIds.length === 0) {
+      return reply.code(400).send({ code: "INVALID_DEDUCTION_CLUES", message: "clueIds must include at least one clue id" });
+    }
+
+    const rule = DEDUCTION_RULES[deductionId];
+    if (!rule) {
+      return reply.code(404).send({ code: "DEDUCTION_NOT_FOUND", message: "Deduction not found" });
+    }
+
+    const row = db
+      .prepare("SELECT id, profile_id, slot_name, scene_id, position_json, updated_at FROM save_slots WHERE id = ?")
+      .get(gameId);
+
+    if (!row) {
+      return reply.code(404).send({ code: "GAME_NOT_FOUND", message: "Game not found" });
+    }
+
+    const state = parseSlotState(row.position_json);
+    if (!clueIds.every((clueId) => state.clues.includes(clueId))) {
+      return reply.code(400).send({
+        code: "INVALID_DEDUCTION_CLUES",
+        message: "Submitted clues must already exist in the casebook"
+      });
+    }
+
+    if (!areSameIdSet(clueIds, rule.requiredClueIds)) {
+      return {
+        gameId,
+        deductionId,
+        result: "incorrect",
+        hintId: rule.hintId
+      };
+    }
+
+    const alreadyUnlocked = state.deductions.includes(deductionId);
+    const deductions = alreadyUnlocked ? state.deductions : [...state.deductions, deductionId];
+    const positionJson = JSON.stringify({
+      caseId: state.caseId,
+      transform: state.transform,
+      clues: state.clues,
+      deductions
+    });
+    const updatedAt = new Date().toISOString();
+
+    db.prepare("UPDATE save_slots SET position_json = ?, updated_at = ? WHERE id = ?")
+      .run(positionJson, updatedAt, gameId);
+
+    return {
+      gameId,
+      deductionId,
+      result: "correct",
+      alreadyUnlocked,
+      deductions
+    };
+  });
+
   app.get("/api/games/:id/resume", async (request, reply) => {
     if (!db) {
       return sendDbUnavailable(reply);
@@ -453,7 +568,12 @@ export function buildServer({ logger = false, staticRoot = "client/build", db = 
 
     const existingState = parseSlotState(existing.position_json);
     const updatedAt = new Date().toISOString();
-    const positionJson = JSON.stringify({ caseId: existingState.caseId, transform, clues: existingState.clues });
+    const positionJson = JSON.stringify({
+      caseId: existingState.caseId,
+      transform,
+      clues: existingState.clues,
+      deductions: existingState.deductions
+    });
 
     db.prepare("UPDATE save_slots SET scene_id = ?, position_json = ?, updated_at = ? WHERE id = ?")
       .run(sceneId, positionJson, updatedAt, gameId);
@@ -487,4 +607,5 @@ export function buildServer({ logger = false, staticRoot = "client/build", db = 
 
   return app;
 }
+
 

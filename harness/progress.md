@@ -2,12 +2,12 @@
 
 ## Current verified state
 
-- Branch / commit: feature/f-011-casebook-clues @ working tree (uncommitted)
+- Branch / commit: feature/f-012-deduction-validation @ working tree (uncommitted)
 - Fast check: pass (qhc, typecheck, lint, content validate, unit tests, policy)
 - Full check (last CI): local pass (`npm run check`)
-- Active feature: F-011 - Casebook UI lists collected clues (owner: Copilot)
+- Active feature: F-012 - Deduction board server-side validation for D-03 and D-06 (owner: Copilot)
 - Blocker: none
-- Next best step: F-012 - Story graph and branching endpoint
+- Next best step: F-013 - Bundle leak check for server-only ids and answers
 
 ## Harness feedback (for Q-HEAT change)
 
@@ -15,6 +15,18 @@
 
 ## Session log
 
+### 2026-11-12 - Copilot - F-012
+
+- Goal: implement F-012 on a dedicated feature branch
+- Done: added `POST /api/games/:id/deductions` with server-side validation for D-03 and D-06, persisted unlocked deductions in slot state, and returned hint ids for wrong links without exposing required clue ids
+- Verification run (commands -> result):
+  - `npm run test:api -- deductions` -> pass
+  - `npm run test:e2e -- deduction-d03-d06` -> pass
+  - `npm run test:api -- no-answer-leak` -> pass
+  - `python harness/checks/verify_feature.py F-012` -> pass
+- Evidence: F-012 marked passing in harness/feature_list.json with command tails
+- Risks or unverified paths: this slice validates D-03 and D-06 only; broader deduction graph and board UX remain for future milestones
+- Next best step: F-013 - Bundle leak check for server-only ids and answers
 ### 2026-11-12 - Copilot - F-011
 
 - Goal: implement F-011 on a dedicated feature branch
