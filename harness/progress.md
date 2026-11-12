@@ -188,3 +188,19 @@
 - Evidence: harness changelog + manifest updated; CI now executes the same compose check command
 - Risks or unverified paths: local Windows proof is captured; GitHub Actions proof remains pending until PR workflow completes
 - Next best step: open PR and confirm `harness-check` passes with the same sandbox command in GitHub Actions
+
+### 2026-11-12 - Q-HEAT - H-02
+
+- Goal: enforce real-browser e2e testing and ban fake/mock engine patterns in tests/e2e
+- Done: migrated `tests/e2e/**` to Playwright Chromium tests against the running app service, added blocking sensor `harness/checks/e2e_real_browser.py`, and wired `test:e2e` to run sensor + Playwright
+- Verification run (commands -> result):
+  - `python harness/checks/e2e_real_browser.py` (run in temp worktree at `origin/main`) -> fail
+  - `python harness/checks/e2e_real_browser.py` (after migration) -> pass
+  - `docker compose run --rm checks npm run test:e2e -- health-page` -> pass
+  - `npm run sandbox:check` -> pass
+  - `python q_heat_kit/scripts/qhc_check.py --harness .` -> pass
+  - `npm run check:fast` -> pass
+- Evidence: all e2e files now import `@playwright/test`; no fake/mock/browser-engine client-source patterns in `tests/e2e/**`
+- Risks or unverified paths: none
+- Next best step: confirm PR CI reproduces the same pass in `harness-check`
+

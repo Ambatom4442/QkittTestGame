@@ -66,6 +66,11 @@
       "name": "docker-compose sandbox",
       "purpose": "Run app and checks in a reproducible container environment",
       "introduced_by": "H-01"
+    },
+    {
+      "name": "playwright real-browser e2e gate",
+      "purpose": "Run e2e in Chromium and block fake/mock browser-engine patterns",
+      "introduced_by": "H-02"
     }
   ],
   "baseline": {
