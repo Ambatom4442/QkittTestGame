@@ -4,7 +4,11 @@ function cloneState(state) {
     testMode: state.testMode,
     lastSpawnId: state.lastSpawnId,
     lastInteraction: state.lastInteraction,
-    skippedAnimations: state.skippedAnimations
+    skippedAnimations: state.skippedAnimations,
+    player: {
+      position: { ...state.player.position },
+      yaw: state.player.yaw
+    }
   };
 }
 
@@ -28,10 +32,202 @@ function createTestHook(state) {
       state.skippedAnimations += 1;
       return state.skippedAnimations;
     },
+    moveTo(x, z) {
+      state.player.position.x = Number(x);
+      state.player.position.z = Number(z);
+      return Object.freeze({ ...state.player.position });
+    },
     fps() {
       return 60;
     }
   });
+}
+
+const PLAYER_RADIUS = 0.25;
+const MOVE_SPEED_METERS_PER_SECOND = 3;
+const ROOM_MIN = -4;
+const ROOM_MAX = 4;
+const BLOCKERS = [{ minX: -0.75, maxX: 0.75, minZ: -0.75, maxZ: 0.75 }];
+
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function isBlocked(x, z) {
+  return BLOCKERS.some(
+    (blocker) => x >= blocker.minX - PLAYER_RADIUS
+      && x <= blocker.maxX + PLAYER_RADIUS
+      && z >= blocker.minZ - PLAYER_RADIUS
+      && z <= blocker.maxZ + PLAYER_RADIUS
+  );
+}
+
+function resolveMovement(currentPosition, deltaX, deltaZ) {
+  const next = { x: currentPosition.x, z: currentPosition.z };
+
+  const targetX = clamp(next.x + deltaX, ROOM_MIN + PLAYER_RADIUS, ROOM_MAX - PLAYER_RADIUS);
+  if (!isBlocked(targetX, next.z)) {
+    next.x = targetX;
+  }
+
+  const targetZ = clamp(next.z + deltaZ, ROOM_MIN + PLAYER_RADIUS, ROOM_MAX - PLAYER_RADIUS);
+  if (!isBlocked(next.x, targetZ)) {
+    next.z = targetZ;
+  }
+
+  return next;
+}
+
+function parseMarkerTarget(target) {
+  if (!target || typeof target !== "object") {
+    return null;
+  }
+
+  const dataset = target.dataset;
+  if (!dataset || dataset.floorMarker !== "1") {
+    return null;
+  }
+
+  const x = Number(dataset.x);
+  const z = Number(dataset.z);
+  if (!Number.isFinite(x) || !Number.isFinite(z)) {
+    return null;
+  }
+
+  return { x, z };
+}
+
+function createMovementController({ state, camera, windowRef, canvas }) {
+  const pressedKeys = new Set();
+
+  function syncCameraPosition() {
+    if (camera?.position?.set) {
+      camera.position.set(state.player.position.x, state.player.position.y, state.player.position.z);
+    }
+
+    if (camera?.rotation && typeof camera.rotation === "object") {
+      camera.rotation.y = state.player.yaw;
+    }
+  }
+
+  function applyStep(deltaSeconds) {
+    const delta = Math.max(0, Number(deltaSeconds) || 0);
+    if (delta === 0) {
+      syncCameraPosition();
+      return;
+    }
+
+    const moveForward = Number(pressedKeys.has("KeyW")) - Number(pressedKeys.has("KeyS"));
+    const moveRight = Number(pressedKeys.has("KeyD")) - Number(pressedKeys.has("KeyA"));
+
+    if (moveForward === 0 && moveRight === 0) {
+      syncCameraPosition();
+      return;
+    }
+
+    const yaw = state.player.yaw;
+    const forwardX = Math.sin(yaw);
+    const forwardZ = -Math.cos(yaw);
+    const strafeX = Math.cos(yaw);
+    const strafeZ = Math.sin(yaw);
+    const distance = MOVE_SPEED_METERS_PER_SECOND * delta;
+    const deltaX = (forwardX * moveForward + strafeX * moveRight) * distance;
+    const deltaZ = (forwardZ * moveForward + strafeZ * moveRight) * distance;
+    const resolved = resolveMovement(state.player.position, deltaX, deltaZ);
+
+    state.player.position.x = resolved.x;
+    state.player.position.z = resolved.z;
+    syncCameraPosition();
+  }
+
+  function clickToMove(x, z) {
+    if (!Number.isFinite(x) || !Number.isFinite(z)) {
+      return Object.freeze({ ...state.player.position });
+    }
+
+    const resolved = resolveMovement(state.player.position, x - state.player.position.x, z - state.player.position.z);
+    state.player.position.x = resolved.x;
+    state.player.position.z = resolved.z;
+    syncCameraPosition();
+    return Object.freeze({ ...state.player.position });
+  }
+
+  function onKeyDown(event) {
+    if (!event?.code) {
+      return;
+    }
+
+    if (event.code === "ArrowLeft") {
+      state.player.yaw -= 0.15;
+      syncCameraPosition();
+      return;
+    }
+
+    if (event.code === "ArrowRight") {
+      state.player.yaw += 0.15;
+      syncCameraPosition();
+      return;
+    }
+
+    if (event.code === "KeyW" || event.code === "KeyA" || event.code === "KeyS" || event.code === "KeyD") {
+      pressedKeys.add(event.code);
+    }
+  }
+
+  function onKeyUp(event) {
+    if (!event?.code) {
+      return;
+    }
+
+    pressedKeys.delete(event.code);
+  }
+
+  function onCanvasClick(event) {
+    const marker = parseMarkerTarget(event?.target);
+    if (!marker) {
+      return;
+    }
+
+    clickToMove(marker.x, marker.z);
+  }
+
+  if (typeof windowRef?.addEventListener === "function") {
+    windowRef.addEventListener("keydown", onKeyDown);
+    windowRef.addEventListener("keyup", onKeyUp);
+  }
+
+  if (canvas && typeof canvas.addEventListener === "function") {
+    canvas.addEventListener("click", onCanvasClick);
+  }
+
+  syncCameraPosition();
+
+  return {
+    clickToMove,
+    dispose() {
+      if (typeof windowRef?.removeEventListener === "function") {
+        windowRef.removeEventListener("keydown", onKeyDown);
+        windowRef.removeEventListener("keyup", onKeyUp);
+      }
+
+      if (canvas && typeof canvas.removeEventListener === "function") {
+        canvas.removeEventListener("click", onCanvasClick);
+      }
+    },
+    pressKey(code) {
+      if (code) {
+        pressedKeys.add(code);
+      }
+    },
+    releaseKey(code) {
+      if (code) {
+        pressedKeys.delete(code);
+      }
+    },
+    step(deltaSeconds) {
+      applyStep(deltaSeconds);
+    }
+  };
 }
 
 function makeRenderer(THREE, canvas, windowRef) {
@@ -98,8 +294,13 @@ export async function bootClient({ THREE, windowRef, documentRef, fetchConfig })
     testMode: isTestModeEnabled(windowRef.location?.search, config),
     lastSpawnId: null,
     lastInteraction: null,
-    skippedAnimations: 0
+    skippedAnimations: 0,
+    player: {
+      position: { x: 0, y: 1.6, z: 3 },
+      yaw: 0
+    }
   };
+  const movement = createMovementController({ state, camera, windowRef, canvas });
 
   if (state.testMode) {
     Object.defineProperty(windowRef, "__qgame", {
@@ -112,5 +313,5 @@ export async function bootClient({ THREE, windowRef, documentRef, fetchConfig })
     delete windowRef.__qgame;
   }
 
-  return { camera, renderer, scene, state };
+  return { camera, movement, renderer, scene, state };
 }
