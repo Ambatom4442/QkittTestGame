@@ -4,3 +4,4 @@ dist/
 .tmp/
 data/
 artifacts/
+client/dist/

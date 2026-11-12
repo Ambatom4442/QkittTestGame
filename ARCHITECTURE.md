@@ -32,6 +32,7 @@ Current init skeleton includes only shared and harness layers.
 | Feature behavior must map to requirement ids | S-090-traceability |
 | Policy and frozen paths must be enforced per branch | S-080-policy |
 | Harness integrity and doc links must remain valid | S-001-qhc |
+| Architecture source layout, TypeScript-only source files, and Vite/client dist hygiene must conform to agreed stack | S-059-architecture-conformance |
 
 ## Cross-cutting concerns
 

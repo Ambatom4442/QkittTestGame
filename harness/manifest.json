@@ -81,6 +81,11 @@
       "name": "content-as-data static sensor",
       "purpose": "Detect hard-coded E-/D-/R- ids in source and require real case content file presence",
       "introduced_by": "H-04"
+    },
+    {
+      "name": "architecture conformance static gate",
+      "purpose": "Enforce TypeScript source layout, explicit Vite dependency, and client/dist hygiene against architecture/06-repo-layout.md",
+      "introduced_by": "H-05"
     }
   ],
   "baseline": {

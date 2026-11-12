@@ -15,6 +15,20 @@
 
 ## Session log
 
+### 2026-11-12 - Q-HEAT - H-05
+
+- Goal: enforce architecture conformance against ADR-0001 and architecture/06-repo-layout.md
+- Done: added `harness/checks/architecture_conformance.mjs`, registered non-blocking sensor `S-059-architecture-conformance`, expanded ESLint boundary rules for `client/src/**` and `server/src/**`, and documented the P-02/P-03 blocking flip plan
+- Verification run (commands -> result):
+  - `python q_heat_kit/scripts/qhc_check.py --harness .` -> pass
+  - `npm run check:fast` -> pass
+  - `npm run check:architecture-conformance` -> fail (expected on current architecture)
+  - `node harness/checks/architecture_conformance.mjs --root <temp origin/main worktree>` -> fail (proof on current main)
+  - `node harness/checks/architecture_conformance.mjs --root <temp conformant fixture>` -> pass
+- Evidence: failure reports TypeScript-source-layout drift, missing layer folders, missing direct `vite` dependency, and explicit `client/dist` ignore gap on `main`
+- Risks or unverified paths: sensor remains non-blocking until P-02 and P-03 merge by design
+- Next best step: migrate runtime source to the TypeScript layout and then flip `S-059-architecture-conformance` to blocking
+
 ### 2026-11-12 - Q-HEAT - H-04
 
 - Goal: enforce content-as-data and add real speckled-band case files for validation/runtime loading

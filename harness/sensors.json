@@ -160,6 +160,28 @@
       "introduced_by": "ticket H-04"
     },
     {
+      "id": "S-059-architecture-conformance",
+      "command": "npm run check:architecture-conformance",
+      "kind": "computational",
+      "category": "structural",
+      "layer": "static",
+      "tier": "full",
+      "paths": [
+        "harness/checks/architecture_conformance.mjs",
+        "client/**",
+        "server/**",
+        "shared/**",
+        "content-tools/**",
+        "architecture/06-repo-layout.md",
+        ".gitignore",
+        "package.json"
+      ],
+      "blocking": false,
+      "timeout_s": 60,
+      "owner": "harness",
+      "introduced_by": "ticket H-05"
+    },
+    {
       "id": "S-060-bundle-leak-registered",
       "command": "npm run check:bundle-leak",
       "kind": "computational",
