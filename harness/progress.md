@@ -2,12 +2,12 @@
 
 ## Current verified state
 
-- Branch / commit: feature/f-010-events-clues @ working tree (uncommitted)
+- Branch / commit: feature/f-011-casebook-clues @ working tree (uncommitted)
 - Fast check: pass (qhc, typecheck, lint, content validate, unit tests, policy)
 - Full check (last CI): local pass (`npm run check`)
-- Active feature: F-010 - Events API grants clues E-07 to E-12 on interact (owner: Copilot)
+- Active feature: F-011 - Casebook UI lists collected clues (owner: Copilot)
 - Blocker: none
-- Next best step: F-011 - Casebook UI lists collected clues
+- Next best step: F-012 - Story graph and branching endpoint
 
 ## Harness feedback (for Q-HEAT change)
 
@@ -15,6 +15,16 @@
 
 ## Session log
 
+### 2026-11-12 - Copilot - F-011
+
+- Goal: implement F-011 on a dedicated feature branch
+- Done: added `GET /api/games/:id/casebook`, formatted known clue labels, wired client boot casebook fetch/render, and added a casebook toggle panel showing deduplicated collected clues
+- Verification run (commands -> result):
+  - `npm run test:e2e -- casebook-clues` -> pass
+  - `python harness/checks/verify_feature.py F-011` -> pass
+- Evidence: F-011 marked passing in harness/feature_list.json with command tails
+- Risks or unverified paths: casebook interaction currently covers clue listing/toggle behavior; broader narrative notebook UX remains for later features
+- Next best step: F-012 - Story graph and branching endpoint
 ### 2026-11-12 - Copilot - F-010
 
 - Goal: implement F-010 on a dedicated feature branch

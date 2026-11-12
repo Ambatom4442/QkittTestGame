@@ -667,11 +667,39 @@
         "F-010"
       ],
       "priority": 11,
-      "state": "not_started",
+      "state": "passing",
       "owner": null,
       "source": "FR-20",
       "blocked_reason": null,
-      "evidence": null
+      "evidence": {
+        "date": "2026-11-12T08:41:00",
+        "commit": "705b5e7",
+        "result": "pass",
+        "runs": [
+          {
+            "command": "npm run test:e2e -- casebook-clues",
+            "exit": 0,
+            "seconds": 4.1,
+            "tail": [
+              "> vitest run --config vitest.e2e.config.ts casebook-clues",
+              "",
+              "",
+              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
+              "",
+              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/e2e/casebook-clues.test.js \u001b[2m(\u001b[22m\u001b[2m1 test\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 931\u001b[2mms\u001b[22m\u001b[39m",
+              "   \u001b[33m\u001b[2m\u00e2\u0153\u201c\u001b[22m\u001b[39m casebook-clues\u001b[2m > \u001b[22mopens casebook and lists collected clues exactly once \u001b[33m 929\u001b[2mms\u001b[22m\u001b[39m",
+              "",
+              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m   Start at \u001b[22m 08:40:57",
+              "\u001b[2m   Duration \u001b[22m 2.26s\u001b[2m (transform 71ms, setup 0ms, collect 398ms, tests 931ms, environment 0ms, prepare 358ms)\u001b[22m",
+              "",
+              "(node:31684) ExperimentalWarning: SQLite is an experimental feature and might change at any time",
+              "(Use `node --trace-warnings ...` to show where the warning was created)"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "F-012",
