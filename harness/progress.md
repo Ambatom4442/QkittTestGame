@@ -2,10 +2,10 @@
 
 ## Current verified state
 
-- Branch / commit: feature/f-001-server-health @ working tree (uncommitted)
+- Branch / commit: feature/f-002-sqlite-wal-migrations @ working tree (uncommitted)
 - Fast check: pass (qhc, typecheck, lint, content validate, unit tests, policy)
 - Full check (last CI): local pass (`npm run check`)
-- Active feature: F-001 ? server serves built client and health endpoint (owner: Copilot)
+- Active feature: F-002 ? SQLite connection with WAL and numbered migrations (owner: Copilot)
 - Blocker: none
 - Next best step: F-001 — server serves the built client and /api/health
 
@@ -14,6 +14,17 @@
 - None yet.
 
 ## Session log
+
+### 2026-11-12 - Copilot - F-002
+
+- Goal: implement F-002 on a dedicated feature branch
+- Done: added SQLite bootstrap via `node:sqlite`, enabled WAL, and applied numbered SQL migrations at startup
+- Verification run (commands -> result):
+	- `npm run check:fast` -> pass
+	- `python harness/checks/verify_feature.py F-002` -> pass
+- Evidence: F-002 marked passing in harness/feature_list.json with command tails
+- Risks or unverified paths: `node:sqlite` is currently experimental in Node; behavior verified through harness tests
+- Next best step: F-003 ? Profiles API
 
 ### 2026-11-12 - Copilot - F-001
 
@@ -24,7 +35,7 @@
 	- `python harness/checks/verify_feature.py F-001` -> pass
 - Evidence: F-001 marked passing in harness/feature_list.json with command tails
 - Risks or unverified paths: health/page baseline only; deeper runtime features remain for later features
-- Next best step: F-002 ? SQLite connection with WAL and numbered migrations
+- Next best step: F-003 ? Profiles API
 
 ### 2026-11-11 - Q-HEAT - init
 
