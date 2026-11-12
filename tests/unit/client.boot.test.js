@@ -24,6 +24,7 @@ class FakePerspectiveCamera {
         this.position.z = z;
       }
     };
+    this.rotation = { y: 0 };
   }
 }
 
@@ -132,7 +133,11 @@ describe("client.boot", () => {
     expect(result.renderer.renderCalls).toBe(1);
     expect(result.state).toMatchObject({
       sceneId: "boot-scene",
-      testMode: false
+      testMode: false,
+      player: {
+        position: { x: 0, y: 1.6, z: 3 },
+        yaw: 0
+      }
     });
     expect(Object.prototype.hasOwnProperty.call(windowRef, "__qgame")).toBe(false);
   });
@@ -151,16 +156,65 @@ describe("client.boot", () => {
       sceneId: "boot-scene",
       testMode: true,
       lastSpawnId: null,
-      skippedAnimations: 0
+      skippedAnimations: 0,
+      player: {
+        position: { x: 0, y: 1.6, z: 3 },
+        yaw: 0
+      }
     });
     expect(windowRef.__qgame.teleport("spawn-a")).toBe("spawn-a");
     expect(windowRef.__qgame.interact("bell-pull", "pull")).toEqual({ objectId: "bell-pull", action: "pull" });
+    expect(windowRef.__qgame.moveTo(2, -1.5)).toMatchObject({ x: 2, y: 1.6, z: -1.5 });
     expect(windowRef.__qgame.skipAnimations()).toBe(1);
     expect(windowRef.__qgame.fps()).toBe(60);
     expect(windowRef.__qgame.state()).toMatchObject({
       lastSpawnId: "spawn-a",
       lastInteraction: { objectId: "bell-pull", action: "pull" },
-      skippedAnimations: 1
+      skippedAnimations: 1,
+      player: {
+        position: { x: 2, y: 1.6, z: -1.5 },
+        yaw: 0
+      }
     });
   });
+
+  it("moves with WASD and blocks movement through room bounds", async () => {
+    const { documentRef, windowRef } = createEnvironment();
+
+    const result = await bootClient({
+      THREE: fakeThree,
+      windowRef,
+      documentRef,
+      fetchConfig: async () => ({ testModeEnabled: false })
+    });
+
+    result.movement.pressKey("KeyW");
+    result.movement.step(0.5);
+    result.movement.releaseKey("KeyW");
+    expect(result.state.player.position.z).toBeLessThan(3);
+
+    result.state.player.position.z = -3.7;
+    result.movement.pressKey("KeyW");
+    result.movement.step(1);
+    result.movement.releaseKey("KeyW");
+    expect(result.state.player.position.z).toBeGreaterThanOrEqual(-3.75);
+  });
+
+  it("supports click-to-move while preventing entry into blockers", async () => {
+    const { documentRef, windowRef } = createEnvironment();
+
+    const result = await bootClient({
+      THREE: fakeThree,
+      windowRef,
+      documentRef,
+      fetchConfig: async () => ({ testModeEnabled: false })
+    });
+
+    result.movement.clickToMove(2.5, -2.5);
+    expect(result.state.player.position).toMatchObject({ x: 2.5, z: -2.5 });
+
+    result.movement.clickToMove(0, 0);
+    expect(result.state.player.position).not.toMatchObject({ x: 0, z: 0 });
+  });
 });
+
