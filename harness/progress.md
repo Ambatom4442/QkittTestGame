@@ -6,7 +6,7 @@
 - Fast check: pass (`npm run check:fast` and `npm run check:changed`)
 - Active ticket: H-07 - Reset features that passed against fakes (owner: Q-HEAT)
 - Blocker: none
-- Next best step: re-run reviewer verdict and update PR evidence after removing circular behavior tests
+- Next best step: awaiting human review on PR #26 (do not merge)
 
 ## Harness feedback (for Q-HEAT change)
 
@@ -23,8 +23,9 @@
   - `npm run check:changed` -> pass
   - `python harness/checks/verify_feature.py F-010 --sandbox` -> fail (expected dependency gate proof after reset)
 - Evidence: `harness/feature_list.json` now points reset features at P-ticket-owned Playwright test files; legacy shell checks remain explicit smoke checks
+- Reviewer verdict: `accept` (h07-reviewer-final-4); pasted to PR #26 comment.
 - Risks or unverified paths: future P-ticket test files referenced in verification do not exist yet by design; they are created in P-05..P-08
-- Next best step: paste the updated reviewer verdict into PR #26 and keep the PR unmerged
+- Next best step: await human review and follow-up tickets P-05..P-08
 
 ### 2026-11-12 - Q-HEAT - H-09
 
