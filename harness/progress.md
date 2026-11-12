@@ -2,18 +2,31 @@
 
 ## Current verified state
 
-- Branch / commit: harness/change-h09-agent-tooling-prereqs @ working tree (uncommitted)
-- Fast check: pass (`npm run check:fast` as part of `npm run check:changed`)
-- Changed-scope check: pass (`npm run check:changed`)
-- Active ticket: H-09 - Agent tooling prerequisites (owner: Q-HEAT)
-- Blocker: `gh` is not installed in this environment, so `npm run setup` exits with an actionable missing-prerequisite message
-- Next best step: open PR with H-09 acceptance evidence and reviewer verdict
+- Branch / commit: harness/change-h07-reset-fake-verified-features @ 172b902
+- Fast check: pass (`npm run check:fast` and `npm run check:changed`)
+- Active ticket: H-07 - Reset features that passed against fakes (owner: Q-HEAT)
+- Blocker: none
+- Next best step: awaiting human review on PR #26 (do not merge)
 
 ## Harness feedback (for Q-HEAT change)
 
 - None yet.
 
 ## Session log
+### 2026-11-12 - Q-HEAT - H-07
+
+- Goal: reset fake-verified feature pass states and require behavior-level browser verification for UI features
+- Done: reset F-005/F-006/F-007/F-008/F-009/F-011 to `not_started`, moved F-010/F-012 to `active`, labeled existing e2e tests as `[shell check]`, removed circular `*behaviour.test.js` additions from this PR, and rewired F-005..F-012 verification to P-ticket future Playwright test files with ticket-linked blocked reasons; updated ADR-0005/H-07 metadata
+- Verification run (commands -> result):
+  - `python q_heat_kit/scripts/qhc_check.py --harness .` -> pass
+  - `npm run check:fast` -> pass
+  - `npm run check:changed` -> pass
+  - `python harness/checks/verify_feature.py F-010 --sandbox` -> fail (expected dependency gate proof after reset)
+- Evidence: `harness/feature_list.json` now points reset features at P-ticket-owned Playwright test files; legacy shell checks remain explicit smoke checks
+- Reviewer verdict: `accept` (h07-reviewer-final-4); pasted to PR #26 comment.
+- Risks or unverified paths: future P-ticket test files referenced in verification do not exist yet by design; they are created in P-05..P-08
+- Next best step: await human review and follow-up tickets P-05..P-08
+
 ### 2026-11-12 - Q-HEAT - H-09
 
 - Goal: gate setup on required local tooling (Docker, Node, Python, GitHub CLI) and document prerequisites for PR workflow

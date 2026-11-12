@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("serves boot assets and test-mode client config", async ({ page, request }) => {
+test("[shell check] serves boot assets and test-mode client config", async ({ page, request }) => {
   const configResponse = await request.get("/api/client-config");
   expect(configResponse.ok()).toBeTruthy();
   await expect(configResponse.json()).resolves.toEqual({ testModeEnabled: true });

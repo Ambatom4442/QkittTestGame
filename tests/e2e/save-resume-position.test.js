@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { createGame, createProfile, uniqueName } from "./helpers.js";
 
-test("saves and resumes position through live app endpoints", async ({ page, request }) => {
+test("[shell check] saves and resumes position through live app endpoints", async ({ page, request }) => {
   const profile = await createProfile(request, uniqueName("sherlock"));
   const game = await createGame(request, { profileId: profile.id, slot: 1 });
 

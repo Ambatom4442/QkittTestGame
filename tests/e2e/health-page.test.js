@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("serves built client and health endpoint", async ({ page, request }) => {
+test("[shell check] serves built client and health endpoint", async ({ page, request }) => {
   const response = await page.goto("/");
   expect(response?.ok()).toBeTruthy();
   await expect(page).toHaveTitle("Q-Game");

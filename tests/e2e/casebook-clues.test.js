@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { createGame, createProfile, interact, uniqueName } from "./helpers.js";
 
-test("opens casebook and lists collected clues exactly once", async ({ page, request }) => {
+test("[shell check] opens casebook and lists collected clues exactly once", async ({ page, request }) => {
   const profile = await createProfile(request, uniqueName("helen"));
   const game = await createGame(request, { profileId: profile.id, slot: 4 });
 

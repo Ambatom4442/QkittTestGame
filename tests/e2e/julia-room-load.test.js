@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("loads L-06 scene data and returns interactables in chapter order", async ({ page, request }) => {
+test("[shell check] loads L-06 scene data and returns interactables in chapter order", async ({ page, request }) => {
   const chapterResponse = await request.get("/api/chapters/C-04/scenes");
   expect(chapterResponse.ok()).toBeTruthy();
   const chapterPayload = await chapterResponse.json();

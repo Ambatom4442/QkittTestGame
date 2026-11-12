@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { createGame, createProfile, interact, uniqueName } from "./helpers.js";
 
-test("collects all L-06 interaction clues through the events API flow", async ({ page, request }) => {
+test("[shell check] collects all L-06 interaction clues through the events API flow", async ({ page, request }) => {
   const profile = await createProfile(request, uniqueName("watson"));
   const game = await createGame(request, { profileId: profile.id, slot: 2 });
 
