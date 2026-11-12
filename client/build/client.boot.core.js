@@ -9,7 +9,8 @@ function cloneState(state) {
       position: { ...state.player.position },
       yaw: state.player.yaw
     },
-    interactables: state.interactables.map((interactable) => ({ ...interactable }))
+    interactables: state.interactables.map((interactable) => ({ ...interactable })),
+    casebookClues: state.casebookClues.map((clue) => ({ ...clue }))
   };
 }
 
@@ -304,6 +305,62 @@ function normalizeSceneData(sceneData) {
   return { id: sceneId, interactables };
 }
 
+function normalizeCasebookData(casebookData) {
+  if (!casebookData || typeof casebookData !== "object") {
+    return [];
+  }
+
+  const seen = new Set();
+  const clues = Array.isArray(casebookData.clues) ? casebookData.clues : [];
+  const normalized = [];
+
+  for (const clue of clues) {
+    if (!clue || typeof clue !== "object") {
+      continue;
+    }
+
+    const id = String(clue.id ?? "");
+    if (!id || seen.has(id)) {
+      continue;
+    }
+
+    seen.add(id);
+    normalized.push({
+      id,
+      title: String(clue.title ?? id),
+      text: String(clue.text ?? "")
+    });
+  }
+
+  return normalized;
+}
+
+function renderCasebook(documentRef, casebookClues) {
+  const host = documentRef?.getElementById?.("qgame-casebook-clues");
+  const panel = documentRef?.getElementById?.("qgame-casebook");
+  const toggle = documentRef?.getElementById?.("qgame-casebook-toggle");
+
+  if (host && typeof documentRef?.createElement === "function") {
+    host.innerHTML = "";
+    for (const clue of casebookClues) {
+      const item = documentRef.createElement("li");
+      item.dataset.clueId = clue.id;
+      item.textContent = clue.text ? `${clue.id}: ${clue.title} - ${clue.text}` : `${clue.id}: ${clue.title}`;
+      host.appendChild(item);
+    }
+  }
+
+  if (panel && toggle && typeof toggle.addEventListener === "function" && toggle.dataset.bound !== "1") {
+    panel.hidden = true;
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.addEventListener("click", () => {
+      panel.hidden = !panel.hidden;
+      toggle.setAttribute("aria-expanded", panel.hidden ? "false" : "true");
+    });
+    toggle.dataset.bound = "1";
+  }
+}
+
 function renderInteractables(documentRef, sceneData) {
   const host = documentRef?.getElementById?.("qgame-interactables");
   if (!host || typeof documentRef?.createElement !== "function") {
@@ -320,10 +377,15 @@ function renderInteractables(documentRef, sceneData) {
     host.appendChild(item);
   }
 }
-export async function bootClient({ THREE, windowRef, documentRef, fetchConfig, fetchScene }) {
+export async function bootClient({ THREE, windowRef, documentRef, fetchConfig, fetchScene, fetchCasebook, gameId }) {
   const config = await fetchConfig();
   const sceneData = normalizeSceneData(
     typeof fetchScene === "function" ? await fetchScene("L-06") : null
+  );
+  const casebookData = normalizeCasebookData(
+    typeof fetchCasebook === "function" && Number.isInteger(gameId) && gameId > 0
+      ? await fetchCasebook(gameId)
+      : null
   );
   const { camera, scene } = createScene(THREE);
   const canvas = documentRef.getElementById("qgame-canvas");
@@ -343,9 +405,11 @@ export async function bootClient({ THREE, windowRef, documentRef, fetchConfig, f
       position: { x: 0, y: 1.6, z: 3 },
       yaw: 0
     },
-    interactables: sceneData.interactables
+    interactables: sceneData.interactables,
+    casebookClues: casebookData
   };
   renderInteractables(documentRef, sceneData);
+  renderCasebook(documentRef, casebookData);
   const movement = createMovementController({ state, camera, windowRef, canvas });
 
   if (state.testMode) {

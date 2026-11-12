@@ -14,6 +14,17 @@ const CONTENT_TYPES = {
 
 const THREE_MODULE_PATH = fileURLToPath(new URL("../../node_modules/three/build/three.module.js", import.meta.url));
 
+const CLUE_DEFINITIONS = Object.freeze({
+  "E-06": Object.freeze({ id: "E-06", title: "Repairs not needed", text: "A pretext to move Helen into Julia's room." }),
+  "E-07": Object.freeze({ id: "E-07", title: "Barred shutters", text: "Nobody entered by the window." }),
+  "E-09": Object.freeze({ id: "E-09", title: "Dummy bell-pull", text: "Rings nothing; hooked above the ventilator." }),
+  "E-10": Object.freeze({ id: "E-10", title: "Ventilator into next room", text: "The rooms connect through a small opening." }),
+  "E-11": Object.freeze({ id: "E-11", title: "Bed clamped", text: "The bed is fixed under the cord." }),
+  "E-12": Object.freeze({ id: "E-12", title: "New bell-pull and ventilator", text: "Installed shortly before Julia died." }),
+  "E-14": Object.freeze({ id: "E-14", title: "Iron safe", text: "Something in the safe matters." }),
+  "E-15": Object.freeze({ id: "E-15", title: "Saucer of milk", text: "Food placed for an animal." })
+});
+
 const SCENE_DEFINITIONS = Object.freeze([
   Object.freeze({
     id: "L-05",
@@ -141,6 +152,19 @@ function findSceneInteractable(sceneId, objectId, action) {
     (interactable) => interactable.objectId === objectId && interactable.action === action
   ) ?? null;
 }
+function formatCasebookClue(clueId) {
+  const known = CLUE_DEFINITIONS[clueId];
+  if (known) {
+    return { id: known.id, title: known.title, text: known.text };
+  }
+
+  return { id: clueId, title: clueId, text: "" };
+}
+
+function formatCasebook(state) {
+  return state.clues.map((clueId) => formatCasebookClue(clueId));
+}
+
 function formatScene(scene) {
   return {
     id: scene.id,
@@ -353,6 +377,31 @@ export function buildServer({ logger = false, staticRoot = "client/build", db = 
       clueId: interactable.clueId,
       alreadyCollected,
       clues
+    };
+  });
+
+  app.get("/api/games/:id/casebook", async (request, reply) => {
+    if (!db) {
+      return sendDbUnavailable(reply);
+    }
+
+    const gameId = Number.parseInt(request.params?.id ?? "", 10);
+    if (!Number.isInteger(gameId) || gameId <= 0) {
+      return reply.code(400).send({ code: "INVALID_GAME_ID", message: "Game id must be a positive integer" });
+    }
+
+    const row = db
+      .prepare("SELECT id, profile_id, slot_name, scene_id, position_json, updated_at FROM save_slots WHERE id = ?")
+      .get(gameId);
+
+    if (!row) {
+      return reply.code(404).send({ code: "GAME_NOT_FOUND", message: "Game not found" });
+    }
+
+    const slot = formatSaveSlot(row);
+    return {
+      gameId: slot.id,
+      clues: formatCasebook({ clues: slot.clues })
     };
   });
   app.get("/api/games/:id/resume", async (request, reply) => {
