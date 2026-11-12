@@ -6,6 +6,9 @@
 - Fast check: `npm run check:fast`
 - Changed-scope check: `npm run check:changed`
 - Full check: `npm run check`
+- Sandbox start (Docker): `npm run sandbox:up`
+- Sandbox full check (Docker): `npm run sandbox:check`
+- Sandbox teardown (Docker): `npm run sandbox:down`
 
 ## Golden journey placeholders
 
@@ -18,4 +21,5 @@
 - A session is incomplete if check:fast fails.
 - A feature is not passing without recorded verification evidence.
 - Setup and checks must be rerunnable from a clean checkout.
+- `npm run sandbox:check` must match local Docker and GitHub Actions behavior.
 - Any repeated failure should become a dedicated sensor or feature.

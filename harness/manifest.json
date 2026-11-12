@@ -8,7 +8,7 @@
     "Two agent platforms and GitHub Actions CI"
   ],
   "created": "2026-11-11",
-  "updated": "2026-11-11",
+  "updated": "2026-11-12",
   "harness_owners": [
     "@Ambatom4442"
   ],
@@ -61,7 +61,13 @@
       "owner": "harness"
     }
   ],
-  "external_components": [],
+  "external_components": [
+    {
+      "name": "docker-compose sandbox",
+      "purpose": "Run app and checks in a reproducible container environment",
+      "introduced_by": "H-01"
+    }
+  ],
   "baseline": {
     "time_to_first_passing_test_min": null,
     "check_fast_seconds": null,

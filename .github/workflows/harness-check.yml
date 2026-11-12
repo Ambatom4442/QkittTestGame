@@ -23,22 +23,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+      - name: Sandbox full check
+        run: docker compose run --rm -e BRANCH_NAME checks npm run check
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-
-      - name: Setup
-        run: npm run setup
-
-      - name: Kit and harness integrity
-        run: python q_heat_kit/scripts/qhc_check.py --harness .
-
-      - name: Policy
-        run: python harness/checks/policy_check.py --base origin/${{ github.base_ref || 'main' }}
-
-      - name: Full check
-        run: npm run check
+      - name: Tear down sandbox
+        if: always()
+        run: docker compose down --volumes --remove-orphans

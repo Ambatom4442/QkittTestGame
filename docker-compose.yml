@@ -1,0 +1,53 @@
+name: q-game-sandbox
+
+services:
+  app:
+    image: node:22-bookworm
+    working_dir: /workspace
+    command: ["bash", "-lc", "npm ci && npm run start"]
+    environment:
+      HOST: 0.0.0.0
+      PORT: "3000"
+      QGAME_DB_PATH: /workspace/data/qgame.db
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/workspace
+      - qgame_node_modules:/workspace/node_modules
+      - qgame_sqlite:/workspace/data
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+
+  checks:
+    image: mcr.microsoft.com/playwright:v1.55.0-jammy
+    working_dir: /workspace
+    entrypoint:
+      - bash
+      - -lc
+      - |
+        if ! command -v python >/dev/null 2>&1 && command -v python3 >/dev/null 2>&1; then
+          ln -sf "$(command -v python3)" /usr/local/bin/python
+        fi
+        npm ci
+        exec "$@"
+      - --
+    command: ["npm", "run", "check"]
+    depends_on:
+      app:
+        condition: service_healthy
+    environment:
+      HOST: 0.0.0.0
+      PORT: "3000"
+      QGAME_DB_PATH: /workspace/data/qgame.db
+    volumes:
+      - .:/workspace
+      - qgame_node_modules:/workspace/node_modules
+      - qgame_sqlite:/workspace/data
+
+volumes:
+  qgame_node_modules:
+  qgame_sqlite:
