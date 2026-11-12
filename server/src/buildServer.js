@@ -2,6 +2,7 @@ import Fastify from "fastify";
 import { access, readFile } from "node:fs/promises";
 import { extname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { loadCaseContent } from "./contentLoader.js";
 
 const CONTENT_TYPES = {
   ".css": "text/css; charset=utf-8",
@@ -13,62 +14,6 @@ const CONTENT_TYPES = {
 };
 
 const THREE_BUILD_ROOT = fileURLToPath(new URL("../../node_modules/three/build/", import.meta.url));
-
-const CLUE_DEFINITIONS = Object.freeze({
-  "E-06": Object.freeze({ id: "E-06", title: "Repairs not needed", text: "A pretext to move Helen into Julia's room." }),
-  "E-07": Object.freeze({ id: "E-07", title: "Barred shutters", text: "Nobody entered by the window." }),
-  "E-09": Object.freeze({ id: "E-09", title: "Dummy bell-pull", text: "Rings nothing; hooked above the ventilator." }),
-  "E-10": Object.freeze({ id: "E-10", title: "Ventilator into next room", text: "The rooms connect through a small opening." }),
-  "E-11": Object.freeze({ id: "E-11", title: "Bed clamped", text: "The bed is fixed under the cord." }),
-  "E-12": Object.freeze({ id: "E-12", title: "New bell-pull and ventilator", text: "Installed shortly before Julia died." }),
-  "E-14": Object.freeze({ id: "E-14", title: "Iron safe", text: "Something in the safe matters." }),
-  "E-15": Object.freeze({ id: "E-15", title: "Saucer of milk", text: "Food placed for an animal." })
-});
-
-const DEDUCTION_RULES = Object.freeze({
-  "D-03": Object.freeze({
-    id: "D-03",
-    requiredClueIds: Object.freeze(["E-07", "E-08"]),
-    hintId: "H-D03-SHUTTERS"
-  }),
-  "D-06": Object.freeze({
-    id: "D-06",
-    requiredClueIds: Object.freeze(["E-09", "E-10", "E-11", "E-12"]),
-    hintId: "H-D06-ROUTE"
-  })
-});
-
-const SCENE_DEFINITIONS = Object.freeze([
-  Object.freeze({
-    id: "L-05",
-    chapterId: "C-04",
-    title: "Roylott's bedroom",
-    interactables: Object.freeze([
-      Object.freeze({ objectId: "iron-safe", action: "inspect", clueId: "E-14", prompt: "Inspect iron safe" }),
-      Object.freeze({ objectId: "saucer-of-milk", action: "inspect", clueId: "E-15", prompt: "Inspect saucer of milk" })
-    ])
-  }),
-  Object.freeze({
-    id: "L-06",
-    chapterId: "C-04",
-    title: "Julia's bedroom",
-    interactables: Object.freeze([
-      Object.freeze({ objectId: "barred-shutters", action: "inspect", clueId: "E-07", prompt: "Inspect barred shutters" }),
-      Object.freeze({ objectId: "bell-pull", action: "pull", clueId: "E-09", prompt: "Pull bell-pull" }),
-      Object.freeze({ objectId: "ventilator", action: "inspect", clueId: "E-10", prompt: "Inspect ventilator" }),
-      Object.freeze({ objectId: "bed-frame", action: "inspect", clueId: "E-11", prompt: "Inspect bed frame" }),
-      Object.freeze({ objectId: "bell-wire", action: "inspect", clueId: "E-12", prompt: "Inspect bell wire" })
-    ])
-  }),
-  Object.freeze({
-    id: "L-07",
-    chapterId: "C-04",
-    title: "Helen's bedroom",
-    interactables: Object.freeze([
-      Object.freeze({ objectId: "repair-wall", action: "inspect", clueId: "E-06", prompt: "Inspect repaired wall" })
-    ])
-  })
-]);
 
 function contentTypeFor(filePath) {
   return CONTENT_TYPES[extname(filePath)] ?? "application/octet-stream";
@@ -182,8 +127,8 @@ function sendDbUnavailable(reply) {
   return reply.code(503).send({ code: "DB_UNAVAILABLE", message: "Database is not available" });
 }
 
-function findSceneInteractable(sceneId, objectId, action) {
-  const scene = SCENE_DEFINITIONS.find((candidate) => candidate.id === sceneId);
+function findSceneInteractable(scenes, sceneId, objectId, action) {
+  const scene = scenes.find((candidate) => candidate.id === sceneId);
   if (!scene) {
     return null;
   }
@@ -192,8 +137,8 @@ function findSceneInteractable(sceneId, objectId, action) {
     (interactable) => interactable.objectId === objectId && interactable.action === action
   ) ?? null;
 }
-function formatCasebookClue(clueId) {
-  const known = CLUE_DEFINITIONS[clueId];
+function formatCasebookClue(cluesById, clueId) {
+  const known = cluesById.get(clueId);
   if (known) {
     return { id: known.id, title: known.title, text: known.text };
   }
@@ -201,8 +146,8 @@ function formatCasebookClue(clueId) {
   return { id: clueId, title: clueId, text: "" };
 }
 
-function formatCasebook(state) {
-  return state.clues.map((clueId) => formatCasebookClue(clueId));
+function formatCasebook(cluesById, state) {
+  return state.clues.map((clueId) => formatCasebookClue(cluesById, clueId));
 }
 
 function areSameIdSet(left, right) {
@@ -230,6 +175,7 @@ function formatScene(scene) {
 }
 export function buildServer({ logger = false, staticRoot = "client/build", db = null, testModeEnabled = false } = {}) {
   const app = Fastify({ logger });
+  const { cluesById, deductionRules, scenes } = loadCaseContent();
 
   app.get("/api/health", async () => ({ status: "ok" }));
 
@@ -241,15 +187,15 @@ export function buildServer({ logger = false, staticRoot = "client/build", db = 
       return reply.code(400).send({ code: "INVALID_CHAPTER_ID", message: "Chapter id is required" });
     }
 
-    const scenes = SCENE_DEFINITIONS
+    const scenesForChapter = scenes
       .filter((scene) => scene.chapterId === chapterId)
       .map((scene) => formatScene(scene));
 
-    if (scenes.length === 0) {
+    if (scenesForChapter.length === 0) {
       return reply.code(404).send({ code: "CHAPTER_NOT_FOUND", message: "Chapter not found" });
     }
 
-    return { chapterId, scenes };
+    return { chapterId, scenes: scenesForChapter };
   });
 
   app.get("/api/scenes/:id", async (request, reply) => {
@@ -258,7 +204,7 @@ export function buildServer({ logger = false, staticRoot = "client/build", db = 
       return reply.code(400).send({ code: "INVALID_SCENE_ID", message: "Scene id is required" });
     }
 
-    const scene = SCENE_DEFINITIONS.find((candidate) => candidate.id === sceneId);
+    const scene = scenes.find((candidate) => candidate.id === sceneId);
     if (!scene) {
       return reply.code(404).send({ code: "SCENE_NOT_FOUND", message: "Scene not found" });
     }
@@ -403,7 +349,7 @@ export function buildServer({ logger = false, staticRoot = "client/build", db = 
       return reply.code(400).send({ code: "INVALID_INTERACTION", message: "sceneId, objectId, and action are required" });
     }
 
-    const interactable = findSceneInteractable(sceneId, objectId, action);
+    const interactable = findSceneInteractable(scenes, sceneId, objectId, action);
     if (!interactable || !interactable.clueId) {
       return reply.code(404).send({ code: "INTERACTION_NOT_FOUND", message: "Interaction not found" });
     }
@@ -462,7 +408,7 @@ export function buildServer({ logger = false, staticRoot = "client/build", db = 
     const slot = formatSaveSlot(row);
     return {
       gameId: slot.id,
-      clues: formatCasebook({ clues: slot.clues })
+      clues: formatCasebook(cluesById, { clues: slot.clues })
     };
   });
 
@@ -487,7 +433,7 @@ export function buildServer({ logger = false, staticRoot = "client/build", db = 
       return reply.code(400).send({ code: "INVALID_DEDUCTION_CLUES", message: "clueIds must include at least one clue id" });
     }
 
-    const rule = DEDUCTION_RULES[deductionId];
+    const rule = deductionRules.get(deductionId);
     if (!rule) {
       return reply.code(404).send({ code: "DEDUCTION_NOT_FOUND", message: "Deduction not found" });
     }

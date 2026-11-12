@@ -1,0 +1,42 @@
+[
+  {
+    "id": "E-06",
+    "title": "Repairs not needed",
+    "text": "A pretext to move Helen into Julia's room."
+  },
+  {
+    "id": "E-07",
+    "title": "Barred shutters",
+    "text": "Nobody entered by the window."
+  },
+  {
+    "id": "E-09",
+    "title": "Dummy bell-pull",
+    "text": "Rings nothing; hooked above the ventilator."
+  },
+  {
+    "id": "E-10",
+    "title": "Ventilator into next room",
+    "text": "The rooms connect through a small opening."
+  },
+  {
+    "id": "E-11",
+    "title": "Bed clamped",
+    "text": "The bed is fixed under the cord."
+  },
+  {
+    "id": "E-12",
+    "title": "New bell-pull and ventilator",
+    "text": "Installed shortly before Julia died."
+  },
+  {
+    "id": "E-14",
+    "title": "Iron safe",
+    "text": "Something in the safe matters."
+  },
+  {
+    "id": "E-15",
+    "title": "Saucer of milk",
+    "text": "Food placed for an animal."
+  }
+]

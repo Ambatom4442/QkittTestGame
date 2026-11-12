@@ -26,7 +26,8 @@
     "sandbox:down": "docker compose down --volumes --remove-orphans",
     "sandbox:check": "docker compose run --rm checks npm run check",
     "start": "node server/src/index.js",
-    "check:golden-boot": "node harness/checks/golden_boot.mjs"
+    "check:golden-boot": "node harness/checks/golden_boot.mjs",
+    "check:content-as-data": "node harness/checks/content_as_data.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",

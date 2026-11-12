@@ -15,6 +15,19 @@
 
 ## Session log
 
+### 2026-11-12 - Q-HEAT - H-04
+
+- Goal: enforce content-as-data and add real speckled-band case files for validation/runtime loading
+- Done: added `content/cases/speckled-band/{case,clues,deductions}.json`, created `server/src/contentLoader.js`, refactored `server/src/buildServer.js` to read scenes/clues/deductions from content data, and added non-blocking sensor `S-058-content-as-data`
+- Verification run (commands -> result):
+  - `npm run content:validate` -> pass
+  - `npm run test:api -- deductions events-clues no-answer-leak` -> pass
+  - `npm run check:content-as-data` -> pass
+  - `node harness/checks/content_as_data.mjs --root <temp origin/main worktree>` -> fail (proof on current main)
+- Evidence: no `E-xx` / `D-xx` / `R-xx` literals remain in `server/src/**` outside loader; required case file now exists and is validated
+- Risks or unverified paths: sensor is non-blocking until P-04 merges by design
+- Next best step: flip `S-058-content-as-data` to blocking when P-04 is merged
+
 ### 2026-11-12 - Copilot - F-013
 
 - Goal: implement F-013 on a dedicated feature branch

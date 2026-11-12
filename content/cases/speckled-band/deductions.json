@@ -1,0 +1,22 @@
+[
+  {
+    "id": "D-03",
+    "requiredClueIds": [
+      "E-07",
+      "E-08"
+    ],
+    "requiredDeductionIds": [],
+    "hintId": "H-D03-SHUTTERS"
+  },
+  {
+    "id": "D-06",
+    "requiredClueIds": [
+      "E-09",
+      "E-10",
+      "E-11",
+      "E-12"
+    ],
+    "requiredDeductionIds": [],
+    "hintId": "H-D06-ROUTE"
+  }
+]

@@ -8,6 +8,7 @@
 - Full check: `npm run check`
 - E2E (real browser): `npm run test:e2e`
 - Golden boot (real browser + screenshot): `npm run check:golden-boot`
+- Content-as-data sensor: `npm run check:content-as-data`
 - Sandbox start (Docker): `npm run sandbox:up`
 - Sandbox full check (Docker): `npm run sandbox:check`
 - Sandbox teardown (Docker): `npm run sandbox:down`
@@ -26,5 +27,6 @@
 - Setup and checks must be rerunnable from a clean checkout.
 - `tests/e2e/**` must run via Playwright in a real Chromium browser (no fake/mocked browser-engine classes).
 - Golden-boot checks must emit `artifacts/golden-boot.png` and CI must upload it.
+- `content-as-data` is registered as non-blocking in this PR; it becomes blocking when P-04 merges.
 - `npm run sandbox:check` must match local Docker and GitHub Actions behavior.
 - Any repeated failure should become a dedicated sensor or feature.
