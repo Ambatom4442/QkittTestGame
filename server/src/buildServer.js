@@ -12,7 +12,7 @@ const CONTENT_TYPES = {
   ".txt": "text/plain; charset=utf-8"
 };
 
-const THREE_MODULE_PATH = fileURLToPath(new URL("../../node_modules/three/build/three.module.js", import.meta.url));
+const THREE_BUILD_ROOT = fileURLToPath(new URL("../../node_modules/three/build/", import.meta.url));
 
 const CLUE_DEFINITIONS = Object.freeze({
   "E-06": Object.freeze({ id: "E-06", title: "Repairs not needed", text: "A pretext to move Helen into Julia's room." }),
@@ -72,6 +72,21 @@ const SCENE_DEFINITIONS = Object.freeze([
 
 function contentTypeFor(filePath) {
   return CONTENT_TYPES[extname(filePath)] ?? "application/octet-stream";
+}
+
+function resolveThreeModulePath(rawPath) {
+  const requestPath = decodeURIComponent((rawPath ?? "").split("?")[0]).replace(/^\/+/, "");
+  if (!requestPath) {
+    return null;
+  }
+
+  const root = resolve(THREE_BUILD_ROOT);
+  const candidate = resolve(root, requestPath);
+  if (!candidate.toLowerCase().startsWith(root.toLowerCase())) {
+    return null;
+  }
+
+  return candidate;
 }
 
 function resolveClientPath(staticRoot, rawPath) {
@@ -250,13 +265,18 @@ export function buildServer({ logger = false, staticRoot = "client/build", db = 
 
     return formatScene(scene);
   });
-  app.get("/vendor/three.module.js", async (request, reply) => {
-    if (!(await exists(THREE_MODULE_PATH))) {
+  app.get("/vendor/:moduleName", async (request, reply) => {
+    const requestedPath = resolveThreeModulePath(request.params?.moduleName);
+    if (!requestedPath || extname(requestedPath) !== ".js") {
       return reply.code(404).send({ code: "THREE_MODULE_MISSING", message: "Three.js module not found" });
     }
 
-    const body = await readFile(THREE_MODULE_PATH);
-    return reply.header("content-type", "text/javascript; charset=utf-8").send(body);
+    if (!(await exists(requestedPath))) {
+      return reply.code(404).send({ code: "THREE_MODULE_MISSING", message: "Three.js module not found" });
+    }
+
+    const body = await readFile(requestedPath);
+    return reply.header("content-type", contentTypeFor(requestedPath)).send(body);
   });
 
   app.get("/api/profiles", async (request, reply) => {

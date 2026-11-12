@@ -16,4 +16,8 @@ test("serves boot assets and test-mode client config", async ({ page, request })
   const threeResponse = await request.get("/vendor/three.module.js");
   expect(threeResponse.ok()).toBeTruthy();
   await expect(threeResponse.text()).resolves.toContain("WebGLRenderer");
+
+  const threeCoreResponse = await request.get("/vendor/three.core.js");
+  expect(threeCoreResponse.ok()).toBeTruthy();
+  await expect(threeCoreResponse.headers()["content-type"] ?? "").toContain("text/javascript");
 });
