@@ -295,8 +295,7 @@
       "title": "Client boots Three.js scene with test mode hook",
       "behavior": "A player can load a Three.js scene and test mode exposes window.__qgame for deterministic checks.",
       "verification": [
-        "npm run test:unit -- client.boot",
-        "npm run test:e2e -- test-mode-hook-behaviour"
+        "npm run test:e2e -- tests/e2e/test-hook.spec.ts"
       ],
       "layers_required": [
         "static",
@@ -310,7 +309,7 @@
       "state": "not_started",
       "owner": null,
       "source": "NFR-62",
-      "blocked_reason": null,
+      "blocked_reason": "Awaiting real behavior test from P-05 (tests/e2e/test-hook.spec.ts).",
       "evidence": null,
       "acceptance": [
         "The boot page visibly renders a non-blank 3D scene canvas and initializes test mode without a blank frame."
@@ -321,8 +320,7 @@
       "title": "First-person movement with collision and click-to-move",
       "behavior": "A player can move with first-person controls, collision, and click-to-move.",
       "verification": [
-        "npm run test:unit -- movement",
-        "npm run test:e2e -- movement-controls-behaviour"
+        "npm run test:e2e -- tests/e2e/movement-controls.spec.ts"
       ],
       "layers_required": [
         "static",
@@ -336,7 +334,7 @@
       "state": "not_started",
       "owner": null,
       "source": "FR-10,FR-11",
-      "blocked_reason": null,
+      "blocked_reason": "Awaiting real behavior test from P-07 (tests/e2e/movement-controls.spec.ts).",
       "evidence": null,
       "acceptance": [
         "On screen, movement visibly changes player position while collision boundaries stop traversal and click-to-move lands at a visible target point."
@@ -347,7 +345,7 @@
       "title": "Save and resume position end to end",
       "behavior": "A player can reload and resume at the saved scene and position.",
       "verification": [
-        "npm run test:e2e -- save-resume-position-behaviour"
+        "npm run test:e2e -- tests/e2e/save-resume.spec.ts"
       ],
       "layers_required": [
         "static",
@@ -362,7 +360,7 @@
       "state": "not_started",
       "owner": null,
       "source": "FR-02,FR-03,FR-04",
-      "blocked_reason": null,
+      "blocked_reason": "Awaiting real behavior test from P-08 (tests/e2e/save-resume.spec.ts).",
       "evidence": null,
       "acceptance": [
         "After reload, the same room is visible and the resumed camera/player position matches the saved location on screen."
@@ -373,8 +371,7 @@
       "title": "Case content schemas and validator with fair-play skeleton",
       "behavior": "A contributor can run schema validation and a fair-play checker skeleton for case content.",
       "verification": [
-        "npm run content:validate",
-        "npm run test:unit -- fair-play"
+        "npm run test:e2e -- tests/e2e/content-contract.spec.ts"
       ],
       "layers_required": [
         "static",
@@ -387,7 +384,7 @@
       "state": "not_started",
       "owner": null,
       "source": "FR-60,FR-61",
-      "blocked_reason": null,
+      "blocked_reason": "Awaiting real behavior test from P-06 (tests/e2e/content-contract.spec.ts).",
       "evidence": null
     },
     {
@@ -395,7 +392,7 @@
       "title": "Julia room scene L-06 loads with interactables",
       "behavior": "A player can load L-06 and see interactable objects in chapter order.",
       "verification": [
-        "npm run test:e2e -- julia-room-load-behaviour"
+        "npm run test:e2e -- tests/e2e/julia-room.spec.ts"
       ],
       "layers_required": [
         "static",
@@ -410,7 +407,7 @@
       "state": "not_started",
       "owner": null,
       "source": "FR-12,FR-14",
-      "blocked_reason": null,
+      "blocked_reason": "Awaiting real behavior test from P-06 (tests/e2e/julia-room.spec.ts).",
       "evidence": null,
       "acceptance": [
         "The Julia room (L-06) is visibly rendered with interactable objects present in chapter order."
@@ -422,7 +419,7 @@
       "behavior": "A player interaction in L-06 grants clues E-07 through E-12 via events API.",
       "verification": [
         "npm run test:api -- events-clues",
-        "npm run test:e2e -- clues-e07-e12-behaviour"
+        "npm run test:e2e -- tests/e2e/clues-flow.spec.ts"
       ],
       "layers_required": [
         "runtime",
@@ -436,7 +433,7 @@
       "state": "active",
       "owner": null,
       "source": "FR-13",
-      "blocked_reason": "e2e verified against fakes",
+      "blocked_reason": "Awaiting real behavior test from P-08 (tests/e2e/clues-flow.spec.ts).",
       "evidence": null
     },
     {
@@ -444,7 +441,7 @@
       "title": "Casebook UI lists collected clues",
       "behavior": "A player can open the casebook and view collected clues exactly once.",
       "verification": [
-        "npm run test:e2e -- casebook-clues-behaviour"
+        "npm run test:e2e -- tests/e2e/casebook.spec.ts"
       ],
       "layers_required": [
         "static",
@@ -458,7 +455,7 @@
       "state": "not_started",
       "owner": null,
       "source": "FR-20",
-      "blocked_reason": null,
+      "blocked_reason": "Awaiting real behavior test from P-08 (tests/e2e/casebook.spec.ts).",
       "evidence": null,
       "acceptance": [
         "The casebook panel visibly opens and lists each collected clue exactly once."
@@ -470,7 +467,7 @@
       "behavior": "A player can submit D-03 and D-06 links, and wrong links return hints only without leaking answers.",
       "verification": [
         "npm run test:api -- deductions",
-        "npm run test:e2e -- deduction-d03-d06-behaviour",
+        "npm run test:e2e -- tests/e2e/deduction-board.spec.ts",
         "npm run test:api -- no-answer-leak"
       ],
       "layers_required": [
@@ -485,7 +482,7 @@
       "state": "active",
       "owner": null,
       "source": "FR-30,FR-31,NFR-52",
-      "blocked_reason": "e2e verified against fakes",
+      "blocked_reason": "Awaiting real behavior test from P-08 (tests/e2e/deduction-board.spec.ts).",
       "evidence": null
     },
     {

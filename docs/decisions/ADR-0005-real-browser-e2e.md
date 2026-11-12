@@ -39,5 +39,5 @@ Playwright adoption alone did not guarantee behavior coverage: several E2E tests
 
 ### Consequences
 
-- Feature pass-state now depends on behavior evidence, not only API/DOM existence.
+- H-07 keeps shell checks as smoke tests and resets pass-state while deferring real behavior proof to P-05..P-08 test files.
 - Shell checks remain available as smoke tests without being mistaken for full behavior proof.

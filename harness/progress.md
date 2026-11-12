@@ -2,11 +2,11 @@
 
 ## Current verified state
 
-- Branch / commit: harness/change-h07-reset-fake-verified-features @ 11cd1d6
-- Fast check: pass (`npm run check:fast` as part of `npm run check:changed`)
+- Branch / commit: harness/change-h07-reset-fake-verified-features @ working tree (uncommitted)
+- Fast check: pass (`npm run check:fast` and `npm run check:changed`)
 - Active ticket: H-07 - Reset features that passed against fakes (owner: Q-HEAT)
 - Blocker: none
-- Next best step: capture reviewer verdict and open PR
+- Next best step: re-run reviewer verdict and update PR evidence after removing circular behavior tests
 
 ## Harness feedback (for Q-HEAT change)
 
@@ -16,16 +16,15 @@
 ### 2026-11-12 - Q-HEAT - H-07
 
 - Goal: reset fake-verified feature pass states and require behavior-level browser verification for UI features
-- Done: reset F-005/F-006/F-007/F-008/F-009/F-011 to `not_started`, moved F-010/F-012 to `active` with `blocked_reason: "e2e verified against fakes"`, labeled existing e2e tests as `[shell check]`, added behavior-driving Playwright tests (`*behaviour.test.js`) for F-005/F-006/F-007/F-009/F-011 plus F-010/F-012 e2e paths, and updated ADR-0005/H-07/changelog/manifest metadata
+- Done: reset F-005/F-006/F-007/F-008/F-009/F-011 to `not_started`, moved F-010/F-012 to `active`, labeled existing e2e tests as `[shell check]`, removed circular `*behaviour.test.js` additions from this PR, and rewired F-005..F-012 verification to P-ticket future Playwright test files with ticket-linked blocked reasons; updated ADR-0005/H-07 metadata
 - Verification run (commands -> result):
   - `python q_heat_kit/scripts/qhc_check.py --harness .` -> pass
   - `npm run check:fast` -> pass
   - `npm run check:changed` -> pass
-  - `docker compose run --rm checks npm run test:e2e -- behaviour` -> pass
   - `python harness/checks/verify_feature.py F-010 --sandbox` -> fail (expected dependency gate proof after reset)
-- Evidence: `harness/feature_list.json` now points UI verification commands at behavior tests; legacy shell checks remain explicit smoke checks
-- Risks or unverified paths: full `npm run sandbox:check` was not executed because H-07 intentionally resets multiple features from passing to active/not_started
-- Next best step: open PR with reviewer verdict and list remaining features that still lack deeper behavior coverage
+- Evidence: `harness/feature_list.json` now points reset features at P-ticket-owned Playwright test files; legacy shell checks remain explicit smoke checks
+- Risks or unverified paths: future P-ticket test files referenced in verification do not exist yet by design; they are created in P-05..P-08
+- Next best step: paste the updated reviewer verdict into PR #26 and keep the PR unmerged
 
 ### 2026-11-12 - Q-HEAT - H-09
 

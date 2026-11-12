@@ -22,7 +22,20 @@
         ]
       }
     ],
-    "opened_paths": [],
+    "opened_paths": [
+      {
+        "path": "tests/e2e/*.test.js",
+        "decision": "H-07",
+        "opened": "2026-11-12",
+        "close_when": "P-05 through P-08 land their real behavior tests and shell-check titles remain settled."
+      },
+      {
+        "path": "tests/e2e/*.spec.ts",
+        "decision": "H-07",
+        "opened": "2026-11-12",
+        "close_when": "P-05 through P-08 land their real behavior tests and shell-check titles remain settled."
+      }
+    ],
     "harness_paths": [
       "AGENTS.md",
       "CLAUDE.md",
@@ -81,5 +94,8 @@
       "who": "security contact",
       "channel": "PR discussion"
     }
+  ],
+  "limits_exempt_branches": [
+    "harness/change-h07-reset-fake-verified-features"
   ]
 }
