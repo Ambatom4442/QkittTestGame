@@ -16,7 +16,7 @@ features = data.get("features", [])
 errors = []
 
 id_pattern = re.compile(r"^F-\d{3}$")
-src_pattern = re.compile(r"^(FR|NFR)-\d{2}(,(FR|NFR)-\d{2})*$")
+src_pattern = re.compile(r"^((FR|NFR)-\d{2}|[HP]-\d{2})(,((FR|NFR)-\d{2}|[HP]-\d{2}))*$")
 
 seen = []
 for feat in features:
@@ -26,7 +26,7 @@ for feat in features:
         errors.append(f"invalid id: {fid}")
     src = str(feat.get("source", ""))
     if not src_pattern.match(src):
-        errors.append(f"{fid} source must be requirement ids only: {src}")
+        errors.append(f"{fid} source must be requirement or ticket ids only: {src}")
 
 if seen != sorted(seen):
     errors.append("features are not ordered by id")
