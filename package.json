@@ -21,11 +21,12 @@
     "check:traceability": "python harness/checks/check_traceability.py",
     "check:fast": "npm run qhc:check && npm run typecheck && npm run lint && npm run content:validate && npm run test:unit && python harness/checks/policy_check.py --base origin/main",
     "check:changed": "npm run check:fast && npm run check:traceability",
-    "check": "npm run check:changed && npm run test:e2e && npm run check:bundle-leak",
+    "check": "npm run check:changed && npm run test:e2e && npm run check:golden-boot && npm run check:bundle-leak",
     "sandbox:up": "docker compose up -d app",
     "sandbox:down": "docker compose down --volumes --remove-orphans",
     "sandbox:check": "docker compose run --rm checks npm run check",
-    "start": "node server/src/index.js"
+    "start": "node server/src/index.js",
+    "check:golden-boot": "node harness/checks/golden_boot.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",

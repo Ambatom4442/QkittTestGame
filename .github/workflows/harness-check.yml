@@ -26,6 +26,14 @@ jobs:
       - name: Sandbox full check
         run: docker compose run --rm -e BRANCH_NAME checks npm run check
 
+      - name: Upload golden-boot artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-boot
+          path: artifacts/golden-boot.png
+          if-no-files-found: warn
+
       - name: Tear down sandbox
         if: always()
         run: docker compose down --volumes --remove-orphans
