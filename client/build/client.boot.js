@@ -1,0 +1,18 @@
+import * as THREE from "/vendor/three.module.js";
+import { bootClient } from "./client.boot.core.js";
+
+async function fetchConfig() {
+  const response = await fetch("/api/client-config");
+  if (!response.ok) {
+    throw new Error(`Failed to load client config: ${response.status}`);
+  }
+
+  return response.json();
+}
+
+void bootClient({
+  THREE,
+  windowRef: window,
+  documentRef: document,
+  fetchConfig
+});

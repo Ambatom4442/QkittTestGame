@@ -1,6 +1,7 @@
 import Fastify from "fastify";
 import { access, readFile } from "node:fs/promises";
 import { extname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const CONTENT_TYPES = {
   ".css": "text/css; charset=utf-8",
@@ -10,6 +11,8 @@ const CONTENT_TYPES = {
   ".svg": "image/svg+xml",
   ".txt": "text/plain; charset=utf-8"
 };
+
+const THREE_MODULE_PATH = fileURLToPath(new URL("../../node_modules/three/build/three.module.js", import.meta.url));
 
 function contentTypeFor(filePath) {
   return CONTENT_TYPES[extname(filePath)] ?? "application/octet-stream";
@@ -84,10 +87,21 @@ function sendDbUnavailable(reply) {
   return reply.code(503).send({ code: "DB_UNAVAILABLE", message: "Database is not available" });
 }
 
-export function buildServer({ logger = false, staticRoot = "client/build", db = null } = {}) {
+export function buildServer({ logger = false, staticRoot = "client/build", db = null, testModeEnabled = false } = {}) {
   const app = Fastify({ logger });
 
   app.get("/api/health", async () => ({ status: "ok" }));
+
+  app.get("/api/client-config", async () => ({ testModeEnabled }));
+
+  app.get("/vendor/three.module.js", async (request, reply) => {
+    if (!(await exists(THREE_MODULE_PATH))) {
+      return reply.code(404).send({ code: "THREE_MODULE_MISSING", message: "Three.js module not found" });
+    }
+
+    const body = await readFile(THREE_MODULE_PATH);
+    return reply.header("content-type", "text/javascript; charset=utf-8").send(body);
+  });
 
   app.get("/api/profiles", async (request, reply) => {
     if (!db) {

@@ -11,8 +11,20 @@ export default [
     files: ["scripts/**/*.mjs", "server/**/*.js"],
     languageOptions: {
       globals: {
+        URL: "readonly",
         console: "readonly",
         process: "readonly"
+      }
+    }
+  },
+  {
+    files: ["client/**/*.js"],
+    languageOptions: {
+      globals: {
+        URLSearchParams: "readonly",
+        document: "readonly",
+        fetch: "readonly",
+        window: "readonly"
       }
     }
   },
