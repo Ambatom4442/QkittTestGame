@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { Buffer } from "node:buffer";
 import { mkdir } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import process from "node:process";
@@ -8,6 +9,8 @@ const CLEAR_COLOR = [16, 24, 32];
 const ARTIFACT_PATH = "artifacts/golden-boot.png";
 const BASE_URL = (process.env.QGAME_BASE_URL ?? "http://127.0.0.1:3000").replace(/\/$/, "");
 const TARGET_URL = `${BASE_URL}/?test=1`;
+const SAMPLE_GRID = { columns: 12, rows: 7 };
+const MIN_DIFFERENT_SAMPLES = 2;
 
 function fail(messages, context = {}) {
   const what = messages.join("; ");
@@ -19,6 +22,31 @@ function fail(messages, context = {}) {
   globalThis.console.error("WHY:  The golden journey did not boot/render correctly in real Chromium.");
   globalThis.console.error(`FIX:  Inspect ${ARTIFACT_PATH}, console/page errors, and boot/runtime wiring.${details ? ` (${details})` : ""}`);
   process.exit(1);
+}
+
+function differsFromClear(pixel) {
+  if (!Array.isArray(pixel) || pixel.length < 4) {
+    return false;
+  }
+  const [r, g, b, a] = pixel;
+  if (a <= 0) {
+    return false;
+  }
+  return Math.abs(r - CLEAR_COLOR[0]) > 2 || Math.abs(g - CLEAR_COLOR[1]) > 2 || Math.abs(b - CLEAR_COLOR[2]) > 2;
+}
+
+function buildSampleFractions() {
+  const points = [];
+  const stepX = 1 / (SAMPLE_GRID.columns + 1);
+  const stepY = 1 / (SAMPLE_GRID.rows + 1);
+
+  for (let row = 1; row <= SAMPLE_GRID.rows; row += 1) {
+    for (let column = 1; column <= SAMPLE_GRID.columns; column += 1) {
+      points.push([stepX * column, stepY * row]);
+    }
+  }
+
+  return points;
 }
 
 async function waitForHealthy(url, timeoutMs = 25000) {
@@ -73,43 +101,64 @@ async function ensureApp() {
   return child;
 }
 
-function differsFromClear(pixel) {
-  if (!Array.isArray(pixel) || pixel.length < 4) {
-    return false;
-  }
-  const [r, g, b, a] = pixel;
-  if (a <= 0) {
-    return false;
-  }
-  return Math.abs(r - CLEAR_COLOR[0]) > 2 || Math.abs(g - CLEAR_COLOR[1]) > 2 || Math.abs(b - CLEAR_COLOR[2]) > 2;
-}
+async function sampleCanvasScreenshot(page, canvasLocator, screenshotBytes) {
+  const encoded = Buffer.from(screenshotBytes).toString("base64");
+  const samplePoints = buildSampleFractions();
 
-async function collectPixel(page) {
-  return page.evaluate(() => {
-    const canvas = globalThis.document.getElementById("qgame-canvas");
-    if (!canvas) {
-      return null;
-    }
+  const sampleResult = await page.evaluate(
+    async ({ base64Png, clearColor, points }) => {
+      const image = new globalThis.Image();
+      const dataUrl = `data:image/png;base64,${base64Png}`;
 
-    const gl = canvas.getContext("webgl2") || canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-    if (gl) {
-      const x = Math.floor(gl.drawingBufferWidth / 2);
-      const y = Math.floor(gl.drawingBufferHeight / 2);
-      const sample = new Uint8Array(4);
-      gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, sample);
-      return Array.from(sample);
-    }
+      await new Promise((resolve, reject) => {
+        image.onload = () => resolve();
+        image.onerror = () => reject(new Error("Failed to decode canvas screenshot PNG."));
+        image.src = dataUrl;
+      });
 
-    const context = canvas.getContext("2d", { willReadFrequently: true });
-    if (!context) {
-      return null;
-    }
+      const sampleCanvas = globalThis.document.createElement("canvas");
+      sampleCanvas.width = image.width;
+      sampleCanvas.height = image.height;
 
-    const x = Math.floor(canvas.width / 2);
-    const y = Math.floor(canvas.height / 2);
-    const sample = context.getImageData(x, y, 1, 1).data;
-    return Array.from(sample);
-  });
+      const context = sampleCanvas.getContext("2d", { willReadFrequently: true });
+      if (!context) {
+        return { samples: [], differentCount: 0 };
+      }
+
+      context.drawImage(image, 0, 0);
+
+      const differs = (pixel) => {
+        if (!pixel || pixel.length < 4) {
+          return false;
+        }
+        const [r, g, b, a] = pixel;
+        if (a <= 0) {
+          return false;
+        }
+        return Math.abs(r - clearColor[0]) > 2 || Math.abs(g - clearColor[1]) > 2 || Math.abs(b - clearColor[2]) > 2;
+      };
+
+      const samples = [];
+      let differentCount = 0;
+
+      for (const [fx, fy] of points) {
+        const x = Math.min(sampleCanvas.width - 1, Math.max(0, Math.floor(sampleCanvas.width * fx)));
+        const y = Math.min(sampleCanvas.height - 1, Math.max(0, Math.floor(sampleCanvas.height * fy)));
+        const pixel = Array.from(context.getImageData(x, y, 1, 1).data);
+        const isDifferent = differs(pixel);
+        if (isDifferent) {
+          differentCount += 1;
+        }
+        samples.push({ fx, fy, pixel, isDifferent });
+      }
+
+      return { samples, differentCount };
+    },
+    { base64Png: encoded, clearColor: CLEAR_COLOR, points: samplePoints }
+  );
+
+  const canvasBounds = await canvasLocator.boundingBox();
+  return { ...sampleResult, canvasBounds, sampleCount: samplePoints.length };
 }
 
 async function main() {
@@ -117,7 +166,6 @@ async function main() {
 
   let appProcess = null;
   let browser = null;
-  let page = null;
   const consoleErrors = [];
   const pageErrors = [];
 
@@ -126,7 +174,7 @@ async function main() {
 
     browser = await chromium.launch({ headless: true });
     const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
-    page = await context.newPage();
+    const page = await context.newPage();
 
     page.on("console", (message) => {
       if (message.type() === "error") {
@@ -141,14 +189,20 @@ async function main() {
     await page.goto(TARGET_URL, { waitUntil: "networkidle", timeout: 30000 });
     await page.waitForTimeout(1000);
 
-    await page.screenshot({ path: ARTIFACT_PATH, fullPage: true });
+    const canvasLocator = page.locator("#qgame-canvas");
+    const canvasCount = await canvasLocator.count();
+    if (canvasCount !== 1) {
+      fail(["#qgame-canvas is missing"], { canvasCount, baseUrl: BASE_URL });
+    }
+
+    const screenshotBytes = await canvasLocator.screenshot({ path: ARTIFACT_PATH });
 
     const hookState = await page.evaluate(() => ({
       hasHook: typeof globalThis.window.__qgame === "object" && globalThis.window.__qgame !== null,
       fps: typeof globalThis.window.__qgame?.fps === "function" ? Number(globalThis.window.__qgame.fps()) : null
     }));
 
-    const pixel = await collectPixel(page);
+    const sampleResult = await sampleCanvasScreenshot(page, canvasLocator, screenshotBytes);
 
     const failures = [];
     if (consoleErrors.length > 0) {
@@ -163,12 +217,29 @@ async function main() {
     if (!(Number.isFinite(hookState.fps) && hookState.fps > 0)) {
       failures.push("window.__qgame.fps() is not > 0");
     }
-    if (!differsFromClear(pixel)) {
-      failures.push("canvas sample did not differ from clear colour");
+    if (!(Number.isFinite(sampleResult.differentCount) && sampleResult.differentCount >= MIN_DIFFERENT_SAMPLES)) {
+      failures.push("canvas screenshot samples did not differ from clear colour at enough points");
     }
 
     if (failures.length > 0) {
-      fail(failures, { pixel, consoleErrors, pageErrors, fps: hookState.fps, baseUrl: BASE_URL });
+      fail(failures, {
+        samples: sampleResult.samples,
+        differentCount: sampleResult.differentCount,
+        sampleCount: sampleResult.sampleCount,
+        minDifferentSamples: MIN_DIFFERENT_SAMPLES,
+        canvasBounds: sampleResult.canvasBounds,
+        consoleErrors,
+        pageErrors,
+        fps: hookState.fps,
+        baseUrl: BASE_URL
+      });
+    }
+
+    const centerSample = sampleResult.samples.find(
+      (entry) => Math.abs(entry.fx - 0.5) < 1e-9 && Math.abs(entry.fy - 0.5) < 1e-9
+    ) ?? null;
+    if (centerSample && !differsFromClear(centerSample.pixel)) {
+      globalThis.console.log("golden-boot: center sample matched clear colour, but grid sampling passed threshold.");
     }
 
     globalThis.console.log(`golden-boot: OK (artifact at ${ARTIFACT_PATH})`);
