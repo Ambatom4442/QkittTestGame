@@ -2,12 +2,12 @@
 
 ## Current verified state
 
-- Branch / commit: feature/f-009-julia-room-interactables @ working tree (uncommitted)
+- Branch / commit: feature/f-010-events-clues @ working tree (uncommitted)
 - Fast check: pass (qhc, typecheck, lint, content validate, unit tests, policy)
 - Full check (last CI): local pass (`npm run check`)
-- Active feature: F-009 - Julia room scene L-06 loads with interactables (owner: Copilot)
+- Active feature: F-010 - Events API grants clues E-07 to E-12 on interact (owner: Copilot)
 - Blocker: none
-- Next best step: F-010 - Events API grants clues E-07 to E-12 on interact
+- Next best step: F-011 - Casebook UI lists collected clues
 
 ## Harness feedback (for Q-HEAT change)
 
@@ -15,6 +15,17 @@
 
 ## Session log
 
+### 2026-11-12 - Copilot - F-010
+
+- Goal: implement F-010 on a dedicated feature branch
+- Done: added `/api/games/:id/interact` event endpoint that grants L-06 clues E-07/E-09/E-10/E-11/E-12, persists collected clues, and keeps duplicate interactions idempotent
+- Verification run (commands -> result):
+  - `npm run test:api -- events-clues` -> pass
+  - `npm run test:e2e -- clues-e07-e12` -> pass
+  - `python harness/checks/verify_feature.py F-010` -> pass
+- Evidence: F-010 marked passing in harness/feature_list.json with command tails
+- Risks or unverified paths: interaction loop is API-driven and metadata-based; fully rendered in-scene interaction UX remains for upcoming gameplay/UI features
+- Next best step: F-011 - Casebook UI lists collected clues
 ### 2026-11-12 - Copilot - F-009
 
 - Goal: implement F-009 on a dedicated feature branch
@@ -132,8 +143,4 @@
 - Files / docs updated: root harness docs/configs, harness state/checks/hooks, .claude, .github workflow, shared skeleton
 - Risks or unverified paths: product runtime/API/gameplay features not implemented yet by design
 - Next best step: F-001 - server serves the built client and /api/health
-
-
-
-
 

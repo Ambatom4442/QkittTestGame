@@ -596,11 +596,61 @@
         "F-009"
       ],
       "priority": 10,
-      "state": "not_started",
+      "state": "passing",
       "owner": null,
       "source": "FR-13",
       "blocked_reason": null,
-      "evidence": null
+      "evidence": {
+        "date": "2026-11-12T08:22:04",
+        "commit": "9eb1bd4",
+        "result": "pass",
+        "runs": [
+          {
+            "command": "npm run test:api -- events-clues",
+            "exit": 0,
+            "seconds": 3.6,
+            "tail": [
+              "> vitest run --config vitest.api.config.ts events-clues",
+              "",
+              "",
+              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
+              "",
+              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/api/events-clues.test.js \u001b[2m(\u001b[22m\u001b[2m1 test\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 767\u001b[2mms\u001b[22m\u001b[39m",
+              "   \u001b[33m\u001b[2m\u00e2\u0153\u201c\u001b[22m\u001b[39m events-clues\u001b[2m > \u001b[22mgrants L-06 clues E-07 to E-12 from interaction events \u001b[33m 766\u001b[2mms\u001b[22m\u001b[39m",
+              "",
+              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m   Start at \u001b[22m 08:21:58",
+              "\u001b[2m   Duration \u001b[22m 2.01s\u001b[2m (transform 55ms, setup 0ms, collect 332ms, tests 767ms, environment 0ms, prepare 251ms)\u001b[22m",
+              "",
+              "(node:40028) ExperimentalWarning: SQLite is an experimental feature and might change at any time",
+              "(Use `node --trace-warnings ...` to show where the warning was created)"
+            ]
+          },
+          {
+            "command": "npm run test:e2e -- clues-e07-e12",
+            "exit": 0,
+            "seconds": 3.8,
+            "tail": [
+              "> vitest run --config vitest.e2e.config.ts clues-e07-e12",
+              "",
+              "",
+              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
+              "",
+              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/e2e/clues-e07-e12.test.js \u001b[2m(\u001b[22m\u001b[2m1 test\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 818\u001b[2mms\u001b[22m\u001b[39m",
+              "   \u001b[33m\u001b[2m\u00e2\u0153\u201c\u001b[22m\u001b[39m clues-e07-e12\u001b[2m > \u001b[22mcollects all L-06 interaction clues through the events API flow \u001b[33m 817\u001b[2mms\u001b[22m\u001b[39m",
+              "",
+              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m   Start at \u001b[22m 08:22:01",
+              "\u001b[2m   Duration \u001b[22m 2.08s\u001b[2m (transform 73ms, setup 0ms, collect 374ms, tests 818ms, environment 0ms, prepare 402ms)\u001b[22m",
+              "",
+              "(node:36804) ExperimentalWarning: SQLite is an experimental feature and might change at any time",
+              "(Use `node --trace-warnings ...` to show where the warning was created)"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "F-011",
