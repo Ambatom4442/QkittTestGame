@@ -14,6 +14,8 @@ from pathlib import Path
 
 LIST = Path("harness/feature_list.json")
 FEATURE_DIR = Path("harness/features")
+ARTIFACTS_DIR = Path("artifacts")
+SCREENSHOT_EXTS = {".png", ".jpg", ".jpeg", ".webp"}
 TAIL = 15
 
 
@@ -90,6 +92,23 @@ def run_verification(cmd, sandbox, compose_cmd):
     return subprocess.run(cmd, shell=True, capture_output=True, text=True)
 
 
+def snapshot_screenshots():
+    if not ARTIFACTS_DIR.exists():
+        return {}
+    snapshots = {}
+    for artifact in ARTIFACTS_DIR.rglob("*"):
+        if artifact.is_file() and artifact.suffix.lower() in SCREENSHOT_EXTS:
+            snapshots[artifact.as_posix()] = artifact.stat().st_mtime_ns
+    return snapshots
+
+
+def changed_screenshots(before, after):
+    return sorted(
+        path for path, mtime in after.items()
+        if path not in before or mtime > before[path]
+    )
+
+
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("feature_id")
@@ -144,6 +163,8 @@ def main():
 
     results = []
     ok = True
+    has_system_layer = "system" in feat.get("layers_required", [])
+    screenshot_before = snapshot_screenshots() if has_system_layer else {}
     for cmd in commands:
         start = time.time()
         proc = run_verification(cmd, sandbox, compose_cmd)
@@ -160,6 +181,28 @@ def main():
             print("\n".join(out))
             break
 
+    screenshots = []
+    if ok and has_system_layer:
+        screenshot_cmd = "npm run check:golden-boot"
+        start = time.time()
+        proc = run_verification(screenshot_cmd, sandbox, compose_cmd)
+        out = (proc.stdout + proc.stderr).strip().splitlines()[-TAIL:]
+        results.append({
+            "command": screenshot_cmd,
+            "exit": proc.returncode,
+            "seconds": round(time.time() - start, 1),
+            "tail": out
+        })
+        print(f"[{'PASS' if proc.returncode == 0 else 'FAIL'}] {screenshot_cmd}")
+        if proc.returncode != 0:
+            ok = False
+            print("\n".join(out))
+        screenshot_after = snapshot_screenshots()
+        screenshots = changed_screenshots(screenshot_before, screenshot_after)
+        if not screenshots:
+            ok = False
+            print("No screenshot artifacts were captured for this system-layer feature.")
+
     evidence = {
         "date": datetime.datetime.now().isoformat(timespec="seconds"),
         "commit": git_head(),
@@ -167,6 +210,8 @@ def main():
         "runs": results,
         "mode": "sandbox" if sandbox else "host"
     }
+    if has_system_layer:
+        evidence["artifacts"] = screenshots
     feat["evidence"] = evidence
     if ok:
         feat["state"] = "passing"

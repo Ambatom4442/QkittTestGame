@@ -15,6 +15,20 @@
 
 ## Session log
 
+### 2026-11-12 - Q-HEAT - H-06
+
+- Goal: require visible UI evidence and independent PR review evidence for system-layer features
+- Done: updated `verify_feature.py` to record screenshot artifact paths for system-layer features, added UI acceptance text + static/runtime/system layers for F-005/F-006/F-007/F-009/F-011, added `.github/pull_request_template.md` evidence checklist, and updated DoD/docs/manifest/changelog with ADR-0009
+- Verification run (commands -> result):
+  - `python harness/checks/verify_feature.py F-009 --sandbox` -> pass
+  - `python harness/checks/verify_feature.py F-013 --sandbox` -> pass
+  - `python q_heat_kit/scripts/qhc_check.py --harness .` -> pass
+  - `npm run check:fast` -> pass
+  - `npm run sandbox:check` -> pass
+- Evidence: `harness/feature_list.json` now records `evidence.artifacts: ["artifacts/golden-boot.png"]` for verified system-layer features
+- Risks or unverified paths: host-mode `check:golden-boot` still errors on Windows process spawn (`spawn EINVAL`); sandbox path is passing and used for required proof
+- Next best step: open PR for H-06 and request independent reviewer-agent verdict
+
 ### 2026-11-12 - Q-HEAT - H-05
 
 - Goal: enforce architecture conformance against ADR-0001 and architecture/06-repo-layout.md

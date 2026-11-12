@@ -31,4 +31,5 @@
 - `content-as-data` is registered as non-blocking in this PR; it becomes blocking when P-04 merges.
 - `architecture-conformance` is registered as non-blocking in this PR; it becomes blocking when P-02 and P-03 are merged.
 - `npm run sandbox:check` must match local Docker and GitHub Actions behavior.
+- `python harness/checks/verify_feature.py <id>` must record screenshot artifact paths for system-layer features.
 - Any repeated failure should become a dedicated sensor or feature.
