@@ -2,18 +2,30 @@
 
 ## Current verified state
 
-- Branch / commit: feature/f-013-bundle-leak-check @ working tree (uncommitted)
-- Fast check: pass (qhc, typecheck, lint, content validate, unit tests, policy)
-- Full check (last CI): local pass (`npm run check`)
-- Active feature: F-013 - Bundle leak check for server-only ids and answers (owner: Copilot)
-- Blocker: none
-- Next best step: all milestone features F-001..F-013 are passing
+- Branch / commit: harness/change-h09-agent-tooling-prereqs @ working tree (uncommitted)
+- Fast check: pass (`npm run check:fast` as part of `npm run check:changed`)
+- Changed-scope check: pass (`npm run check:changed`)
+- Active ticket: H-09 - Agent tooling prerequisites (owner: Q-HEAT)
+- Blocker: `gh` is not installed in this environment, so `npm run setup` exits with an actionable missing-prerequisite message
+- Next best step: open PR with H-09 acceptance evidence and reviewer verdict
 
 ## Harness feedback (for Q-HEAT change)
 
 - None yet.
 
 ## Session log
+### 2026-11-12 - Q-HEAT - H-09
+
+- Goal: gate setup on required local tooling (Docker, Node, Python, GitHub CLI) and document prerequisites for PR workflow
+- Done: updated `scripts/setup.mjs` with prerequisite preflight checks and WHAT/WHY/FIX remediation output, added Python `python3` fallback, documented quick-start prerequisites and `gh auth status` in `AGENTS.md`, and updated ticket/changelog/manifest metadata
+- Verification run (commands -> result):
+  - `python q_heat_kit/scripts/qhc_check.py --harness .` -> pass
+  - `npm run setup` -> expected fail (missing `gh`), with WHAT/WHY/FIX output
+  - `npm run check:fast` -> pass
+  - `npm run check:changed` -> pass
+- Evidence: `npm run setup` reports missing GitHub CLI remediation (`winget install --id GitHub.cli`) while confirming Docker, Node and Python probes pass
+- Risks or unverified paths: optional one-time `gh auth login` remains user-environment dependent and was not performed in this session
+- Next best step: open PR and include reviewer-agent verdict in the PR body
 
 ### 2026-11-12 - Q-HEAT - H-06
 
