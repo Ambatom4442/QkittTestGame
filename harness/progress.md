@@ -176,5 +176,15 @@
 - Risks or unverified paths: product runtime/API/gameplay features not implemented yet by design
 - Next best step: F-001 - server serves the built client and /api/health
 
+### 2026-11-12 - Q-HEAT - H-01
 
-
+- Goal: add a Docker sandbox where local and CI checks run in the same environment
+- Done: added `docker-compose.yml` (`app` + pinned Playwright `checks`), npm `sandbox:*` scripts, sandbox-aware `verify_feature.py`, and CI workflow execution via `docker compose run --rm checks npm run check`
+- Verification run (commands -> result):
+  - `python q_heat_kit/scripts/qhc_check.py --harness .` -> pass
+  - `npm run check:fast` -> pass
+  - `docker compose config` -> pass
+  - `npm run sandbox:check` -> pass
+- Evidence: harness changelog + manifest updated; CI now executes the same compose check command
+- Risks or unverified paths: local Windows proof is captured; GitHub Actions proof remains pending until PR workflow completes
+- Next best step: open PR and confirm `harness-check` passes with the same sandbox command in GitHub Actions

@@ -2,8 +2,9 @@
 """verify_feature.py - run a feature's verification and record the result.
 
 The only way a feature becomes passing (pass-state gating).
-Usage: python harness/checks/verify_feature.py F-001
+Usage: python harness/checks/verify_feature.py F-001 [--sandbox|--no-sandbox]
 """
+import argparse
 import datetime
 import json
 import subprocess
@@ -61,19 +62,67 @@ def git_head():
             text=True,
             check=True
         ).stdout.strip()
-    except Exception:
+    except (OSError, subprocess.SubprocessError):
         return "unknown"
 
 
-def main():
-    if len(sys.argv) != 2:
-        fail(
-            "Missing feature id.",
-            "The check verifies one feature at a time.",
-            "Run: python harness/checks/verify_feature.py F-001"
+def docker_compose_cmd():
+    try:
+        probe = subprocess.run(
+            ["docker", "compose", "version"],
+            capture_output=True,
+            text=True
         )
-    fid = sys.argv[1]
+    except OSError:
+        return None
+    if probe.returncode == 0:
+        return ["docker", "compose"]
+    return None
+
+
+def run_verification(cmd, sandbox, compose_cmd):
+    if sandbox:
+        return subprocess.run(
+            [*compose_cmd, "run", "--rm", "checks", "bash", "-lc", cmd],
+            capture_output=True,
+            text=True
+        )
+    return subprocess.run(cmd, shell=True, capture_output=True, text=True)
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("feature_id")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument(
+        "--sandbox",
+        action="store_true",
+        dest="sandbox",
+        help="Run verification commands in the docker compose checks service."
+    )
+    mode.add_argument(
+        "--no-sandbox",
+        action="store_false",
+        dest="sandbox",
+        help="Run verification commands directly on the host machine."
+    )
+    parser.set_defaults(sandbox=None)
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+    fid = args.feature_id
     path, feat, container = load(fid)
+
+    compose_cmd = docker_compose_cmd()
+    sandbox = compose_cmd is not None if args.sandbox is None else args.sandbox
+    if sandbox and compose_cmd is None:
+        fail(
+            "Sandbox requested but Docker Compose is unavailable.",
+            "--sandbox needs `docker compose` on PATH.",
+            "Install Docker Desktop/Engine, or rerun with --no-sandbox."
+        )
 
     unmet = [d for d in feat.get("depends_on", []) if state_of(d) != "passing"]
     if unmet:
@@ -91,11 +140,13 @@ def main():
             "Add at least one verification command for this feature."
         )
 
+    print(f"Verification mode: {'sandbox' if sandbox else 'host'}")
+
     results = []
     ok = True
     for cmd in commands:
         start = time.time()
-        proc = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+        proc = run_verification(cmd, sandbox, compose_cmd)
         out = (proc.stdout + proc.stderr).strip().splitlines()[-TAIL:]
         results.append({
             "command": cmd,
@@ -113,7 +164,8 @@ def main():
         "date": datetime.datetime.now().isoformat(timespec="seconds"),
         "commit": git_head(),
         "result": "pass" if ok else "fail",
-        "runs": results
+        "runs": results,
+        "mode": "sandbox" if sandbox else "host"
     }
     feat["evidence"] = evidence
     if ok:
