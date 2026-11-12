@@ -489,11 +489,47 @@
         "F-001"
       ],
       "priority": 8,
-      "state": "not_started",
+      "state": "passing",
       "owner": null,
       "source": "FR-60,FR-61",
       "blocked_reason": null,
-      "evidence": null
+      "evidence": {
+        "date": "2026-11-12T08:03:32",
+        "commit": "0e383e7",
+        "result": "pass",
+        "runs": [
+          {
+            "command": "npm run content:validate",
+            "exit": 0,
+            "seconds": 1.0,
+            "tail": [
+              "> q-game@0.1.0 content:validate",
+              "> node scripts/content-validate.mjs",
+              "",
+              "content:validate: no content yet"
+            ]
+          },
+          {
+            "command": "npm run test:unit -- fair-play",
+            "exit": 0,
+            "seconds": 2.5,
+            "tail": [
+              "> q-game@0.1.0 test:unit",
+              "> vitest run --config vitest.unit.config.ts fair-play",
+              "",
+              "",
+              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
+              "",
+              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/unit/fair-play.test.js \u001b[2m(\u001b[22m\u001b[2m2 tests\u001b[22m\u001b[2m)\u001b[22m\u001b[32m 7\u001b[2mms\u001b[22m\u001b[39m",
+              "",
+              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m2 passed\u001b[39m\u001b[22m\u001b[90m (2)\u001b[39m",
+              "\u001b[2m   Start at \u001b[22m 08:03:31",
+              "\u001b[2m   Duration \u001b[22m 764ms\u001b[2m (transform 45ms, setup 0ms, collect 102ms, tests 7ms, environment 0ms, prepare 268ms)\u001b[22m"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "F-009",

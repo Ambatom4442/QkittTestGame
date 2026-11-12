@@ -2,12 +2,12 @@
 
 ## Current verified state
 
-- Branch / commit: feature/f-007-save-resume-position @ working tree (uncommitted)
+- Branch / commit: feature/f-008-content-validator-fair-play @ working tree (uncommitted)
 - Fast check: pass (qhc, typecheck, lint, content validate, unit tests, policy)
 - Full check (last CI): local pass (`npm run check`)
-- Active feature: F-007 - Save and resume position end to end (owner: Copilot)
+- Active feature: F-008 - Case content schemas and validator with fair-play skeleton (owner: Copilot)
 - Blocker: none
-- Next best step: F-008 - Case content schemas and validator with fair-play skeleton
+- Next best step: F-009 - Julia room scene L-06 loads with interactables
 
 ## Harness feedback (for Q-HEAT change)
 
@@ -15,6 +15,17 @@
 
 ## Session log
 
+### 2026-11-12 - Copilot - F-008
+
+- Goal: implement F-008 on a dedicated feature branch
+- Done: added Zod-based content payload schemas and a fair-play skeleton validator for D-12 dependency checks, wired into `npm run content:validate`
+- Verification run (commands -> result):
+  - `npm run content:validate` -> pass
+  - `npm run test:unit -- fair-play` -> pass
+  - `python harness/checks/verify_feature.py F-008` -> pass
+- Evidence: F-008 marked passing in harness/feature_list.json with command tails
+- Risks or unverified paths: fair-play remains a skeleton check focused on D-12 reference integrity; full acquisition graph validation is deferred
+- Next best step: F-009 - Julia room scene L-06 loads with interactables
 ### 2026-11-12 - Copilot - F-007
 
 - Goal: implement F-007 on a dedicated feature branch
@@ -110,4 +121,6 @@
 - Files / docs updated: root harness docs/configs, harness state/checks/hooks, .claude, .github workflow, shared skeleton
 - Risks or unverified paths: product runtime/API/gameplay features not implemented yet by design
 - Next best step: F-001 - server serves the built client and /api/health
+
+
 
