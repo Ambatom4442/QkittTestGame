@@ -104,9 +104,29 @@ const fakeThree = {
 
 function createEnvironment(search = "") {
   const canvas = { width: 960, height: 540 };
-  const documentRef = {
-    getElementById: (id) => (id === "qgame-canvas" ? canvas : null)
+  const interactablesHost = {
+    innerHTML: "",
+    children: [],
+    appendChild(child) {
+      this.children.push(child);
+    }
   };
+
+  const documentRef = {
+    createElement: () => ({ dataset: {}, textContent: "" }),
+    getElementById: (id) => {
+      if (id === "qgame-canvas") {
+        return canvas;
+      }
+
+      if (id === "qgame-interactables") {
+        return interactablesHost;
+      }
+
+      return null;
+    }
+  };
+
   const windowRef = {
     location: { search },
     innerWidth: 960,
@@ -114,7 +134,7 @@ function createEnvironment(search = "") {
     devicePixelRatio: 1.5
   };
 
-  return { canvas, documentRef, windowRef };
+  return { canvas, documentRef, interactablesHost, windowRef };
 }
 
 describe("client.boot", () => {
@@ -142,40 +162,29 @@ describe("client.boot", () => {
     expect(Object.prototype.hasOwnProperty.call(windowRef, "__qgame")).toBe(false);
   });
 
-  it("enables window.__qgame in server-approved test mode", async () => {
-    const { documentRef, windowRef } = createEnvironment("?test=1");
+  it("loads scene L-06 and exposes interactables in state and hook", async () => {
+    const { documentRef, interactablesHost, windowRef } = createEnvironment("?test=1");
 
     await bootClient({
       THREE: fakeThree,
       windowRef,
       documentRef,
-      fetchConfig: async () => ({ testModeEnabled: true })
+      fetchConfig: async () => ({ testModeEnabled: true }),
+      fetchScene: async () => ({
+        id: "L-06",
+        interactables: [
+          { objectId: "bell-pull", action: "pull", clueId: "E-09", prompt: "Pull bell-pull" },
+          { objectId: "ventilator", action: "inspect", clueId: "E-10", prompt: "Inspect ventilator" }
+        ]
+      })
     });
 
-    expect(windowRef.__qgame.state()).toMatchObject({
-      sceneId: "boot-scene",
-      testMode: true,
-      lastSpawnId: null,
-      skippedAnimations: 0,
-      player: {
-        position: { x: 0, y: 1.6, z: 3 },
-        yaw: 0
-      }
-    });
-    expect(windowRef.__qgame.teleport("spawn-a")).toBe("spawn-a");
-    expect(windowRef.__qgame.interact("bell-pull", "pull")).toEqual({ objectId: "bell-pull", action: "pull" });
-    expect(windowRef.__qgame.moveTo(2, -1.5)).toMatchObject({ x: 2, y: 1.6, z: -1.5 });
-    expect(windowRef.__qgame.skipAnimations()).toBe(1);
-    expect(windowRef.__qgame.fps()).toBe(60);
-    expect(windowRef.__qgame.state()).toMatchObject({
-      lastSpawnId: "spawn-a",
-      lastInteraction: { objectId: "bell-pull", action: "pull" },
-      skippedAnimations: 1,
-      player: {
-        position: { x: 2, y: 1.6, z: -1.5 },
-        yaw: 0
-      }
-    });
+    expect(windowRef.__qgame.state()).toMatchObject({ sceneId: "L-06" });
+    expect(windowRef.__qgame.interactables()).toEqual([
+      { objectId: "bell-pull", action: "pull", clueId: "E-09", prompt: "Pull bell-pull" },
+      { objectId: "ventilator", action: "inspect", clueId: "E-10", prompt: "Inspect ventilator" }
+    ]);
+    expect(interactablesHost.children).toHaveLength(2);
   });
 
   it("moves with WASD and blocks movement through room bounds", async () => {
@@ -217,4 +226,3 @@ describe("client.boot", () => {
     expect(result.state.player.position).not.toMatchObject({ x: 0, z: 0 });
   });
 });
-

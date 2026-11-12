@@ -9,10 +9,19 @@ async function fetchConfig() {
 
   return response.json();
 }
+async function fetchScene(sceneId) {
+  const response = await fetch(`/api/scenes/${encodeURIComponent(sceneId)}`);
+  if (!response.ok) {
+    throw new Error(`Failed to load scene ${sceneId}: ${response.status}`);
+  }
 
+  return response.json();
+}
 void bootClient({
   THREE,
   windowRef: window,
   documentRef: document,
-  fetchConfig
+  fetchConfig,
+  fetchScene
 });
+

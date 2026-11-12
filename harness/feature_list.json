@@ -547,11 +547,37 @@
         "F-008"
       ],
       "priority": 9,
-      "state": "not_started",
+      "state": "passing",
       "owner": null,
       "source": "FR-12,FR-14",
       "blocked_reason": null,
-      "evidence": null
+      "evidence": {
+        "date": "2026-11-12T08:12:47",
+        "commit": "6c4a6b8",
+        "result": "pass",
+        "runs": [
+          {
+            "command": "npm run test:e2e -- julia-room-load",
+            "exit": 0,
+            "seconds": 3.9,
+            "tail": [
+              "> q-game@0.1.0 test:e2e",
+              "> vitest run --config vitest.e2e.config.ts julia-room-load",
+              "",
+              "",
+              "\u001b[1m\u001b[46m RUN \u001b[49m\u001b[22m \u001b[36mv3.2.7 \u001b[39m\u001b[90mD:/Rojie Harness/Q-Game/QkittTestGame\u001b[39m",
+              "",
+              " \u001b[32m\u00e2\u0153\u201c\u001b[39m tests/e2e/julia-room-load.test.js \u001b[2m(\u001b[22m\u001b[2m1 test\u001b[22m\u001b[2m)\u001b[22m\u001b[33m 777\u001b[2mms\u001b[22m\u001b[39m",
+              "   \u001b[33m\u001b[2m\u00e2\u0153\u201c\u001b[22m\u001b[39m julia-room-load\u001b[2m > \u001b[22mloads L-06 scene data and returns interactables in chapter order \u001b[33m 775\u001b[2mms\u001b[22m\u001b[39m",
+              "",
+              "\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m1 passed\u001b[39m\u001b[22m\u001b[90m (1)\u001b[39m",
+              "\u001b[2m   Start at \u001b[22m 08:12:45",
+              "\u001b[2m   Duration \u001b[22m 1.98s\u001b[2m (transform 62ms, setup 0ms, collect 347ms, tests 777ms, environment 0ms, prepare 360ms)\u001b[22m"
+            ]
+          }
+        ]
+      }
     },
     {
       "id": "F-010",

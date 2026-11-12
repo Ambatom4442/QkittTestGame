@@ -2,18 +2,29 @@
 
 ## Current verified state
 
-- Branch / commit: feature/f-008-content-validator-fair-play @ working tree (uncommitted)
+- Branch / commit: feature/f-009-julia-room-interactables @ working tree (uncommitted)
 - Fast check: pass (qhc, typecheck, lint, content validate, unit tests, policy)
 - Full check (last CI): local pass (`npm run check`)
-- Active feature: F-008 - Case content schemas and validator with fair-play skeleton (owner: Copilot)
+- Active feature: F-009 - Julia room scene L-06 loads with interactables (owner: Copilot)
 - Blocker: none
-- Next best step: F-009 - Julia room scene L-06 loads with interactables
+- Next best step: F-010 - Events API grants clues E-07 to E-12 on interact
 
 ## Harness feedback (for Q-HEAT change)
 
 - None yet.
 
 ## Session log
+
+### 2026-11-12 - Copilot - F-009
+
+- Goal: implement F-009 on a dedicated feature branch
+- Done: added L-06 scene/chapter endpoints with ordered interactables and wired client boot to load L-06 plus render interactable prompts
+- Verification run (commands -> result):
+  - `npm run test:e2e -- julia-room-load` -> pass
+  - `python harness/checks/verify_feature.py F-009` -> pass
+- Evidence: F-009 marked passing in harness/feature_list.json with command tails
+- Risks or unverified paths: interaction visuals are list/metadata-level for now; full 3D hover-outline behavior lands with subsequent interaction features
+- Next best step: F-010 - Events API grants clues E-07 to E-12 on interact
 
 ### 2026-11-12 - Copilot - F-008
 
@@ -26,8 +37,8 @@
 - Evidence: F-008 marked passing in harness/feature_list.json with command tails
 - Risks or unverified paths: fair-play remains a skeleton check focused on D-12 reference integrity; full acquisition graph validation is deferred
 - Next best step: F-009 - Julia room scene L-06 loads with interactables
-### 2026-11-12 - Copilot - F-007
 
+### 2026-11-12 - Copilot - F-007
 - Goal: implement F-007 on a dedicated feature branch
 - Done: added resume endpoint `GET /api/games/:id/resume` and a reload-resume e2e flow that persists position then resumes scene and transform after server restart
 - Verification run (commands -> result):
@@ -121,6 +132,8 @@
 - Files / docs updated: root harness docs/configs, harness state/checks/hooks, .claude, .github workflow, shared skeleton
 - Risks or unverified paths: product runtime/API/gameplay features not implemented yet by design
 - Next best step: F-001 - server serves the built client and /api/health
+
+
 
 
 

@@ -8,7 +8,8 @@ function cloneState(state) {
     player: {
       position: { ...state.player.position },
       yaw: state.player.yaw
-    }
+    },
+    interactables: state.interactables.map((interactable) => ({ ...interactable }))
   };
 }
 
@@ -36,6 +37,9 @@ function createTestHook(state) {
       state.player.position.x = Number(x);
       state.player.position.z = Number(z);
       return Object.freeze({ ...state.player.position });
+    },
+    interactables() {
+      return state.interactables.map((interactable) => Object.freeze({ ...interactable }));
     },
     fps() {
       return 60;
@@ -279,8 +283,48 @@ function isTestModeEnabled(search, serverConfig) {
   return params.get("test") === "1";
 }
 
-export async function bootClient({ THREE, windowRef, documentRef, fetchConfig }) {
+function normalizeSceneData(sceneData) {
+  if (!sceneData || typeof sceneData !== "object") {
+    return { id: "boot-scene", interactables: [] };
+  }
+
+  const sceneId = typeof sceneData.id === "string" && sceneData.id ? sceneData.id : "boot-scene";
+  const interactables = Array.isArray(sceneData.interactables)
+    ? sceneData.interactables
+      .filter((entry) => entry && typeof entry === "object")
+      .map((entry) => ({
+        objectId: String(entry.objectId ?? ""),
+        action: String(entry.action ?? ""),
+        clueId: String(entry.clueId ?? ""),
+        prompt: String(entry.prompt ?? "")
+      }))
+      .filter((entry) => entry.objectId.length > 0 && entry.action.length > 0)
+    : [];
+
+  return { id: sceneId, interactables };
+}
+
+function renderInteractables(documentRef, sceneData) {
+  const host = documentRef?.getElementById?.("qgame-interactables");
+  if (!host || typeof documentRef?.createElement !== "function") {
+    return;
+  }
+
+  host.innerHTML = "";
+
+  for (const interactable of sceneData.interactables) {
+    const item = documentRef.createElement("li");
+    item.dataset.objectId = interactable.objectId;
+    item.dataset.action = interactable.action;
+    item.textContent = interactable.prompt || `${interactable.action} ${interactable.objectId}`;
+    host.appendChild(item);
+  }
+}
+export async function bootClient({ THREE, windowRef, documentRef, fetchConfig, fetchScene }) {
   const config = await fetchConfig();
+  const sceneData = normalizeSceneData(
+    typeof fetchScene === "function" ? await fetchScene("L-06") : null
+  );
   const { camera, scene } = createScene(THREE);
   const canvas = documentRef.getElementById("qgame-canvas");
   const renderer = makeRenderer(THREE, canvas, windowRef);
@@ -290,7 +334,7 @@ export async function bootClient({ THREE, windowRef, documentRef, fetchConfig })
   }
 
   const state = {
-    sceneId: "boot-scene",
+    sceneId: sceneData.id,
     testMode: isTestModeEnabled(windowRef.location?.search, config),
     lastSpawnId: null,
     lastInteraction: null,
@@ -298,8 +342,10 @@ export async function bootClient({ THREE, windowRef, documentRef, fetchConfig })
     player: {
       position: { x: 0, y: 1.6, z: 3 },
       yaw: 0
-    }
+    },
+    interactables: sceneData.interactables
   };
+  renderInteractables(documentRef, sceneData);
   const movement = createMovementController({ state, camera, windowRef, canvas });
 
   if (state.testMode) {
@@ -315,3 +361,4 @@ export async function bootClient({ THREE, windowRef, documentRef, fetchConfig })
 
   return { camera, movement, renderer, scene, state };
 }
+
