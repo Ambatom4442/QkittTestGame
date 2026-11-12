@@ -89,16 +89,27 @@ function parseSlotName(slotName) {
   return Number.parseInt(match[1], 10);
 }
 
+function normalizeClues(clues) {
+  if (!Array.isArray(clues)) {
+    return [];
+  }
+
+  return clues
+    .filter((value) => typeof value === "string" && value.length > 0)
+    .filter((value, index, values) => values.indexOf(value) === index);
+}
+
 function parseSlotState(positionJson) {
   if (!positionJson) {
-    return { caseId: null, transform: null };
+    return { caseId: null, transform: null, clues: [] };
   }
 
   const parsed = JSON.parse(positionJson);
   const caseId = typeof parsed.caseId === "string" ? parsed.caseId : null;
   const transform = parsed.transform && typeof parsed.transform === "object" ? parsed.transform : null;
+  const clues = normalizeClues(parsed.clues);
 
-  return { caseId, transform };
+  return { caseId, transform, clues };
 }
 
 function formatSaveSlot(row) {
@@ -111,6 +122,7 @@ function formatSaveSlot(row) {
     caseId: state.caseId,
     sceneId: row.scene_id,
     transform: state.transform,
+    clues: state.clues,
     updatedAt: row.updated_at
   };
 }
@@ -119,6 +131,16 @@ function sendDbUnavailable(reply) {
   return reply.code(503).send({ code: "DB_UNAVAILABLE", message: "Database is not available" });
 }
 
+function findSceneInteractable(sceneId, objectId, action) {
+  const scene = SCENE_DEFINITIONS.find((candidate) => candidate.id === sceneId);
+  if (!scene) {
+    return null;
+  }
+
+  return scene.interactables.find(
+    (interactable) => interactable.objectId === objectId && interactable.action === action
+  ) ?? null;
+}
 function formatScene(scene) {
   return {
     id: scene.id,
@@ -254,8 +276,8 @@ export function buildServer({ logger = false, staticRoot = "client/build", db = 
       const existingState = parseSlotState(existing.position_json);
       const shouldResetProgress = existingState.caseId !== caseId;
       const nextPositionJson = shouldResetProgress
-        ? JSON.stringify({ caseId, transform: null })
-        : JSON.stringify({ caseId, transform: existingState.transform });
+        ? JSON.stringify({ caseId, transform: null, clues: [] })
+        : JSON.stringify({ caseId, transform: existingState.transform, clues: existingState.clues });
       const nextSceneId = shouldResetProgress ? null : existing.scene_id;
 
       db.prepare("UPDATE save_slots SET scene_id = ?, position_json = ?, updated_at = ? WHERE id = ?")
@@ -268,7 +290,7 @@ export function buildServer({ logger = false, staticRoot = "client/build", db = 
       return reply.code(200).send(formatSaveSlot(row));
     }
 
-    const positionJson = JSON.stringify({ caseId, transform: null });
+    const positionJson = JSON.stringify({ caseId, transform: null, clues: [] });
     const insertResult = db
       .prepare("INSERT INTO save_slots (profile_id, slot_name, scene_id, position_json, updated_at) VALUES (?, ?, ?, ?, ?)")
       .run(profileId, slotName, null, positionJson, now);
@@ -279,7 +301,60 @@ export function buildServer({ logger = false, staticRoot = "client/build", db = 
     return reply.code(201).send(formatSaveSlot(row));
   });
 
+  app.post("/api/games/:id/interact", async (request, reply) => {
+    if (!db) {
+      return sendDbUnavailable(reply);
+    }
 
+    const gameId = Number.parseInt(request.params?.id ?? "", 10);
+    const sceneId = typeof request.body?.sceneId === "string" ? request.body.sceneId.trim() : "";
+    const objectId = typeof request.body?.objectId === "string" ? request.body.objectId.trim() : "";
+    const action = typeof request.body?.action === "string" ? request.body.action.trim() : "";
+
+    if (!Number.isInteger(gameId) || gameId <= 0) {
+      return reply.code(400).send({ code: "INVALID_GAME_ID", message: "Game id must be a positive integer" });
+    }
+
+    if (!sceneId || !objectId || !action) {
+      return reply.code(400).send({ code: "INVALID_INTERACTION", message: "sceneId, objectId, and action are required" });
+    }
+
+    const interactable = findSceneInteractable(sceneId, objectId, action);
+    if (!interactable || !interactable.clueId) {
+      return reply.code(404).send({ code: "INTERACTION_NOT_FOUND", message: "Interaction not found" });
+    }
+
+    const existing = db
+      .prepare("SELECT id, profile_id, slot_name, scene_id, position_json, updated_at FROM save_slots WHERE id = ?")
+      .get(gameId);
+
+    if (!existing) {
+      return reply.code(404).send({ code: "GAME_NOT_FOUND", message: "Game not found" });
+    }
+
+    const existingState = parseSlotState(existing.position_json);
+    const alreadyCollected = existingState.clues.includes(interactable.clueId);
+    const clues = alreadyCollected ? existingState.clues : [...existingState.clues, interactable.clueId];
+    const updatedAt = new Date().toISOString();
+    const positionJson = JSON.stringify({
+      caseId: existingState.caseId,
+      transform: existingState.transform,
+      clues
+    });
+
+    db.prepare("UPDATE save_slots SET scene_id = ?, position_json = ?, updated_at = ? WHERE id = ?")
+      .run(sceneId, positionJson, updatedAt, gameId);
+
+    return {
+      gameId,
+      sceneId,
+      objectId,
+      action,
+      clueId: interactable.clueId,
+      alreadyCollected,
+      clues
+    };
+  });
   app.get("/api/games/:id/resume", async (request, reply) => {
     if (!db) {
       return sendDbUnavailable(reply);
@@ -329,7 +404,7 @@ export function buildServer({ logger = false, staticRoot = "client/build", db = 
 
     const existingState = parseSlotState(existing.position_json);
     const updatedAt = new Date().toISOString();
-    const positionJson = JSON.stringify({ caseId: existingState.caseId, transform });
+    const positionJson = JSON.stringify({ caseId: existingState.caseId, transform, clues: existingState.clues });
 
     db.prepare("UPDATE save_slots SET scene_id = ?, position_json = ?, updated_at = ? WHERE id = ?")
       .run(sceneId, positionJson, updatedAt, gameId);
@@ -363,5 +438,4 @@ export function buildServer({ logger = false, staticRoot = "client/build", db = 
 
   return app;
 }
-
 
