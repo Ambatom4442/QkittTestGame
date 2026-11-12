@@ -2,12 +2,12 @@
 
 ## Current verified state
 
-- Branch / commit: feature/f-012-deduction-validation @ working tree (uncommitted)
+- Branch / commit: feature/f-013-bundle-leak-check @ working tree (uncommitted)
 - Fast check: pass (qhc, typecheck, lint, content validate, unit tests, policy)
 - Full check (last CI): local pass (`npm run check`)
-- Active feature: F-012 - Deduction board server-side validation for D-03 and D-06 (owner: Copilot)
+- Active feature: F-013 - Bundle leak check for server-only ids and answers (owner: Copilot)
 - Blocker: none
-- Next best step: F-013 - Bundle leak check for server-only ids and answers
+- Next best step: all milestone features F-001..F-013 are passing
 
 ## Harness feedback (for Q-HEAT change)
 
@@ -15,6 +15,16 @@
 
 ## Session log
 
+### 2026-11-12 - Copilot - F-013
+
+- Goal: implement F-013 on a dedicated feature branch
+- Done: replaced the bundle-leak placeholder with a real scanner (`scripts/check-bundle-leak.mjs`) and wired `npm run check:bundle-leak` to fail when server-only deduction ids, hint ids, or canonical answer strings appear in client bundle files
+- Verification run (commands -> result):
+  - `npm run check:bundle-leak -- F-013` -> pass
+  - `python harness/checks/verify_feature.py F-013` -> pass
+- Evidence: F-013 marked passing in harness/feature_list.json with command tails
+- Risks or unverified paths: scanner currently enforces known server-only deduction/hint patterns; extend denylist as additional protected answer content is added
+- Next best step: finalize/playtest milestone flow now that F-001..F-013 are complete
 ### 2026-11-12 - Copilot - F-012
 
 - Goal: implement F-012 on a dedicated feature branch
@@ -165,4 +175,6 @@
 - Files / docs updated: root harness docs/configs, harness state/checks/hooks, .claude, .github workflow, shared skeleton
 - Risks or unverified paths: product runtime/API/gameplay features not implemented yet by design
 - Next best step: F-001 - server serves the built client and /api/health
+
+
 

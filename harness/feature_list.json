@@ -812,11 +812,28 @@
         "F-012"
       ],
       "priority": 13,
-      "state": "not_started",
+      "state": "passing",
       "owner": null,
       "source": "NFR-52",
       "blocked_reason": null,
-      "evidence": null
+      "evidence": {
+        "date": "2026-11-12T08:55:51",
+        "commit": "c1639c6",
+        "result": "pass",
+        "runs": [
+          {
+            "command": "npm run check:bundle-leak -- F-013",
+            "exit": 0,
+            "seconds": 0.9,
+            "tail": [
+              "> q-game@0.1.0 check:bundle-leak",
+              "> node scripts/check-bundle-leak.mjs F-013",
+              "",
+              "check:bundle-leak: pass (3 files scanned, no server-only leaks detected)"
+            ]
+          }
+        ]
+      }
     }
   ],
   "_notes": [

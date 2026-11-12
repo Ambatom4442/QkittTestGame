@@ -16,7 +16,7 @@
     "test:unit": "vitest run --config vitest.unit.config.ts",
     "test:api": "vitest run --config vitest.api.config.ts",
     "test:e2e": "vitest run --config vitest.e2e.config.ts",
-    "check:bundle-leak": "node scripts/nonblocking-check.mjs check:bundle-leak",
+    "check:bundle-leak": "node scripts/check-bundle-leak.mjs",
     "content:validate": "node scripts/content-validate.mjs",
     "check:traceability": "python harness/checks/check_traceability.py",
     "check:fast": "npm run qhc:check && npm run typecheck && npm run lint && npm run content:validate && npm run test:unit && python harness/checks/policy_check.py --base origin/main",
