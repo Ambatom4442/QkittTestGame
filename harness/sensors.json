@@ -92,7 +92,7 @@
       "introduced_by": "architecture/07-testing-strategy.md"
     },
     {
-      "id": "S-050-e2e-registered",
+      "id": "S-050-e2e-browser",
       "command": "npm run test:e2e",
       "kind": "computational",
       "category": "runtime",
@@ -100,12 +100,28 @@
       "tier": "full",
       "paths": [
         "tests/e2e/**",
-        "scripts/nonblocking-check.mjs"
+        "playwright.config.js"
       ],
-      "blocking": false,
+      "blocking": true,
       "timeout_s": 600,
       "owner": "harness",
-      "introduced_by": "architecture/07-testing-strategy.md"
+      "introduced_by": "ticket H-02"
+    },
+    {
+      "id": "S-055-e2e-real-browser",
+      "command": "python harness/checks/e2e_real_browser.py",
+      "kind": "computational",
+      "category": "structural",
+      "layer": "system",
+      "tier": "full",
+      "paths": [
+        "tests/e2e/**",
+        "harness/checks/e2e_real_browser.py"
+      ],
+      "blocking": true,
+      "timeout_s": 60,
+      "owner": "harness",
+      "introduced_by": "ticket H-02"
     },
     {
       "id": "S-060-bundle-leak-registered",

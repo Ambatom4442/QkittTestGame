@@ -9,6 +9,7 @@ services:
       HOST: 0.0.0.0
       PORT: "3000"
       QGAME_DB_PATH: /workspace/data/qgame.db
+      QGAME_TEST_MODE: "1"
     ports:
       - "3000:3000"
     volumes:
@@ -43,6 +44,8 @@ services:
       HOST: 0.0.0.0
       PORT: "3000"
       QGAME_DB_PATH: /workspace/data/qgame.db
+      QGAME_BASE_URL: http://app:3000
+      QGAME_TEST_MODE: "1"
     volumes:
       - .:/workspace
       - qgame_node_modules:/workspace/node_modules

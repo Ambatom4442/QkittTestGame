@@ -1,84 +1,37 @@
-import { mkdtempSync, rmSync } from "node:fs";
-import { join } from "node:path";
-import { tmpdir } from "node:os";
-import { afterEach, describe, expect, it } from "vitest";
-import { buildServer } from "../../server/src/buildServer.js";
-import { closeDatabase, openDatabase } from "../../server/src/db/sqlite.js";
+import { test, expect } from "@playwright/test";
+import { createGame, createProfile, interact, uniqueName } from "./helpers.js";
 
-const tempDirectories = [];
+test("collects all L-06 interaction clues through the events API flow", async ({ page, request }) => {
+  const profile = await createProfile(request, uniqueName("watson"));
+  const game = await createGame(request, { profileId: profile.id, slot: 2 });
 
-afterEach(() => {
-  for (const directory of tempDirectories.splice(0, tempDirectories.length)) {
-    rmSync(directory, { recursive: true, force: true });
+  const loadResponse = await page.goto("/?test=1");
+  expect(loadResponse?.ok()).toBeTruthy();
+
+  const sceneResponse = await request.get("/api/scenes/L-06");
+  expect(sceneResponse.ok()).toBeTruthy();
+  const scene = await sceneResponse.json();
+
+  const clueIds = [];
+  for (const interactable of scene.interactables) {
+    const payload = await interact(request, game.id, {
+      sceneId: "L-06",
+      objectId: interactable.objectId,
+      action: interactable.action
+    });
+    clueIds.push(payload.clueId);
   }
-});
 
-describe("clues-e07-e12", () => {
-  it("collects all L-06 interaction clues through the events API flow", async () => {
-    const tempDirectory = mkdtempSync(join(tmpdir(), "qgame-clues-e07-e12-"));
-    tempDirectories.push(tempDirectory);
+  expect(clueIds).toEqual(["E-07", "E-09", "E-10", "E-11", "E-12"]);
 
-    const db = openDatabase({ dbPath: join(tempDirectory, "qgame.db") });
-    const server = buildServer({ logger: false, db, testModeEnabled: true });
-
-    try {
-      const profileResponse = await server.inject({
-        method: "POST",
-        url: "/api/profiles",
-        payload: { name: "Watson" }
-      });
-      const profile = profileResponse.json();
-
-      const gameResponse = await server.inject({
-        method: "POST",
-        url: "/api/games",
-        payload: { profileId: profile.id, slot: 2, caseId: "speckled-band" }
-      });
-      const game = gameResponse.json();
-
-      const sceneResponse = await server.inject({
-        method: "GET",
-        url: "/api/scenes/L-06"
-      });
-      expect(sceneResponse.statusCode).toBe(200);
-
-      const scene = sceneResponse.json();
-      const clueIds = [];
-
-      for (const interactable of scene.interactables) {
-        const response = await server.inject({
-          method: "POST",
-          url: `/api/games/${game.id}/interact`,
-          payload: {
-            sceneId: "L-06",
-            objectId: interactable.objectId,
-            action: interactable.action
-          }
-        });
-
-        expect(response.statusCode).toBe(200);
-        const payload = response.json();
-        clueIds.push(payload.clueId);
+  const saveSlotsResponse = await request.get(`/api/profiles/${profile.id}/saves`);
+  expect(saveSlotsResponse.ok()).toBeTruthy();
+  await expect(saveSlotsResponse.json()).resolves.toMatchObject({
+    saveSlots: [
+      {
+        id: game.id,
+        clues: ["E-07", "E-09", "E-10", "E-11", "E-12"]
       }
-
-      expect(clueIds).toEqual(["E-07", "E-09", "E-10", "E-11", "E-12"]);
-
-      const saveSlotsResponse = await server.inject({
-        method: "GET",
-        url: `/api/profiles/${profile.id}/saves`
-      });
-      expect(saveSlotsResponse.statusCode).toBe(200);
-      expect(saveSlotsResponse.json()).toMatchObject({
-        saveSlots: [
-          {
-            id: game.id,
-            clues: ["E-07", "E-09", "E-10", "E-11", "E-12"]
-          }
-        ]
-      });
-    } finally {
-      await server.close();
-      closeDatabase(db);
-    }
+    ]
   });
 });
